@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import FirebaseAuth
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,11 +17,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        configureThirdPartyLibraries()
+        setRootViewController()
         
-        // setup third party libraries
-        FIRApp.configure()
-
         return true
+    }
+    
+    func setRootViewController() {
+        guard let window = window else { return }
+        
+        let type: StoryboardType = FIRAuth.auth()?.currentUser == nil ? .login : .main
+        let storyboard = type.storyboard
+        
+        if let initialViewController = storyboard.instantiateInitialViewController() {
+            window.rootViewController = initialViewController
+            window.makeKeyAndVisible()
+        }
     }
 }
 
+extension AppDelegate {
+    fileprivate func configureThirdPartyLibraries() {
+        FIRApp.configure()
+    }
+}
