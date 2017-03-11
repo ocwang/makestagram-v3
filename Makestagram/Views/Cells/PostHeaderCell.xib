@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="54" id="KGk-i7-Jjw" customClass="PostHeaderCell" customModule="Makestagram" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="54"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="53.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_photo_placeholder_black" translatesAutoresizingMaskIntoConstraints="NO" id="Dbp-we-5WT">
+                        <rect key="frame" x="10" y="10.5" width="32" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="32" id="009-zH-SKP"/>
+                            <constraint firstAttribute="height" constant="32" id="DsW-LM-CfJ"/>
+                        </constraints>
+                    </imageView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vrs-6y-fg0">
+                        <rect key="frame" x="331" y="5" width="44" height="44"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="44" id="BjY-Uo-51P"/>
+                            <constraint firstAttribute="width" constant="44" id="PWv-qh-Rpe"/>
+                        </constraints>
+                        <state key="normal" image="ic_options_black"/>
+                        <connections>
+                            <action selector="optionsButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="QlO-9R-Gv7"/>
+                        </connections>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="humansofny" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ay8-Vg-weA">
+                        <rect key="frame" x="50" y="18" width="80" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Dbp-we-5WT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="2K7-7k-Gbf"/>
+                    <constraint firstAttribute="trailing" secondItem="vrs-6y-fg0" secondAttribute="trailing" id="3ci-yd-ruQ"/>
+                    <constraint firstItem="ay8-Vg-weA" firstAttribute="leading" secondItem="Dbp-we-5WT" secondAttribute="trailing" constant="8" id="Bbb-36-0k0"/>
+                    <constraint firstItem="vrs-6y-fg0" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="I6s-hs-tyT"/>
+                    <constraint firstItem="Dbp-we-5WT" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="LS7-8z-mza"/>
+                    <constraint firstItem="ay8-Vg-weA" firstAttribute="centerY" secondItem="Dbp-we-5WT" secondAttribute="centerY" id="czR-mb-8x3"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="userImageView" destination="Dbp-we-5WT" id="ErE-y3-5ny"/>
+                <outlet property="usernameLabel" destination="ay8-Vg-weA" id="64c-te-ifL"/>
+            </connections>
+            <point key="canvasLocation" x="33.5" y="54"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="ic_options_black" width="24" height="24"/>
+        <image name="user_photo_placeholder_black" width="32" height="32"/>
+    </resources>
+</document>

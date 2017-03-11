@@ -15,24 +15,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         configureThirdPartyLibraries()
-        setRootViewController()
+        setInitialRootViewController()
         
         return true
     }
     
-    func setRootViewController() {
-        guard let window = window else { return }
+    func setInitialRootViewController() {
+        let type: UIStoryboard.MGType = FIRAuth.auth()?.currentUser == nil ? .login : .main
+        let storyboard = UIStoryboard(type: type)
         
-        let type: StoryboardType = FIRAuth.auth()?.currentUser == nil ? .login : .main
-        let storyboard = type.storyboard
-        
-        if let initialViewController = storyboard.instantiateInitialViewController() {
-            window.rootViewController = initialViewController
-            window.makeKeyAndVisible()
-        }
+        window?.setRootViewControllerToInitialViewController(of: storyboard)
     }
 }
 

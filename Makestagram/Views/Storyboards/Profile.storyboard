@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="OIU-lg-W9l">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Profile-->
+        <scene sceneID="wbx-1b-BMe">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="OIU-lg-W9l" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Profile" id="dzX-dK-Vjm"/>
+                    <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="4In-2a-tpd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="bbo-SR-zfi" kind="relationship" relationship="rootViewController" id="t8C-4F-yVs"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8El-lM-z1G" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="721" y="241"/>
+        </scene>
+        <!--Profile View Controller-->
+        <scene sceneID="GuW-hj-crC">
+            <objects>
+                <viewController id="bbo-SR-zfi" customClass="ProfileViewController" customModule="Makestagram" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eSx-f2-3Ag"/>
+                        <viewControllerLayoutGuide type="bottom" id="kaG-Ye-keu"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="WfX-3e-dRy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="0.41582031250000001" blue="0.58602120540000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Ob9-0i-1XU">
+                        <barButtonItem key="rightBarButtonItem" title="Log Out" id="TyF-sA-xRb">
+                            <connections>
+                                <action selector="logOutButtonTapped:" destination="bbo-SR-zfi" id="sXK-x1-yUd"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zpL-BD-Hbe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1617" y="241"/>
+        </scene>
+    </scenes>
+</document>

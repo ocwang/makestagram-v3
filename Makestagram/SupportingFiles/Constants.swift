@@ -10,6 +10,6 @@ import Foundation
 
 struct Constants {
     struct Segue {
-        static let createUsername = "chooseUsername"
+        static let createUsername = "createUsername"
     }
 }
