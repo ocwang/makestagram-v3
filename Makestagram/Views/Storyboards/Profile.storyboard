@@ -9,11 +9,13 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Profile-->
+        <!--Navigation Controller-->
         <scene sceneID="wbx-1b-BMe">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="OIU-lg-W9l" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Profile" id="dzX-dK-Vjm"/>
+                    <tabBarItem key="tabBarItem" title="" image="ic_tab_profile_black" id="dzX-dK-Vjm">
+                        <inset key="imageInsets" minX="0.0" minY="7" maxX="0.0" maxY="-7"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="4In-2a-tpd">
@@ -43,7 +45,7 @@
                         <color key="backgroundColor" red="1" green="0.41582031250000001" blue="0.58602120540000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="Ob9-0i-1XU">
-                        <barButtonItem key="rightBarButtonItem" title="Log Out" id="TyF-sA-xRb">
+                        <barButtonItem key="rightBarButtonItem" image="ic_nav_settings_black" id="TyF-sA-xRb">
                             <connections>
                                 <action selector="logOutButtonTapped:" destination="bbo-SR-zfi" id="sXK-x1-yUd"/>
                             </connections>
@@ -55,4 +57,8 @@
             <point key="canvasLocation" x="1617" y="241"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="ic_nav_settings_black" width="22" height="22"/>
+        <image name="ic_tab_profile_black" width="25" height="25"/>
+    </resources>
 </document>

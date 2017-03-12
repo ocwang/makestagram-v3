@@ -21,7 +21,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="3g4-lN-d6O">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="3g4-lN-d6O">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -47,11 +47,13 @@
             </objects>
             <point key="canvasLocation" x="1633" y="-568"/>
         </scene>
-        <!--Home-->
+        <!--Navigation Controller-->
         <scene sceneID="Bg7-5F-LJ6">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Wz2-ib-L6C" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" id="2mr-h8-jed"/>
+                    <tabBarItem key="tabBarItem" title="" image="ic_tab_home_black" id="2mr-h8-jed">
+                        <inset key="imageInsets" minX="0.0" minY="7" maxX="0.0" maxY="-7"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="wrd-8f-zYy">
@@ -68,4 +70,7 @@
             <point key="canvasLocation" x="721" y="-568"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="ic_tab_home_black" width="25" height="25"/>
+    </resources>
 </document>

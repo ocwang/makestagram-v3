@@ -9,14 +9,13 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Tab Bar Controller-->
+        <!--Main Tab Bar Controller-->
         <scene sceneID="qs3-n9-XcL">
             <objects>
-                <tabBarController id="OVC-PU-1MP" sceneMemberID="viewController">
+                <tabBarController id="OVC-PU-1MP" customClass="MainTabBarController" customModule="Makestagram" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="35K-PN-Jbs">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
                         <segue destination="QRc-do-rnM" kind="relationship" relationship="viewControllers" id="vez-Zc-Kng"/>
@@ -48,7 +47,7 @@
             </objects>
             <point key="canvasLocation" x="442" y="470"/>
         </scene>
-        <!--Camera-->
+        <!--View Controller-->
         <scene sceneID="flH-Qx-bNO">
             <objects>
                 <viewController id="Mz8-85-OL7" sceneMemberID="viewController">
@@ -61,11 +60,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Camera" id="wVq-Er-HlD"/>
+                    <tabBarItem key="tabBarItem" tag="1" title="" image="ic_tab_plus_black" id="wVq-Er-HlD">
+                        <inset key="imageInsets" minX="0.0" minY="7" maxX="0.0" maxY="-7"/>
+                    </tabBarItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UTD-QY-pg6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-199" y="786"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="ic_tab_plus_black" width="25" height="25"/>
+    </resources>
 </document>
