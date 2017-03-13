@@ -69,7 +69,7 @@ class MGPhotoHelper: NSObject {
         
         let timestamp = dateFormatter.string(from: Date())
         let pathIdentifier = randomString(length: 6)
-        let imageRef = storageRef.child("images/posts/\(uid)/\(timestamp)-\(pathIdentifier).png")
+        let imageRef = storageRef.child("images/posts/\(uid)/\(timestamp)-\(pathIdentifier).jpg")
         
         _ = imageRef.put(imageData, metadata: nil) { (metadata, error) in
             guard let metadata = metadata else { return }
@@ -139,7 +139,9 @@ class MGPhotoHelper: NSObject {
 extension MGPhotoHelper: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage,
-            let imageData = UIImagePNGRepresentation(selectedImage) {
+            let imageData = UIImageJPEGRepresentation(selectedImage, 0.2) {
+            
+            
             
             uploadImageToFirebase(imageData: imageData)
         }

@@ -11,4 +11,6 @@ target 'Makestagram' do
   pod 'FirebaseUI/Auth', '~> 3.0'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
+  
+  pod 'Kingfisher', '~> 3.5'
 end

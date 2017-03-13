@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
+import Kingfisher
 
 class HomeViewController: UIViewController {
 
@@ -59,8 +60,12 @@ extension HomeViewController: UITableViewDataSource {
             return cell
             
         case 1:
+            let post = posts[indexPath.section]
             let cell: PostImageCell = tableView.dequeueReusableCell()
-            cell.backgroundColor = .red
+            
+            let imageURL = URL(string: post.imageURL)
+            cell.postImageView.kf.setImage(with: imageURL)
+            
             
             return cell
             
