@@ -8,6 +8,10 @@
 
 import UIKit
 
+
+
+//tableView.register(nib3, forCellReuseIdentifier: "PostActionCell")
+
 protocol CellIdentifiable {
     static var cellIdentifier: String { get }
 }
@@ -21,6 +25,13 @@ extension CellIdentifiable where Self: UITableViewCell {
 extension UITableViewCell: CellIdentifiable { }
 
 extension UITableView {
+    func registerNib(for cellClass: Swift.AnyClass) {
+        let className = String(describing: cellClass)
+        let nib = UINib(nibName: className, bundle: .main)
+        
+        register(nib, forCellReuseIdentifier: className)
+    }
+    
     func dequeueReusableCell<T: UITableViewCell>() -> T where T: CellIdentifiable {
         guard let cell = dequeueReusableCell(withIdentifier: T.cellIdentifier) as? T else {
             fatalError("Error dequeuing cell for identifier \(T.cellIdentifier)")

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		050034E9BD0C3728D5913A24 /* Pods_Makestagram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */; };
 		CA6068561E74B76B0051F7D9 /* MGPhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */; };
+		CA6068581E7668490051F7D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6068571E7668490051F7D9 /* Post.swift */; };
 		CA635A291E71D66F00E6E94C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA635A281E71D66F00E6E94C /* GoogleService-Info.plist */; };
 		CA7CEB941E708EB800AF43ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA7CEB931E708EB800AF43ED /* AppDelegate.swift */; };
 		CA7CEB9B1E708EB800AF43ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA7CEB9A1E708EB800AF43ED /* Assets.xcassets */; };
@@ -40,6 +41,7 @@
 		4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Makestagram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		663D54F91ED125B01595C135 /* Pods-Makestagram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Makestagram.release.xcconfig"; path = "Pods/Target Support Files/Pods-Makestagram/Pods-Makestagram.release.xcconfig"; sourceTree = "<group>"; };
 		CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGPhotoHelper.swift; path = Helpers/MGPhotoHelper.swift; sourceTree = "<group>"; };
+		CA6068571E7668490051F7D9 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Post.swift; path = Models/Post.swift; sourceTree = "<group>"; };
 		CA635A281E71D66F00E6E94C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CA7CEB901E708EB800AF43ED /* Makestagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Makestagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA7CEB931E708EB800AF43ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				CA8417781E723C1C005A0A60 /* User.swift */,
+				CA6068571E7668490051F7D9 /* Post.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 				CA8417751E720C9A005A0A60 /* Constants.swift in Sources */,
 				CAEE84CB1E73EE1F00BCD683 /* MainTabBarController.swift in Sources */,
 				CA8417791E723C1C005A0A60 /* User.swift in Sources */,
+				CA6068581E7668490051F7D9 /* Post.swift in Sources */,
 				CA84177C1E731BF7005A0A60 /* Storyboard+Utility.swift in Sources */,
 				CAEE2BFC1E73CE6D00F361C9 /* UITableView+Utility.swift in Sources */,
 				CA7CEB941E708EB800AF43ED /* AppDelegate.swift in Sources */,

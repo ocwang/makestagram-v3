@@ -8,28 +8,39 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseDatabase
 
 class HomeViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
+    var ref: FIRDatabaseReference!
+    
+    var posts = [Post]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let nib = UINib(nibName: "PostImageCell", bundle: .main)
-        tableView.register(nib, forCellReuseIdentifier: "PostImageCell")
         
-        let nib2 = UINib(nibName: "PostHeaderCell", bundle: .main)
-        tableView.register(nib2, forCellReuseIdentifier: "PostHeaderCell")
+        ref = FIRDatabase.database().reference()
         
-        let nib3 = UINib(nibName: "PostActionCell", bundle: .main)
-        tableView.register(nib3, forCellReuseIdentifier: "PostActionCell")
+        
+        _ = ref.child("posts").observe(FIRDataEventType.value, with: { [unowned self] (snapshot) in
+            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                self.posts = snapshots.flatMap(Post.init)
+                self.tableView.reloadData()
+            }
+        })
+        
+        tableView.registerNib(for: PostHeaderCell.self)
+        tableView.registerNib(for: PostImageCell.self)
+        tableView.registerNib(for: PostActionCell.self)
     }
 }
 
 extension HomeViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return posts.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

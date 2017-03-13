@@ -10,4 +10,5 @@ target 'Makestagram' do
   pod 'Firebase/Auth'
   pod 'FirebaseUI/Auth', '~> 3.0'
   pod 'Firebase/Database'
+  pod 'Firebase/Storage'
 end
