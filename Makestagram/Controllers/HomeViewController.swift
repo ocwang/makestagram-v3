@@ -19,12 +19,17 @@ class HomeViewController: UIViewController {
     
     var posts = [Post]()
     
+    let timestampFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        
+        return dateFormatter
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         ref = FIRDatabase.database().reference()
-        
         
         _ = ref.child("posts").observe(FIRDataEventType.value, with: { [unowned self] (snapshot) in
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
@@ -36,6 +41,9 @@ class HomeViewController: UIViewController {
         tableView.registerNib(for: PostHeaderCell.self)
         tableView.registerNib(for: PostImageCell.self)
         tableView.registerNib(for: PostActionCell.self)
+        // remove separators for empty cells
+        tableView.tableFooterView = UIView()
+        tableView.separatorStyle = .none
     }
 }
 
@@ -49,8 +57,7 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        
+        let post = posts[indexPath.section]
         
         switch indexPath.row {
         case 0:
@@ -60,28 +67,20 @@ extension HomeViewController: UITableViewDataSource {
             return cell
             
         case 1:
-            let post = posts[indexPath.section]
             let cell: PostImageCell = tableView.dequeueReusableCell()
-            
             let imageURL = URL(string: post.imageURL)
             cell.postImageView.kf.setImage(with: imageURL)
-            
             
             return cell
             
         case 2:
             let cell: PostActionCell = tableView.dequeueReusableCell()
+            cell.timeAgoLabel.text = timestampFormatter.string(from: post.creationDate)
+            
             return cell
             
-        default:
-            fatalError()
+        default: fatalError()
         }
-        
-        
-        let cell: PostImageCell = tableView.dequeueReusableCell()
-        cell.backgroundColor = .red
-        
-        return cell
     }
 }
 
@@ -90,11 +89,12 @@ extension HomeViewController: UITableViewDelegate {
         
         switch indexPath.row {
         case 0: return PostHeaderCell.height
-        case 1: return view.bounds.width
+        case 1:
+            let post = posts[indexPath.section]
+            return post.imageHeight
+            
         case 2: return PostActionCell.height
         default: fatalError()
         }
-        
-        
     }
 }

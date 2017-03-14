@@ -23,9 +23,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func setInitialRootViewController() {
-        let type: UIStoryboard.MGType = FIRAuth.auth()?.currentUser == nil ? .login : .main
-        let storyboard = UIStoryboard(type: type)
+        let defaults = UserDefaults.standard
+        let storyboard: UIStoryboard
         
+        guard FIRAuth.auth()?.currentUser != nil,
+            let userData = defaults.object(forKey: Constants.UserDefaults.currentUser) as? Data,
+            let user = NSKeyedUnarchiver.unarchiveObject(with: userData) as? User else {
+                storyboard = UIStoryboard(type: .login)
+                window?.setRootViewControllerToInitialViewController(of: storyboard)
+                return
+        }
+        
+        User.current = user
+        
+        storyboard = UIStoryboard(type: .main)
         window?.setRootViewControllerToInitialViewController(of: storyboard)
     }
 }

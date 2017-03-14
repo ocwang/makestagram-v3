@@ -32,6 +32,9 @@ class CreateUsernameViewController: UIViewController {
             let ref = FIRDatabase.database().reference()
             ref.child("users").child(uid).setValue(["username": username])
             
+            let user = User(uid: uid, username: username)
+            User.setCurrentUser(user)
+            
             let storyboard = UIStoryboard(type: .main)
             view.window?.setRootViewControllerToInitialViewController(of: storyboard)
         }

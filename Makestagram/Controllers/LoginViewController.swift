@@ -51,7 +51,9 @@ extension LoginViewController: FUIAuthDelegate {
         
         let ref = FIRDatabase.database().reference()
         ref.child("users").child(user.uid).observeSingleEvent(of: .value, with: { [unowned self] snapshot in
-            if User(snapshot: snapshot) != nil {
+            if let user = User(snapshot: snapshot) {
+                User.setCurrentUser(user)
+                
                 let storyboard = UIStoryboard(type: .main)
                 self.view.window?.setRootViewControllerToInitialViewController(of: storyboard)
             } else {

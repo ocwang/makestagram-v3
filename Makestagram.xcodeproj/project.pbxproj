@@ -18,6 +18,9 @@
 		CA84177C1E731BF7005A0A60 /* Storyboard+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */; };
 		CA84177E1E732141005A0A60 /* UIViewController+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84177D1E732141005A0A60 /* UIViewController+Utility.swift */; };
 		CA8417801E732D3A005A0A60 /* UIWindow+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */; };
+		CAB98BE51E770F3300BE2D92 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB98BE41E770F3300BE2D92 /* StorageService.swift */; };
+		CAB98BE81E774F2800BE2D92 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB98BE71E774F2800BE2D92 /* SettingsViewController.swift */; };
+		CAB98BEA1E77526100BE2D92 /* PostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB98BE91E77526100BE2D92 /* PostService.swift */; };
 		CAEACD191E7380B600E2AEE4 /* CreateUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEACD151E7380B600E2AEE4 /* CreateUsernameViewController.swift */; };
 		CAEACD1A1E7380B600E2AEE4 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEACD161E7380B600E2AEE4 /* HomeViewController.swift */; };
 		CAEACD1B1E7380B600E2AEE4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEACD171E7380B600E2AEE4 /* LoginViewController.swift */; };
@@ -52,6 +55,9 @@
 		CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Storyboard+Utility.swift"; path = "Extensions/Storyboard+Utility.swift"; sourceTree = "<group>"; };
 		CA84177D1E732141005A0A60 /* UIViewController+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIViewController+Utility.swift"; path = "Extensions/UIViewController+Utility.swift"; sourceTree = "<group>"; };
 		CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIWindow+Utility.swift"; path = "Extensions/UIWindow+Utility.swift"; sourceTree = "<group>"; };
+		CAB98BE41E770F3300BE2D92 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StorageService.swift; path = Services/StorageService.swift; sourceTree = "<group>"; };
+		CAB98BE71E774F2800BE2D92 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = Controllers/SettingsViewController.swift; sourceTree = "<group>"; };
+		CAB98BE91E77526100BE2D92 /* PostService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostService.swift; path = Services/PostService.swift; sourceTree = "<group>"; };
 		CAEACD151E7380B600E2AEE4 /* CreateUsernameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateUsernameViewController.swift; path = Controllers/CreateUsernameViewController.swift; sourceTree = "<group>"; };
 		CAEACD161E7380B600E2AEE4 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeViewController.swift; path = Controllers/HomeViewController.swift; sourceTree = "<group>"; };
 		CAEACD171E7380B600E2AEE4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Controllers/LoginViewController.swift; sourceTree = "<group>"; };
@@ -135,6 +141,7 @@
 			children = (
 				CA7CEB931E708EB800AF43ED /* AppDelegate.swift */,
 				CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */,
+				CAB98BE61E770F3800BE2D92 /* Services */,
 				CAEE2C011E73D3C900F361C9 /* PostHeaderCell */,
 				CAEACD2D1E7381FD00E2AEE4 /* PostImageCell */,
 				CAEE2C061E73D91100F361C9 /* PostActionCell */,
@@ -170,6 +177,15 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
+		CAB98BE61E770F3800BE2D92 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				CAB98BE41E770F3300BE2D92 /* StorageService.swift */,
+				CAB98BE91E77526100BE2D92 /* PostService.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
 		CAEACD271E7381A700E2AEE4 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -178,6 +194,7 @@
 				CAEACD161E7380B600E2AEE4 /* HomeViewController.swift */,
 				CAEACD171E7380B600E2AEE4 /* LoginViewController.swift */,
 				CAEACD181E7380B600E2AEE4 /* ProfileViewController.swift */,
+				CAB98BE71E774F2800BE2D92 /* SettingsViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -354,14 +371,17 @@
 				CAEE84CB1E73EE1F00BCD683 /* MainTabBarController.swift in Sources */,
 				CA8417791E723C1C005A0A60 /* User.swift in Sources */,
 				CA6068581E7668490051F7D9 /* Post.swift in Sources */,
+				CAB98BE81E774F2800BE2D92 /* SettingsViewController.swift in Sources */,
 				CA84177C1E731BF7005A0A60 /* Storyboard+Utility.swift in Sources */,
 				CAEE2BFC1E73CE6D00F361C9 /* UITableView+Utility.swift in Sources */,
+				CAB98BE51E770F3300BE2D92 /* StorageService.swift in Sources */,
 				CA7CEB941E708EB800AF43ED /* AppDelegate.swift in Sources */,
 				CA6068561E74B76B0051F7D9 /* MGPhotoHelper.swift in Sources */,
 				CA84177E1E732141005A0A60 /* UIViewController+Utility.swift in Sources */,
 				CAEACD191E7380B600E2AEE4 /* CreateUsernameViewController.swift in Sources */,
 				CA8417801E732D3A005A0A60 /* UIWindow+Utility.swift in Sources */,
 				CAEACD2B1E7381F800E2AEE4 /* PostImageCell.swift in Sources */,
+				CAB98BEA1E77526100BE2D92 /* PostService.swift in Sources */,
 				CAEACD1C1E7380B600E2AEE4 /* ProfileViewController.swift in Sources */,
 				CAEACD1A1E7380B600E2AEE4 /* HomeViewController.swift in Sources */,
 				CAEE2BFF1E73D3C400F361C9 /* PostHeaderCell.swift in Sources */,

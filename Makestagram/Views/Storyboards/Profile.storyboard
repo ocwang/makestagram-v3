@@ -31,7 +31,7 @@
             </objects>
             <point key="canvasLocation" x="721" y="241"/>
         </scene>
-        <!--Profile View Controller-->
+        <!--username-->
         <scene sceneID="GuW-hj-crC">
             <objects>
                 <viewController id="bbo-SR-zfi" customClass="ProfileViewController" customModule="Makestagram" customModuleProvider="target" sceneMemberID="viewController">
@@ -44,10 +44,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="0.41582031250000001" blue="0.58602120540000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
-                    <navigationItem key="navigationItem" id="Ob9-0i-1XU">
+                    <navigationItem key="navigationItem" title="username" id="Ob9-0i-1XU">
+                        <barButtonItem key="leftBarButtonItem" image="ic_nav_find_friends_black" id="UcB-Pt-NwF"/>
                         <barButtonItem key="rightBarButtonItem" image="ic_nav_settings_black" id="TyF-sA-xRb">
                             <connections>
-                                <action selector="logOutButtonTapped:" destination="bbo-SR-zfi" id="sXK-x1-yUd"/>
+                                <segue destination="DGb-3p-rC8" kind="show" id="0cc-3r-Yau"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -56,8 +57,45 @@
             </objects>
             <point key="canvasLocation" x="1617" y="241"/>
         </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="ODF-hL-cIH">
+            <objects>
+                <viewController id="DGb-3p-rC8" customClass="SettingsViewController" customModule="Makestagram" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="kJ0-qC-YwH"/>
+                        <viewControllerLayoutGuide type="bottom" id="w3c-UK-VVb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ygD-UZ-Iw1">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Woh-Uw-3zm">
+                                <rect key="frame" x="0.0" y="567" width="375" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="EyT-Rr-nJ6"/>
+                                </constraints>
+                                <state key="normal" title="Log Out"/>
+                                <connections>
+                                    <action selector="logOutButtonTapped:" destination="DGb-3p-rC8" eventType="touchUpInside" id="nXb-NR-cMd"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Woh-Uw-3zm" secondAttribute="trailing" id="CwK-8J-lb3"/>
+                            <constraint firstItem="Woh-Uw-3zm" firstAttribute="leading" secondItem="ygD-UZ-Iw1" secondAttribute="leading" id="JAO-Pv-zC5"/>
+                            <constraint firstItem="w3c-UK-VVb" firstAttribute="top" secondItem="Woh-Uw-3zm" secondAttribute="bottom" id="aXY-DD-5mf"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedBottomBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4FK-AI-qzJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2439" y="241"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="ic_nav_find_friends_black" width="22" height="22"/>
         <image name="ic_nav_settings_black" width="22" height="22"/>
         <image name="ic_tab_profile_black" width="25" height="25"/>
     </resources>

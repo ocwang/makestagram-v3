@@ -6,18 +6,38 @@
 //  Copyright © 2017 Make School. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import FirebaseDatabase.FIRDataSnapshot
 
 class Post {
-    let key: String
+    var key: String?
     let imageURL: String
+    let imageHeight: CGFloat
+    let creationDate: Date
     
     init?(snapshot: FIRDataSnapshot) {
         guard let dict = snapshot.value as? [String : Any],
-            let imageURL = dict["image_url"] as? String else { return nil }
+            let imageURL = dict["image_url"] as? String,
+            let imageHeight = dict["image_height"] as? CGFloat,
+            let createdAtTimeInterval = dict["created_at"] as? TimeInterval else { return nil }
         
         self.key = snapshot.key
         self.imageURL = imageURL
+        self.imageHeight = imageHeight
+        self.creationDate = Date(timeIntervalSince1970: createdAtTimeInterval)
+    }
+
+    init(imageURL: String, imageHeight: CGFloat) {
+        self.imageURL = imageURL
+        self.imageHeight = imageHeight
+        self.creationDate = Date()
+    }
+    
+    func toDict() -> [String : Any] {
+        let createdAtTimeInterval = creationDate.timeIntervalSince1970
+        
+        return ["image_url" : imageURL,
+                "image_height" : imageHeight,
+                "created_at" : createdAtTimeInterval]
     }
 }

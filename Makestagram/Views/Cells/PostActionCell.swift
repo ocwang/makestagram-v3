@@ -17,6 +17,7 @@ class PostActionCell: UITableViewCell {
     // MARK: - Subviews
     
     @IBOutlet weak var timeAgoLabel: UILabel!
+    @IBOutlet weak var bottomBorder: UIView!
     
     // MARK: - Cell Lifecycle
     

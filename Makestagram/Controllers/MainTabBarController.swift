@@ -7,21 +7,27 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseStorage
 
 class MainTabBarController: UITabBarController {
 
     // MARK: - Properties
     
-    let photoHelper = MGPhotoHelper()
+    var photoHelper: MGPhotoHelper?
     
     // MARK: - VC Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        photoHelper.delegate = self
+        if let user = FIRAuth.auth()?.currentUser {
+            let storageRef = FIRStorage.storage().reference()
+            photoHelper = MGPhotoHelper(currentUser: user, storageRef: storageRef)
+            photoHelper?.delegate = self
+        }
+
         delegate = self
-        
         tabBar.unselectedItemTintColor = .black
     }
 }
@@ -31,7 +37,7 @@ class MainTabBarController: UITabBarController {
 extension MainTabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController.tabBarItem.tag == 1 {
-            photoHelper.presentActionSheet(from: self)
+            photoHelper?.presentActionSheet(from: self)
             return false
         }
         

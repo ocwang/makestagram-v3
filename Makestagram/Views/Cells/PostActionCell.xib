@@ -15,7 +15,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="46"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="45.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="31 MINUTES AGO" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Exp-wz-eCV">
@@ -57,19 +57,31 @@
                             <constraint firstItem="Guq-lR-mJ1" firstAttribute="width" secondItem="qfC-ZQ-Q1O" secondAttribute="width" id="ko0-Kd-pI7"/>
                         </constraints>
                     </stackView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="S9T-WN-W4X">
+                        <rect key="frame" x="15" y="45" width="345" height="0.5"/>
+                        <color key="backgroundColor" red="0.85882352941176465" green="0.85882352941176465" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="0.5" id="An2-UL-mdl"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstItem="CBv-Bx-E0r" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="2" id="6wt-fr-dXd"/>
+                    <constraint firstAttribute="bottom" secondItem="S9T-WN-W4X" secondAttribute="bottom" id="7Ls-9K-1eh"/>
                     <constraint firstAttribute="bottom" secondItem="Exp-wz-eCV" secondAttribute="bottom" id="IF6-Un-ypz"/>
+                    <constraint firstItem="S9T-WN-W4X" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="K59-eL-7wh"/>
                     <constraint firstItem="Exp-wz-eCV" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="X5U-My-Mls"/>
+                    <constraint firstAttribute="trailing" secondItem="S9T-WN-W4X" secondAttribute="trailing" constant="15" id="abq-D8-Vlc"/>
                     <constraint firstAttribute="bottom" secondItem="CBv-Bx-E0r" secondAttribute="bottom" id="jWf-Bz-eZ9"/>
                     <constraint firstItem="CBv-Bx-E0r" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="xUp-z9-lxL"/>
                     <constraint firstAttribute="trailing" secondItem="Exp-wz-eCV" secondAttribute="trailing" constant="15" id="zLQ-nq-s5w"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="bottomBorder" destination="S9T-WN-W4X" id="4Wh-I9-AvT"/>
                 <outlet property="timeAgoLabel" destination="Exp-wz-eCV" id="hvV-RN-cml"/>
             </connections>
+            <point key="canvasLocation" x="33.5" y="54"/>
         </tableViewCell>
     </objects>
     <resources>
