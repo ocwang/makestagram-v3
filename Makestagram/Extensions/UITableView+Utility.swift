@@ -25,7 +25,7 @@ extension CellIdentifiable where Self: UITableViewCell {
 extension UITableViewCell: CellIdentifiable { }
 
 extension UITableView {
-    func registerNib(for cellClass: Swift.AnyClass) {
+    func registerNib(for cellClass: AnyClass) {
         let className = String(describing: cellClass)
         let nib = UINib(nibName: className, bundle: .main)
         

@@ -30,6 +30,10 @@ class User: NSObject, NSCoding {
     let uid: String
     let username: String
     
+    // TODO: verify putting this here is a good decision
+    // find a better way?
+    var isFollowed = false
+    
     // MARK: - Init
     
     init?(snapshot: FIRDataSnapshot) {

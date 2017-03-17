@@ -28,15 +28,21 @@ class CreateUsernameViewController: UIViewController {
     @IBAction func nextButtonTapped(_ sender: UIButton) {
          // check if user exists, otherwise set username
         
-        if let uid = FIRAuth.auth()?.currentUser?.uid, let username = usernameTextField.text, !username.isEmpty {
-            let ref = FIRDatabase.database().reference()
-            ref.child("users").child(uid).setValue(["username": username])
+        guard let uid = FIRAuth.auth()?.currentUser?.uid,
+            let username = usernameTextField.text,
+            !username.isEmpty else { return }
+        
+        UserService.createUser(username, forUID: uid, completion: { [unowned self] (error) in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
             
             let user = User(uid: uid, username: username)
             User.setCurrentUser(user)
             
             let storyboard = UIStoryboard(type: .main)
-            view.window?.setRootViewControllerToInitialViewController(of: storyboard)
-        }
+            self.view.window?.setRootViewControllerToInitialViewController(of: storyboard)
+        })
     }
 }

@@ -19,10 +19,7 @@ class PostService {
         let newPostKey = newPostRef.key
         
         let postDict = post.toDict()
-        let updatedUserData: [String : Any] = ["users/\(uid)/posts/\(newPostKey)" : true,
-                                               "posts/\(newPostKey)" : postDict]
+        let updatedUserData: [String : Any] = ["posts/\(uid)/\(newPostKey)" : postDict]
         dbRef.updateChildValues(updatedUserData)
     }
-    
-    
 }

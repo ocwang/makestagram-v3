@@ -31,7 +31,9 @@ class HomeViewController: UIViewController {
         
         ref = FIRDatabase.database().reference()
         
-        _ = ref.child("posts").observe(FIRDataEventType.value, with: { [unowned self] (snapshot) in
+        let uid = User.current!.uid
+        
+        _ = ref.child("posts").child(uid).observe(FIRDataEventType.value, with: { [unowned self] (snapshot) in
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
                 self.posts = snapshots.flatMap(Post.init)
                 self.tableView.reloadData()

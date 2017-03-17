@@ -21,8 +21,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
+}
+
+extension AppDelegate {
+    fileprivate func configureThirdPartyLibraries() {
+        FIRApp.configure()
+    }
     
-    func setInitialRootViewController() {
+    fileprivate func setInitialRootViewController() {
         let defaults = UserDefaults.standard
         let storyboard: UIStoryboard
         
@@ -38,11 +44,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         storyboard = UIStoryboard(type: .main)
         window?.setRootViewControllerToInitialViewController(of: storyboard)
-    }
-}
-
-extension AppDelegate {
-    fileprivate func configureThirdPartyLibraries() {
-        FIRApp.configure()
     }
 }
