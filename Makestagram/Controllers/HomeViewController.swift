@@ -33,12 +33,10 @@ class HomeViewController: UIViewController {
         
         let uid = User.current!.uid
         
-        _ = ref.child("posts").child(uid).observe(FIRDataEventType.value, with: { [unowned self] (snapshot) in
-            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
-                self.posts = snapshots.flatMap(Post.init)
-                self.tableView.reloadData()
-            }
-        })
+        PostService.allPosts(forUID: uid) { (posts) in
+            self.posts = posts
+            self.tableView.reloadData()
+        }
         
         tableView.registerNib(for: PostHeaderCell.self)
         tableView.registerNib(for: PostImageCell.self)
@@ -61,6 +59,7 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let post = posts[indexPath.section]
         
+        // TODO: clean this up
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()
@@ -77,7 +76,9 @@ extension HomeViewController: UITableViewDataSource {
             
         case 2:
             let cell: PostActionCell = tableView.dequeueReusableCell()
+            cell.delegate = self
             cell.timeAgoLabel.text = timestampFormatter.string(from: post.creationDate)
+            cell.likeButton.isSelected = post.isLiked
             
             return cell
             
@@ -97,6 +98,35 @@ extension HomeViewController: UITableViewDelegate {
             
         case 2: return PostActionCell.height
         default: fatalError()
+        }
+    }
+}
+
+extension HomeViewController: PostActionCellDelegate {
+    func didTapLikeButton(_ likeButton: UIButton, on cell: PostActionCell) {
+        
+        // TODO: move current user somewhere else
+        guard let indexPath = tableView.indexPath(for: cell),
+            let uid = User.current?.uid
+            else { return }
+        
+        likeButton.isUserInteractionEnabled = false
+        
+        let post = posts[indexPath.section]
+        PostService.likePost(post, forUID: uid) { (error, isLiked, likesCount) in
+            defer {
+                likeButton.isUserInteractionEnabled = true
+            }
+            
+            guard error == nil else {
+                assertionFailure("Error liking post.")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                post.isLiked = isLiked
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+            }
         }
     }
 }

@@ -8,16 +8,25 @@
 
 import UIKit
 
+protocol PostActionCellDelegate: class {
+    func didTapLikeButton(_ likeButton: UIButton, on cell: PostActionCell)
+}
+
 class PostActionCell: UITableViewCell {
 
     // MARK: - Class Vars
     
     static let height: CGFloat = 46
+
+    // MARK: - Properties
+    
+    weak var delegate: PostActionCellDelegate?
     
     // MARK: - Subviews
     
     @IBOutlet weak var timeAgoLabel: UILabel!
     @IBOutlet weak var bottomBorder: UIView!
+    @IBOutlet weak var likeButton: UIButton!
     
     // MARK: - Cell Lifecycle
     
@@ -28,7 +37,7 @@ class PostActionCell: UITableViewCell {
     // MARK: - IBActions
     
     @IBAction func likeButtonTapped(_ sender: UIButton) {
-        print("like button tapped")
+        delegate?.didTapLikeButton(sender, on: self)
     }
     
     @IBAction func commentButtonTapped(_ sender: UIButton) {

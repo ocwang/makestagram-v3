@@ -18,8 +18,131 @@ class PostService {
         let newPostRef = dbRef.child("posts").childByAutoId()
         let newPostKey = newPostRef.key
         
-        let postDict = post.toDict()
+        var postDict = post.toDict()
+        postDict["likes_count"] = 0
+        
         let updatedUserData: [String : Any] = ["posts/\(uid)/\(newPostKey)" : postDict]
         dbRef.updateChildValues(updatedUserData)
+    }
+    
+/*
+ 
+     _ = dbRef.child("users").observeSingleEvent(of: .value, with: { (snapshot) in
+     guard let allUsers = snapshot.children.allObjects as? [FIRDataSnapshot]
+     else { return completion([]) }
+     
+     var users = [User]()
+     let dispatchGroup = DispatchGroup()
+     
+     for user in allUsers {
+     guard let user = User(snapshot: user),
+     user.uid != currentUser.uid
+     else { continue }
+     
+     dispatchGroup.enter()
+     
+     isUser(user.uid, beingFollowedbyOtherUser: currentUser.uid, completion: { (isFollowed) in
+     user.isFollowed = isFollowed
+     users.append(user)
+     
+     dispatchGroup.leave()
+     })
+     }
+     
+     dispatchGroup.notify(queue: DispatchQueue.main, execute: {
+     completion(users)
+     })
+     })
+ 
+ */
+    
+    
+    
+    static func allPosts(forUID uid: String, completion: @escaping ([Post]) -> Void) {
+        let dbRef = FIRDatabase.database().reference()
+        
+        _ = dbRef.child("posts").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]
+                else { return completion([]) }
+            
+            let dispatchGroup = DispatchGroup()
+            
+            var posts = [Post]()
+            for postSnap in snapshot {
+                guard let post = Post(snapshot: postSnap),
+                    let postKey = post.key
+                    else { continue }
+                
+                dispatchGroup.enter()
+                
+                isPost(forKey: postKey, likedByUserforUID: uid, completion: { (isLiked) in
+                    post.isLiked = isLiked
+                    posts.append(post)
+                    
+                    dispatchGroup.leave()
+                })
+            }
+            
+            dispatchGroup.notify(queue: .main, execute: { 
+                completion(posts)
+            })
+        })
+    }
+    
+    static func isPost(forKey postKey: String, likedByUserforUID uid: String, completion: @escaping (Bool) -> Void) {
+        let dbRef = FIRDatabase.database().reference()
+        
+        dbRef.child("postLikes/\(postKey)").queryEqual(toValue: nil, childKey: uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let _ = snapshot.value as? [String : Bool] else {
+                return completion(false)
+            }
+            
+            completion(true)
+        })
+    }
+    
+    static func likePost(_ post: Post, forUID uid: String, completion: @escaping (Error?, Bool, Int?) -> Void) {
+        // TODO: Anyway to clean this up and move this outside of the service?
+        guard let postKey = post.key else {
+            assertionFailure("Error: post doesn't have a key.")
+            return completion(nil, post.isLiked, nil)
+        }
+        
+        let dbRef = FIRDatabase.database().reference()
+        
+        let newLikesRef = dbRef.child("postLikes").child(postKey).child(uid)
+        
+        // TODO: change this to be explicit, no logic should be in service classes, move logic to controller
+        let likeValue: Bool? = post.isLiked ? nil : true
+        
+        newLikesRef.setValue(likeValue) { (error, ref) in
+            guard error == nil else {
+                return completion(error, post.isLiked, nil)
+            }
+
+            // update likes count
+            
+            // TODO: change uid to post user uid... using current user uid temporarily
+            
+            let likesCountRef = dbRef.child("posts").child(uid).child(postKey).child("likes_count")
+            likesCountRef.runTransactionBlock({ (likesData) -> FIRTransactionResult in
+                let likesCount = likesData.value as? Int ?? 0
+                likesData.value = post.isLiked ? likesCount - 1 : likesCount + 1
+                
+                return FIRTransactionResult.success(withValue: likesData)
+            }, andCompletionBlock: { (error, committed, snapshot) in
+                guard error == nil else {
+                    assertionFailure("Error updating likes count for post.")
+                    return completion(error, !post.isLiked, nil)
+                }
+                
+                guard let likesCount = snapshot?.value as? Int else {
+                    assertionFailure("Error reading updated likes count.")
+                    return completion(nil, !post.isLiked, nil)
+                }
+                
+                completion(nil, !post.isLiked, likesCount)
+            })
+        }
     }
 }

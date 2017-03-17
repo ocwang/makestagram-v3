@@ -9,7 +9,7 @@
 import Foundation
 import FirebaseDatabase.FIRDataSnapshot
 
-class User: NSObject, NSCoding {
+class User: NSObject {
     
     // MARK: - Singleton
     
@@ -62,11 +62,11 @@ class User: NSObject, NSCoding {
         self.uid = uid
         self.username = username
     }
-    
+}
+
+extension User: NSCoding {
     func encode(with aCoder: NSCoder) {
         aCoder.encode(uid, forKey: Constants.UserDefaults.uid)
         aCoder.encode(username, forKey: Constants.UserDefaults.username)
     }
-    
-    
 }

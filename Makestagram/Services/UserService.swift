@@ -55,32 +55,36 @@ class UserService {
         
         _ = dbRef.child("users").observeSingleEvent(of: .value, with: { (snapshot) in
             guard let allUsers = snapshot.children.allObjects as? [FIRDataSnapshot]
-                else { return }
+                else { return completion([]) }
             
-            var counter = 0
             var users = [User]()
+            let dispatchGroup = DispatchGroup()
             
             for user in allUsers {
                 guard let user = User(snapshot: user),
                     user.uid != currentUser.uid
                     else { continue }
                 
+                dispatchGroup.enter()
+                
                 isUser(user.uid, beingFollowedbyOtherUser: currentUser.uid, completion: { (isFollowed) in
                     user.isFollowed = isFollowed
                     users.append(user)
-                    
-                    counter += 1
-                    if counter == (allUsers.count - 1) {
-                        completion(users)
-                    }
+
+                    dispatchGroup.leave()
                 })
             }
+            
+            dispatchGroup.notify(queue: DispatchQueue.main, execute: {
+                completion(users)
+            })
         })
     }
     
     static func followUser(_ userToFollow: User, currentUser: User, completion: @escaping (Bool) -> Void) {
         let dbRef = FIRDatabase.database().reference()
 
+        // TODO: change this to be explicit, move logic to controller
         let followValue: Bool? = userToFollow.isFollowed ? nil : true
         let followData: [String : Any?] = ["followers/\(userToFollow.uid)/\(currentUser.uid)" : followValue,
                                            "following/\(currentUser.uid)/\(userToFollow.uid)" : followValue]

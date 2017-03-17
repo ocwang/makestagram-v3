@@ -33,6 +33,7 @@
                                     <constraint firstAttribute="width" constant="44" id="zEc-cs-oHV"/>
                                 </constraints>
                                 <state key="normal" image="ic_heart_black_unfilled"/>
+                                <state key="selected" image="ic_heart_red_filled"/>
                                 <connections>
                                     <action selector="likeButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="VJz-Ev-6E0"/>
                                 </connections>
@@ -79,6 +80,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="bottomBorder" destination="S9T-WN-W4X" id="4Wh-I9-AvT"/>
+                <outlet property="likeButton" destination="qfC-ZQ-Q1O" id="mzr-u3-uK8"/>
                 <outlet property="timeAgoLabel" destination="Exp-wz-eCV" id="hvV-RN-cml"/>
             </connections>
             <point key="canvasLocation" x="33.5" y="54"/>
@@ -87,6 +89,7 @@
     <resources>
         <image name="ic_comments_black" width="24" height="24"/>
         <image name="ic_heart_black_unfilled" width="24" height="24"/>
+        <image name="ic_heart_red_filled" width="24" height="24"/>
         <image name="ic_paperplane_black" width="24" height="24"/>
     </resources>
 </document>

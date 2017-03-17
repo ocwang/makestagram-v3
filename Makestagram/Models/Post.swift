@@ -15,6 +15,10 @@ class Post {
     let imageHeight: CGFloat
     let creationDate: Date
     
+    // TODO: verify putting this here is a good decision
+    // find a better way?
+    var isLiked = false
+    
     init?(snapshot: FIRDataSnapshot) {
         guard let dict = snapshot.value as? [String : Any],
             let imageURL = dict["image_url"] as? String,

@@ -38,4 +38,8 @@ extension UIColor {
     static var mg_offBlack: UIColor {
         return UIColor(hex: 0x262626)
     }
+    
+    static var mg_red: UIColor {
+        return UIColor(hex: 0xE7554B)
+    }
 }
