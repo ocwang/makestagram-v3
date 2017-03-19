@@ -55,7 +55,10 @@ class PostService {
                 
                 dispatchGroup.enter()
                 
-                isPost(forKey: postKey, likedByUserforUID: uid, completion: { (isLiked) in
+                // TODO: better way to do this
+                let currentUID = User.current!.uid
+                
+                isPost(forKey: postKey, likedByUserforUID: currentUID, completion: { (isLiked) in
                     post.isLiked = isLiked
                     posts.append(post)
                     

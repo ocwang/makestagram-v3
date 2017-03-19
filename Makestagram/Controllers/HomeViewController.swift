@@ -59,7 +59,8 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let post = posts[indexPath.section]
         
-        // TODO: clean this up
+        // TODO: consider cleaning this up
+        // TODO: try moving this to an enum so it can be reused for home and profile
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()
@@ -92,11 +93,13 @@ extension HomeViewController: UITableViewDelegate {
         
         switch indexPath.row {
         case 0: return PostHeaderCell.height
+            
         case 1:
             let post = posts[indexPath.section]
             return post.imageHeight
             
         case 2: return PostActionCell.height
+            
         default: fatalError()
         }
     }
