@@ -29,6 +29,10 @@ class User: NSObject {
     
     let uid: String
     let username: String
+    let followersCount: Int
+    let followingCount: Int
+    let postsCount: Int
+    
     
     // TODO: verify putting this here is a good decision
     // find a better way?
@@ -38,11 +42,17 @@ class User: NSObject {
     
     init?(snapshot: FIRDataSnapshot) {
         guard let dict = snapshot.value as? [String : Any],
-            let username = dict["username"] as? String
+            let username = dict["username"] as? String,
+            let followersCount = dict["followers_count"] as? Int,
+            let followingCount = dict["following_count"] as? Int,
+            let postsCount = dict["posts_count"] as? Int
             else { return nil }
         
         self.uid = snapshot.key
         self.username = username
+        self.followersCount = followersCount
+        self.followingCount = followingCount
+        self.postsCount = postsCount
         
         super.init()
     }
@@ -50,6 +60,9 @@ class User: NSObject {
     init(uid: String, username: String) {
         self.uid = uid
         self.username = username
+        self.followersCount = 0
+        self.followingCount = 0
+        self.postsCount = 0
         
         super.init()
     }
@@ -61,6 +74,9 @@ class User: NSObject {
         
         self.uid = uid
         self.username = username
+        self.followersCount = 0
+        self.followingCount = 0
+        self.postsCount = 0
     }
 }
 
@@ -68,5 +84,7 @@ extension User: NSCoding {
     func encode(with aCoder: NSCoder) {
         aCoder.encode(uid, forKey: Constants.UserDefaults.uid)
         aCoder.encode(username, forKey: Constants.UserDefaults.username)
+        
+        // TODO: encode other info
     }
 }

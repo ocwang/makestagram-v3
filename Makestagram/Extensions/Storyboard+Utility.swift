@@ -8,6 +8,20 @@
 
 import UIKit
 
+// TODO: turn this into ClassStringConvertible?
+
+protocol StoryboardIdentifiable {
+    static var storyboardIdentifier: String { get }
+}
+
+extension StoryboardIdentifiable where Self: UIViewController {
+    static var storyboardIdentifier: String {
+        return String(describing: self)
+    }
+}
+
+extension UIViewController: StoryboardIdentifiable { }
+
 extension UIStoryboard {
 
     // https://medium.com/swift-programming/uistoryboard-safer-with-enums-protocol-extensions-and-generics-7aad3883b44d#.lzt6l65vr
@@ -15,6 +29,7 @@ extension UIStoryboard {
     enum MGType: String {
         case main
         case login
+        case profile
         
         var filename: String {
             return rawValue.capitalized
@@ -23,5 +38,13 @@ extension UIStoryboard {
     
     convenience init(type: MGType, bundle: Bundle? = nil) {
         self.init(name: type.filename, bundle: bundle)
+    }
+    
+    func instantiateViewController<T: UIViewController>() -> T where T: StoryboardIdentifiable {
+        guard let viewController = self.instantiateViewController(withIdentifier: T.storyboardIdentifier) as? T else {
+            fatalError("Couldn't instantiate view controller with identifier \(T.storyboardIdentifier) ")
+        }
+        
+        return viewController
     }
 }

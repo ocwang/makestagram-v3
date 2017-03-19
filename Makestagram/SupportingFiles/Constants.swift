@@ -11,6 +11,7 @@ import Foundation
 struct Constants {
     struct Segue {
         static let createUsername = "createUsername"
+        static let findFriends = "findFriends"
     }
     
     struct UserDefaults {

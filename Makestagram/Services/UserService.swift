@@ -16,7 +16,8 @@ class UserService {
         
         let userAttrs: [String : Any] = ["username": username,
                                          "followers_count": 0,
-                                         "following_count" : 0]
+                                         "following_count" : 0,
+                                         "posts_count" : 0]
         
         dbRef.child("users").child(uid).setValue(userAttrs) { (error, ref) in
             completion?(error)
@@ -75,7 +76,7 @@ class UserService {
                 })
             }
             
-            dispatchGroup.notify(queue: DispatchQueue.main, execute: {
+            dispatchGroup.notify(queue: .main, execute: {
                 completion(users)
             })
         })
@@ -90,36 +91,53 @@ class UserService {
                                            "following/\(currentUser.uid)/\(userToFollow.uid)" : followValue]
 
         dbRef.updateChildValues(followData) { (error, ref) in
+            guard error == nil else {
+                return completion(false)
+            }
+            
+            let dispatchGroup = DispatchGroup()
             
             // update following
             
+            dispatchGroup.enter()
             let followingCountRef = dbRef.child("users").child(currentUser.uid).child("following_count")
             followingCountRef.runTransactionBlock({ (followingData) -> FIRTransactionResult in
+                
+                
                 let followingCount = followingData.value as? Int ?? 0
                 followingData.value = userToFollow.isFollowed ? followingCount - 1 : followingCount + 1
                 
                 return FIRTransactionResult.success(withValue: followingData)
             }, andCompletionBlock: { (error, committed, snapshot) in
                 if let error = error {
-                    print(error.localizedDescription)
+                    assertionFailure(error.localizedDescription)
                 }
+                
+                dispatchGroup.leave()
             })
             
             // update followers
             
+            dispatchGroup.enter()
             let followersCountRef = dbRef.child("users").child(userToFollow.uid).child("followers_count")
             followersCountRef.runTransactionBlock({ (followersData) -> FIRTransactionResult in
+                
+                
                 let followersCount = followersData.value as? Int ?? 0
                 followersData.value = userToFollow.isFollowed ? followersCount - 1 : followersCount + 1
                 
                 return FIRTransactionResult.success(withValue: followersData)
             }, andCompletionBlock: { (error, committed, snapshot) in
                 if let error = error {
-                    print(error.localizedDescription)
+                    assertionFailure(error.localizedDescription)
                 }
+                
+                dispatchGroup.leave()
             })
             
-            completion(error == nil)
+            dispatchGroup.notify(queue: .main, execute: {
+                completion(true)
+            })
         }
     }
 }

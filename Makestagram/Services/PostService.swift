@@ -23,40 +23,20 @@ class PostService {
         
         let updatedUserData: [String : Any] = ["posts/\(uid)/\(newPostKey)" : postDict]
         dbRef.updateChildValues(updatedUserData)
+        
+        dbRef.updateChildValues(updatedUserData) { (error, ref) in
+            
+            // update user's post count
+            
+            let postsCountRef = dbRef.child("users").child(uid).child("posts_count")
+            postsCountRef.runTransactionBlock({ (postsCountData) -> FIRTransactionResult in
+                let postsCount = postsCountData.value as? Int ?? 0
+                postsCountData.value = postsCount + 1
+                
+                return FIRTransactionResult.success(withValue: postsCountData)
+            })
+        }
     }
-    
-/*
- 
-     _ = dbRef.child("users").observeSingleEvent(of: .value, with: { (snapshot) in
-     guard let allUsers = snapshot.children.allObjects as? [FIRDataSnapshot]
-     else { return completion([]) }
-     
-     var users = [User]()
-     let dispatchGroup = DispatchGroup()
-     
-     for user in allUsers {
-     guard let user = User(snapshot: user),
-     user.uid != currentUser.uid
-     else { continue }
-     
-     dispatchGroup.enter()
-     
-     isUser(user.uid, beingFollowedbyOtherUser: currentUser.uid, completion: { (isFollowed) in
-     user.isFollowed = isFollowed
-     users.append(user)
-     
-     dispatchGroup.leave()
-     })
-     }
-     
-     dispatchGroup.notify(queue: DispatchQueue.main, execute: {
-     completion(users)
-     })
-     })
- 
- */
-    
-    
     
     static func allPosts(forUID uid: String, completion: @escaping ([Post]) -> Void) {
         let dbRef = FIRDatabase.database().reference()

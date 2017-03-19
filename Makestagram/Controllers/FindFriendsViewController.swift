@@ -68,7 +68,14 @@ extension FindFriendsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         
-        // TODO: segue to user profile
+        
+        // TODO: abstract this out
+        let storyboard = UIStoryboard(type: .profile)
+        let selectedUser = users[indexPath.row]
+        let profileViewController: ProfileViewController = storyboard.instantiateViewController()
+        profileViewController.user = selectedUser
+        
+        navigationController?.pushViewController(profileViewController, animated: true)
     }
 }
 
@@ -80,6 +87,12 @@ extension FindFriendsViewController: FindFriendCellDelegate {
         let userToFollow = users[indexPath.row]
         
         UserService.followUser(userToFollow, currentUser: currentUser) { [unowned self] (success) in
+            // TODO: handle errors more elegantly???
+            guard success else {
+                followButton.isUserInteractionEnabled = true
+                return
+            }
+            
             UserService.showUser(userToFollow, currentUser: self.currentUser, completion: { [unowned self] (updatedUser) in
                 defer {
                     followButton.isUserInteractionEnabled = true
@@ -90,10 +103,9 @@ extension FindFriendsViewController: FindFriendCellDelegate {
                     return
                 }
 
-                DispatchQueue.main.async {
-                    self.users[indexPath.row] = updatedUser
-                    self.tableView.reloadRows(at: [indexPath], with: .none)
-                }
+                // completion already happens on the main thread
+                self.users[indexPath.row] = updatedUser
+                self.tableView.reloadRows(at: [indexPath], with: .none)
             })
         }
     }
