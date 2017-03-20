@@ -30,13 +30,12 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         ref = FIRDatabase.database().reference()
-        
         let uid = User.current!.uid
         
-        UserService.timeline(forUID: uid) { (posts) in
-            self.posts = posts
-            self.tableView.reloadData()
-        }
+        // TODO: temp way of doing this.. auto refresh shouldn't be handled this
+        ref.child("timeline").child(uid).observe(.value, with: { (snapshot) in
+            self.reloadData()
+        })
         
         tableView.registerNib(for: PostHeaderCell.self)
         tableView.registerNib(for: PostImageCell.self)
@@ -44,6 +43,16 @@ class HomeViewController: UIViewController {
         // remove separators for empty cells
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
+    }
+    
+    func reloadData() {
+        
+
+        
+        UserService.myTimeline { [unowned self] (posts) in
+            self.posts = posts
+            self.tableView.reloadData()
+        }
     }
 }
 

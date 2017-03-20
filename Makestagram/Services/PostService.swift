@@ -15,8 +15,8 @@ class PostService {
     static func createPost(_ post: Post) {
         guard let currentUser = User.current else { return }
         
-        let dbRef = FIRDatabase.database().reference()
-        let newPostRef = dbRef.child("posts").childByAutoId()
+        let dbRef = MGDBRef.ref(for: .default)
+        let newPostRef = MGDBRef.ref(for: .newPost)
         let newPostKey = newPostRef.key
         
         UserService.allFollowers(forUID: currentUser.uid) { (followerKeys) in
@@ -55,9 +55,9 @@ class PostService {
     }
     
     static func showPostForKey(_ postKey: String, posterUID: String, completion: @escaping (Post?) -> Void) {
-        let dbRef = FIRDatabase.database().reference()
+        let ref = MGDBRef.ref(for: .showPost(uid: posterUID, postKey: postKey))
         
-        _ = dbRef.child("posts").child(posterUID).child(postKey).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let post = Post(snapshot: snapshot),
                 let postKey = post.key else {
                     return completion(nil)
@@ -76,9 +76,9 @@ class PostService {
     }
     
     static func allPosts(forUID uid: String, completion: @escaping ([Post]) -> Void) {
-        let dbRef = FIRDatabase.database().reference()
+        let ref = MGDBRef.ref(for: .posts(uid: uid))
         
-        _ = dbRef.child("posts").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]
                 else { return completion([]) }
             
@@ -110,9 +110,9 @@ class PostService {
     }
     
     static func isPost(forKey postKey: String, likedByUserforUID uid: String, completion: @escaping (Bool) -> Void) {
-        let dbRef = FIRDatabase.database().reference()
+        let ref = MGDBRef.ref(for: .isLiked(postKey: postKey))
         
-        dbRef.child("postLikes/\(postKey)").queryEqual(toValue: nil, childKey: uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.queryEqual(toValue: nil, childKey: uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let _ = snapshot.value as? [String : Bool] else {
                 return completion(false)
             }
@@ -131,10 +131,8 @@ class PostService {
                 return completion(nil, post.isLiked, nil)
         }
         
-        let dbRef = FIRDatabase.database().reference()
-        
-        let newLikesRef = dbRef.child("postLikes").child(postKey).child(currentUID)
-        
+        let newLikesRef = MGDBRef.ref(for: .likes(postKey: postKey, currentUID: currentUID))
+
         // TODO: change this to be explicit, no logic should be in service classes, move logic to controller
         let likeValue: Bool? = post.isLiked ? nil : true
         
@@ -145,7 +143,7 @@ class PostService {
 
             // update likes count
             
-            let likesCountRef = dbRef.child("posts").child(poster.uid).child(postKey).child("likes_count")
+            let likesCountRef = MGDBRef.ref(for: .likesCount(posterUID: poster.uid, postKey: postKey))
             likesCountRef.runTransactionBlock({ (likesData) -> FIRTransactionResult in
                 let likesCount = likesData.value as? Int ?? 0
                 likesData.value = post.isLiked ? likesCount - 1 : likesCount + 1
