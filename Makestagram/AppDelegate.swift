@@ -14,6 +14,8 @@ import FirebaseAuth
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    
+    // MARK: - App Lifecycle
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         configureThirdPartyLibraries()
@@ -40,7 +42,7 @@ extension AppDelegate {
                 return
         }
         
-        User.current = user
+        User.setCurrentUser(user, archiveData: false)
         
         storyboard = UIStoryboard(type: .main)
         window?.setRootViewControllerToInitialViewController(of: storyboard)

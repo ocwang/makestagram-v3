@@ -43,6 +43,23 @@ class UserService {
         })
     }
     
+    static func observeUser(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
+        let userRef = MGDBRef.ref(for: .showUser(uid: user.uid))
+        
+        userRef.observe(.value, with: { (snapshot) in
+            guard let user = User(snapshot: snapshot)
+                else { return completion(nil) }
+            
+            guard user.uid != currentUser.uid
+                else { return completion(user) }
+            
+            FollowService.isUser(user.uid, beingFollowedbyOtherUser: currentUser.uid, completion: { (isFollowed) in
+                user.isFollowed = isFollowed
+                completion(user)
+            })
+        })
+    }
+    
     static func showUser(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
         let ref = MGDBRef.ref(for: .showUser(uid: user.uid))
         
@@ -72,9 +89,7 @@ class UserService {
     }
     
     static func myTimeline(completion: @escaping ([Post]) -> Void) {
-        guard let currentUID = User.current?.uid else { return completion([]) }
-        
-        let ref = MGDBRef.ref(for: .timeline(uid: currentUID))
+        let ref = MGDBRef.ref(for: .timeline(uid: User.current.uid))
         
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]

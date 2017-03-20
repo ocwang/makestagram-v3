@@ -12,17 +12,11 @@ import FirebaseDatabase
 
 class ProfileViewController: UIViewController {
     
-    enum Section: Int {
-        case header
-        case posts
-    }
+    // MARK: - Properties
     
-    var ref: FIRDatabaseReference!
+    var user: User?
     
     var posts = [Post]()
-    
-    @IBOutlet weak var tableView: UITableView!
-    var user: User!
     
     let timestampFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -31,27 +25,48 @@ class ProfileViewController: UIViewController {
         return dateFormatter
     }()
     
+    // MARK: - Subviews
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    // MARK: - VC Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        user = user ?? User.current
+
+        setupNavBar()
+        setupTableView()
+        loadData()
+    }
+    
+    // MARK: - Initial Setup
+    
+    func setupNavBar() {
+        navigationItem.title = user?.username ?? ""
         
-        if user == nil {
-            user = User.current
-        }
+        guard let uid = user?.uid,
+              uid == User.current.uid,
+              let vc = navigationController?.childViewControllers.first as? ProfileViewController,
+              self == vc
+              else { return }
         
-        if let vc = navigationController?.childViewControllers.first as? ProfileViewController, self == vc {
-            let leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_nav_find_friends_black"), style: .plain, target: self, action: #selector(findFriendsBarButtonItemTapped))
-            navigationItem.setLeftBarButton(leftBarButtonItem, animated: false)
-            
-            
-            // logic to set settings bar button item as well
-        }
-        navigationItem.title = user.username
+        let findFriendsBarButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_nav_find_friends_black"),
+                                                   style: .plain,
+                                                   target: self,
+                                                   action: #selector(findFriendsBarButtonTapped(_:)))
         
-        PostService.allPosts(forUID: user.uid) { (posts) in
-            self.posts = posts
-            self.tableView.reloadData()
-        }
+        let settingsBarButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_nav_settings_black"),
+                                                style: .plain,
+                                                target: self,
+                                                action: #selector(settingsBarButtonTapped(_:)))
         
+        navigationItem.setLeftBarButton(findFriendsBarButton, animated: false)
+        navigationItem.setRightBarButton(settingsBarButton, animated: false)
+    }
+    
+    func setupTableView() {
         tableView.registerNib(for: PostHeaderCell.self)
         tableView.registerNib(for: PostImageCell.self)
         tableView.registerNib(for: PostActionCell.self)
@@ -61,10 +76,44 @@ class ProfileViewController: UIViewController {
         tableView.separatorStyle = .none
     }
     
-    func findFriendsBarButtonItemTapped(_ sender: UIBarButtonItem) {
-        performSegue(withIdentifier: Constants.Segue.findFriends, sender: self)
+    // TODO: reconsider function name?
+    func loadData() {
+        guard let user = user
+            else { return }
+        
+        UserService.observeUser(user, currentUser: User.current) { (user) in
+            if let user = user {
+                self.user = user
+                
+                DispatchQueue.main.async {
+                    self.navigationItem.title = user.username
+                }
+                
+                let section = IndexSet(integer: 0)
+                self.tableView.reloadSections(section, with: .none)
+            }
+        }
+        
+        PostService.allPosts(forUID: user.uid) { (posts) in
+            self.posts = posts
+            self.tableView.reloadData()
+        }
     }
 }
+
+// MARK: - Nav Bar Button Actions
+
+extension ProfileViewController {
+    func findFriendsBarButtonTapped(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: Constants.Segue.findFriends, sender: self)
+    }
+    
+    func settingsBarButtonTapped(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: Constants.Segue.settings, sender: self)
+    }
+}
+
+// MARK: - TableViewDataSource
 
 extension ProfileViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -79,9 +128,9 @@ extension ProfileViewController: UITableViewDataSource {
         guard indexPath.section != 0 else {
             let cell: ProfileHeaderCell = tableView.dequeueReusableCell()
             
-            cell.postsCountLabel.text = String(user.postsCount ?? 0)
-            cell.followersCountLabel.text = String(user.followersCount ?? 0)
-            cell.followingCountLabel.text = String(user.followingCount ?? 0)
+            cell.postsCountLabel.text = String(user?.postsCount ?? 0)
+            cell.followersCountLabel.text = String(user?.followersCount ?? 0)
+            cell.followingCountLabel.text = String(user?.followingCount ?? 0)
             
             return cell
         }
@@ -93,7 +142,7 @@ extension ProfileViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()
-            cell.usernameLabel.text = user.username
+            cell.usernameLabel.text = user?.username
             
             return cell
             

@@ -13,16 +13,26 @@ class User: NSObject {
     
     // MARK: - Singleton
     
-    static var current: User?
+    private static var _current: User?
+    
+    static var current: User {
+        guard let currentUser = _current else {
+            fatalError("Error: current user doesn't exist")
+        }
+        
+        return currentUser
+    }
     
     // MARK: - Class Methods
     
-    class func setCurrentUser(_ user: User) {
-        // save current user object in user defaults
-        let data = NSKeyedArchiver.archivedData(withRootObject: user)
-        UserDefaults.standard.set(data, forKey: Constants.UserDefaults.currentUser)
-        
-        current = user
+    class func setCurrentUser(_ user: User, archiveData: Bool) {
+        if archiveData {
+            // save current user object in user defaults
+            let data = NSKeyedArchiver.archivedData(withRootObject: user)
+            UserDefaults.standard.set(data, forKey: Constants.UserDefaults.currentUser)
+        }
+
+        _current = user
     }
     
     // MARK: - Properties

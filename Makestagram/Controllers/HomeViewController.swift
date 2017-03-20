@@ -30,10 +30,9 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         ref = FIRDatabase.database().reference()
-        let uid = User.current!.uid
         
         // TODO: temp way of doing this.. auto refresh shouldn't be handled this
-        ref.child("timeline").child(uid).observe(.value, with: { (snapshot) in
+        ref.child("timeline").child(User.current.uid).observe(.value, with: { (snapshot) in
             self.reloadData()
         })
         
@@ -119,9 +118,7 @@ extension HomeViewController: UITableViewDelegate {
 extension HomeViewController: PostActionCellDelegate {
     func didTapLikeButton(_ likeButton: UIButton, on cell: PostActionCell) {
         
-        // TODO: move current user somewhere else
-        guard let indexPath = tableView.indexPath(for: cell),
-            let uid = User.current?.uid
+        guard let indexPath = tableView.indexPath(for: cell)
             else { return }
         
         likeButton.isUserInteractionEnabled = false

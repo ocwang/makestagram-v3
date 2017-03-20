@@ -12,6 +12,7 @@ struct Constants {
     struct Segue {
         static let createUsername = "createUsername"
         static let findFriends = "findFriends"
+        static let settings = "settings"
     }
     
     struct UserDefaults {

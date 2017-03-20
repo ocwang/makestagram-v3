@@ -39,10 +39,7 @@ class FollowService {
     // TODO: Ask Dion / Eliel how to approach this?
     
     static func followOrUnfollowUser(_ user: User, completion: @escaping (Error?) -> Void) {
-        guard let currentUID = User.current?.uid else {
-            assertionFailure("Error: current user doesn't exist.")
-            return completion(nil)
-        }
+        let currentUID = User.current.uid
         
         let ref = MGDBRef.ref(for: .default)
         

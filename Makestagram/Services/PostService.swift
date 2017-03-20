@@ -13,7 +13,7 @@ import FirebaseAuth
 class PostService {
     
     static func createPost(_ post: Post) {
-        guard let currentUser = User.current else { return }
+        let currentUser = User.current
         
         let dbRef = MGDBRef.ref(for: .default)
         let newPostRef = MGDBRef.ref(for: .newPost)
@@ -59,9 +59,7 @@ class PostService {
             }
             
             // TODO: better way to do this
-            let currentUID = User.current!.uid
-            
-            LikeService.isPost(forKey: postKey, likedByUserforUID: currentUID, completion: { (isLiked) in
+            LikeService.isPost(forKey: postKey, likedByUserforUID: User.current.uid, completion: { (isLiked) in
                 post.isLiked = isLiked
                 
                 completion(post)
@@ -87,10 +85,7 @@ class PostService {
                 
                 dispatchGroup.enter()
                 
-                // TODO: better way to do this
-                let currentUID = User.current!.uid
-                
-                LikeService.isPost(forKey: postKey, likedByUserforUID: currentUID, completion: { (isLiked) in
+                LikeService.isPost(forKey: postKey, likedByUserforUID: User.current.uid, completion: { (isLiked) in
                     post.isLiked = isLiked
                     posts.append(post)
                     

@@ -25,8 +25,7 @@ class LikeService {
     // TODO: Ask Dion / Eliel how to approach this?
     
     static func likeOrUnlikePost(_ post: Post, completion: @escaping (Error?) -> Void) {
-        guard let currentUID = User.current?.uid,
-              let postKey = post.key,
+        guard let postKey = post.key,
               let poster = post.poster else {
                   assertionFailure("Error: post has insufficient data.")
                   return completion(nil)
@@ -34,7 +33,7 @@ class LikeService {
         
         let updatedLikeValue: Bool? = post.isLiked ? nil : true
         
-        let postLikesRef = MGDBRef.ref(for: .likes(postKey: postKey, currentUID: currentUID))
+        let postLikesRef = MGDBRef.ref(for: .likes(postKey: postKey, currentUID: User.current.uid))
         postLikesRef.setValue(updatedLikeValue) { (error, ref) in
             if let error = error {
                 return completion(error)

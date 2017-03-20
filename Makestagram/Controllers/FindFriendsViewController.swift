@@ -17,7 +17,6 @@ class FindFriendsViewController: UIViewController {
     
     var ref: FIRDatabaseReference!
     
-    var currentUser: User!
     
     // MARK: - Subviews
     
@@ -30,13 +29,9 @@ class FindFriendsViewController: UIViewController {
         
         ref = FIRDatabase.database().reference()
         
-        if let user = User.current {
-            currentUser = user
-        }
-        
         tableView.tableFooterView = UIView()
         
-        UserService.allUsers(for: currentUser) { [unowned self] (users) in
+        UserService.allUsers(for: User.current) { [unowned self] (users) in
             self.users = users
             self.tableView.reloadData()
         }

@@ -196,16 +196,11 @@
                             <constraint firstItem="DfK-LN-ax9" firstAttribute="leading" secondItem="WfX-3e-dRy" secondAttribute="leading" id="uTc-VH-Fnv"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="username" id="Ob9-0i-1XU">
-                        <barButtonItem key="rightBarButtonItem" image="ic_nav_settings_black" id="TyF-sA-xRb">
-                            <connections>
-                                <segue destination="DGb-3p-rC8" kind="show" id="0cc-3r-Yau"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="username" id="Ob9-0i-1XU"/>
                     <connections>
                         <outlet property="tableView" destination="DfK-LN-ax9" id="tf0-6c-ozN"/>
                         <segue destination="HF6-dv-0T4" kind="show" identifier="findFriends" id="hs8-9w-S5y"/>
+                        <segue destination="DGb-3p-rC8" kind="show" identifier="settings" id="Gxa-hN-q0u"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zpL-BD-Hbe" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -341,7 +336,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="ic_nav_settings_black" width="22" height="22"/>
         <image name="ic_tab_profile_black" width="25" height="25"/>
         <image name="user_photo_placeholder" width="61" height="61"/>
     </resources>
