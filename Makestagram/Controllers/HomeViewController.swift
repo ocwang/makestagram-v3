@@ -125,20 +125,20 @@ extension HomeViewController: PostActionCellDelegate {
             else { return }
         
         likeButton.isUserInteractionEnabled = false
-        
         let post = posts[indexPath.section]
-        PostService.likePost(post) { (error, isLiked, likesCount) in
+        
+        LikeService.likeOrUnlikePost(post) { [unowned self] (error) in
             defer {
                 likeButton.isUserInteractionEnabled = true
             }
             
-            guard error == nil else {
-                assertionFailure("Error liking post.")
+            if let error = error {
+                assertionFailure(error.localizedDescription)
                 return
             }
             
             DispatchQueue.main.async {
-                post.isLiked = isLiked
+                post.isLiked = !post.isLiked
                 self.tableView.reloadRows(at: [indexPath], with: .none)
             }
         }

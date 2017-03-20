@@ -86,36 +86,18 @@ extension FindFriendsViewController: FindFriendCellDelegate {
         followButton.isUserInteractionEnabled = false
         let userToFollow = users[indexPath.row]
         
-        
-        var completion: (Bool) -> Void = { [unowned self] (success) in
-            // TODO: handle errors more elegantly???
-            guard success else {
+        FollowService.followOrUnfollowUser(userToFollow) { (error) in
+            defer {
                 followButton.isUserInteractionEnabled = true
+            }
+            
+            if let error = error {
+                assertionFailure(error.localizedDescription)
                 return
             }
             
-            UserService.showUser(userToFollow, currentUser: self.currentUser, completion: { [unowned self] (updatedUser) in
-                defer {
-                    followButton.isUserInteractionEnabled = true
-                }
-                
-                guard let updatedUser = updatedUser else {
-                    assertionFailure("Error fetching updated user.")
-                    return
-                }
-                
-                // completion already happens on the main thread
-                self.users[indexPath.row] = updatedUser
-                self.tableView.reloadRows(at: [indexPath], with: .none)
-            })
-        }
-        
-        
-        // TODO: combine service into one api call with bool
-        if userToFollow.isFollowed {
-            UserService.unfollowUser(userToFollow, completion: completion)
-        } else {
-            UserService.followUser(userToFollow, completion: completion)
+            userToFollow.isFollowed = !userToFollow.isFollowed
+            self.tableView.reloadRows(at: [indexPath], with: .none)
         }
     }
 }

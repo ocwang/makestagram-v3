@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		050034E9BD0C3728D5913A24 /* Pods_Makestagram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */; };
 		CA2DC5641E7F62C90064FBC9 /* MGDatabaseReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5631E7F62C90064FBC9 /* MGDatabaseReference.swift */; };
+		CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5651E8049540064FBC9 /* FollowService.swift */; };
+		CA2DC5681E8054360064FBC9 /* FIRDatabaseReference+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */; };
+		CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5691E8056070064FBC9 /* LikeService.swift */; };
 		CA365D1B1E7CF139009F56AE /* ProfileHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA365D1A1E7CF139009F56AE /* ProfileHeaderCell.swift */; };
 		CA6068561E74B76B0051F7D9 /* MGPhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */; };
 		CA6068581E7668490051F7D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6068571E7668490051F7D9 /* Post.swift */; };
@@ -51,6 +54,9 @@
 		4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Makestagram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		663D54F91ED125B01595C135 /* Pods-Makestagram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Makestagram.release.xcconfig"; path = "Pods/Target Support Files/Pods-Makestagram/Pods-Makestagram.release.xcconfig"; sourceTree = "<group>"; };
 		CA2DC5631E7F62C90064FBC9 /* MGDatabaseReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGDatabaseReference.swift; path = Services/MGDatabaseReference.swift; sourceTree = "<group>"; };
+		CA2DC5651E8049540064FBC9 /* FollowService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FollowService.swift; path = Services/FollowService.swift; sourceTree = "<group>"; };
+		CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FIRDatabaseReference+Utility.swift"; path = "Extensions/FIRDatabaseReference+Utility.swift"; sourceTree = "<group>"; };
+		CA2DC5691E8056070064FBC9 /* LikeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LikeService.swift; path = Services/LikeService.swift; sourceTree = "<group>"; };
 		CA365D1A1E7CF139009F56AE /* ProfileHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileHeaderCell.swift; path = Views/Cells/ProfileHeaderCell.swift; sourceTree = "<group>"; };
 		CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGPhotoHelper.swift; path = Helpers/MGPhotoHelper.swift; sourceTree = "<group>"; };
 		CA6068571E7668490051F7D9 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Post.swift; path = Models/Post.swift; sourceTree = "<group>"; };
@@ -188,6 +194,7 @@
 				CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */,
 				CAAEBE471E7B991F00EF6E6C /* UIButton+Utility.swift */,
 				CAEE2BFB1E73CE6D00F361C9 /* UITableView+Utility.swift */,
+				CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */,
 				CA84177D1E732141005A0A60 /* UIViewController+Utility.swift */,
 				CAFB7CB61E7B9D1E00A3D71B /* UIColor+Utility.swift */,
 				CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */,
@@ -202,6 +209,8 @@
 				CAB98BE41E770F3300BE2D92 /* StorageService.swift */,
 				CAB98BE91E77526100BE2D92 /* PostService.swift */,
 				CAAEBE431E7A68B900EF6E6C /* UserService.swift */,
+				CA2DC5651E8049540064FBC9 /* FollowService.swift */,
+				CA2DC5691E8056070064FBC9 /* LikeService.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -401,13 +410,16 @@
 				CA84177C1E731BF7005A0A60 /* Storyboard+Utility.swift in Sources */,
 				CAEE2BFC1E73CE6D00F361C9 /* UITableView+Utility.swift in Sources */,
 				CA2DC5641E7F62C90064FBC9 /* MGDatabaseReference.swift in Sources */,
+				CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */,
 				CAB98BE51E770F3300BE2D92 /* StorageService.swift in Sources */,
+				CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */,
 				CA7CEB941E708EB800AF43ED /* AppDelegate.swift in Sources */,
 				CA6068561E74B76B0051F7D9 /* MGPhotoHelper.swift in Sources */,
 				CA84177E1E732141005A0A60 /* UIViewController+Utility.swift in Sources */,
 				CAEACD191E7380B600E2AEE4 /* CreateUsernameViewController.swift in Sources */,
 				CA8417801E732D3A005A0A60 /* UIWindow+Utility.swift in Sources */,
 				CAEACD2B1E7381F800E2AEE4 /* PostImageCell.swift in Sources */,
+				CA2DC5681E8054360064FBC9 /* FIRDatabaseReference+Utility.swift in Sources */,
 				CAB98BEA1E77526100BE2D92 /* PostService.swift in Sources */,
 				CAEACD1C1E7380B600E2AEE4 /* ProfileViewController.swift in Sources */,
 				CAEACD1A1E7380B600E2AEE4 /* HomeViewController.swift in Sources */,

@@ -15,6 +15,7 @@ enum MGDatabaseReference {
     case posts(uid: String)
     case showPost(uid: String, postKey: String)
     case newPost
+    case postCount(uid: String)
     
     case `default`
     
@@ -69,6 +70,8 @@ enum MGDatabaseReference {
             
         case let .likesCount(posterUID, postKey):
             return baseRef.child("posts").child(posterUID).child(postKey).child("likes_count")
+        case .postCount(let uid):
+            return baseRef.child("users").child(uid).child("posts_count")
         }
     }
     

@@ -140,27 +140,25 @@ extension ProfileViewController: UITableViewDelegate {
 
 extension ProfileViewController: PostActionCellDelegate {
     func didTapLikeButton(_ likeButton: UIButton, on cell: PostActionCell) {
-        // TODO: make this more reusable
-        // TODO: move current user somewhere else
-        guard let indexPath = tableView.indexPath(for: cell),
-            let uid = User.current?.uid
+        guard let indexPath = tableView.indexPath(for: cell)
             else { return }
         
         likeButton.isUserInteractionEnabled = false
         
         let post = posts[indexPath.section - 1]
-        PostService.likePost(post) { (error, isLiked, likesCount) in
+        
+        LikeService.likeOrUnlikePost(post) { [unowned self] (error) in
             defer {
                 likeButton.isUserInteractionEnabled = true
             }
             
-            guard error == nil else {
-                assertionFailure("Error liking post.")
+            if let error = error {
+                assertionFailure(error.localizedDescription)
                 return
             }
             
             DispatchQueue.main.async {
-                post.isLiked = isLiked
+                post.isLiked = !post.isLiked
                 self.tableView.reloadRows(at: [indexPath], with: .none)
             }
         }

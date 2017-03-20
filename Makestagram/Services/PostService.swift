@@ -19,7 +19,7 @@ class PostService {
         let newPostRef = MGDBRef.ref(for: .newPost)
         let newPostKey = newPostRef.key
         
-        UserService.allFollowers(forUID: currentUser.uid) { (followerKeys) in
+        FollowService.allFollowers(forUID: currentUser.uid) { (followerKeys) in
             // TODO: removed created_at because don't think you can sort chronologically server-cide...
             // double-check and add back if you can
             // "created_at" : post.creationDate.timeIntervalSince1970
@@ -43,13 +43,8 @@ class PostService {
             dbRef.updateChildValues(updatedData) { (error, ref) in
                 
                 // update user's post count
-                let postsCountRef = dbRef.child("users").child(currentUser.uid).child("posts_count")
-                postsCountRef.runTransactionBlock({ (postsCountData) -> FIRTransactionResult in
-                    let postsCount = postsCountData.value as? Int ?? 0
-                    postsCountData.value = postsCount + 1
-                    
-                    return FIRTransactionResult.success(withValue: postsCountData)
-                })
+                let postsCountRef = MGDBRef.ref(for: .postCount(uid: currentUser.uid))
+                postsCountRef.incrementInTransactionBlock(completion: nil)
             }
         }
     }
@@ -66,7 +61,7 @@ class PostService {
             // TODO: better way to do this
             let currentUID = User.current!.uid
             
-            isPost(forKey: postKey, likedByUserforUID: currentUID, completion: { (isLiked) in
+            LikeService.isPost(forKey: postKey, likedByUserforUID: currentUID, completion: { (isLiked) in
                 post.isLiked = isLiked
                 
                 completion(post)
@@ -95,7 +90,7 @@ class PostService {
                 // TODO: better way to do this
                 let currentUID = User.current!.uid
                 
-                isPost(forKey: postKey, likedByUserforUID: currentUID, completion: { (isLiked) in
+                LikeService.isPost(forKey: postKey, likedByUserforUID: currentUID, completion: { (isLiked) in
                     post.isLiked = isLiked
                     posts.append(post)
                     
@@ -109,59 +104,4 @@ class PostService {
         })
     }
     
-    static func isPost(forKey postKey: String, likedByUserforUID uid: String, completion: @escaping (Bool) -> Void) {
-        let ref = MGDBRef.ref(for: .isLiked(postKey: postKey))
-        
-        ref.queryEqual(toValue: nil, childKey: uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let _ = snapshot.value as? [String : Bool] else {
-                return completion(false)
-            }
-            
-            completion(true)
-        })
-    }
-    
-    static func likePost(_ post: Post, completion: @escaping (Error?, Bool, Int?) -> Void) {
-        // TODO: Anyway to clean this up and move this outside of the service?
-        
-        guard let postKey = post.key,
-            let poster = post.poster,
-            let currentUID = User.current?.uid else {
-                assertionFailure("Error: post has insufficient data.")
-                return completion(nil, post.isLiked, nil)
-        }
-        
-        let newLikesRef = MGDBRef.ref(for: .likes(postKey: postKey, currentUID: currentUID))
-
-        // TODO: change this to be explicit, no logic should be in service classes, move logic to controller
-        let likeValue: Bool? = post.isLiked ? nil : true
-        
-        newLikesRef.setValue(likeValue) { (error, ref) in
-            guard error == nil else {
-                return completion(error, post.isLiked, nil)
-            }
-
-            // update likes count
-            
-            let likesCountRef = MGDBRef.ref(for: .likesCount(posterUID: poster.uid, postKey: postKey))
-            likesCountRef.runTransactionBlock({ (likesData) -> FIRTransactionResult in
-                let likesCount = likesData.value as? Int ?? 0
-                likesData.value = post.isLiked ? likesCount - 1 : likesCount + 1
-                
-                return FIRTransactionResult.success(withValue: likesData)
-            }, andCompletionBlock: { (error, committed, snapshot) in
-                guard error == nil else {
-                    assertionFailure("Error updating likes count for post.")
-                    return completion(error, !post.isLiked, nil)
-                }
-                
-                guard let likesCount = snapshot?.value as? Int else {
-                    assertionFailure("Error reading updated likes count.")
-                    return completion(nil, !post.isLiked, nil)
-                }
-                
-                completion(nil, !post.isLiked, likesCount)
-            })
-        }
-    }
 }
