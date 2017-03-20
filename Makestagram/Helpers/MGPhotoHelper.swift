@@ -76,11 +76,11 @@ class MGPhotoHelper: NSObject {
         let imageRef = generateImageRef()
         let height = aspectHeight(for: image)
 
-        StorageService.uploadImageData(imageData, atImageRef: imageRef) { [unowned self] (success, downloadURL) in
+        StorageService.uploadImageData(imageData, atImageRef: imageRef) { (success, downloadURL) in
             guard success, let downloadURL = downloadURL else { return }
             
             let newPost = Post(imageURL: downloadURL, imageHeight: height)
-            PostService.createPost(newPost, forUID: self.currentUser.uid)
+            PostService.createPost(newPost)
         }
     }
 }

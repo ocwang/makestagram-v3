@@ -33,7 +33,7 @@ class HomeViewController: UIViewController {
         
         let uid = User.current!.uid
         
-        PostService.allPosts(forUID: uid) { (posts) in
+        UserService.timeline(forUID: uid) { (posts) in
             self.posts = posts
             self.tableView.reloadData()
         }
@@ -64,7 +64,9 @@ extension HomeViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()
-            cell.usernameLabel.text = "ocwang"
+            if let poster = post.poster {
+                cell.usernameLabel.text = poster.username
+            }
             
             return cell
             
@@ -116,7 +118,7 @@ extension HomeViewController: PostActionCellDelegate {
         likeButton.isUserInteractionEnabled = false
         
         let post = posts[indexPath.section]
-        PostService.likePost(post, forUID: uid) { (error, isLiked, likesCount) in
+        PostService.likePost(post) { (error, isLiked, likesCount) in
             defer {
                 likeButton.isUserInteractionEnabled = true
             }

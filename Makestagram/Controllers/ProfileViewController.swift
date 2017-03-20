@@ -78,9 +78,10 @@ extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard indexPath.section != 0 else {
             let cell: ProfileHeaderCell = tableView.dequeueReusableCell()
-            cell.postsCountLabel.text = String(user.postsCount)
-            cell.followersCountLabel.text = String(user.followersCount)
-            cell.followingCountLabel.text = String(user.followingCount)
+            
+            cell.postsCountLabel.text = String(user.postsCount ?? 0)
+            cell.followersCountLabel.text = String(user.followersCount ?? 0)
+            cell.followingCountLabel.text = String(user.followingCount ?? 0)
             
             return cell
         }
@@ -148,7 +149,7 @@ extension ProfileViewController: PostActionCellDelegate {
         likeButton.isUserInteractionEnabled = false
         
         let post = posts[indexPath.section - 1]
-        PostService.likePost(post, forUID: uid) { (error, isLiked, likesCount) in
+        PostService.likePost(post) { (error, isLiked, likesCount) in
             defer {
                 likeButton.isUserInteractionEnabled = true
             }

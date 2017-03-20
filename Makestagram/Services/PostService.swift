@@ -12,30 +12,67 @@ import FirebaseAuth
 
 class PostService {
     
-    static func createPost(_ post: Post, forUID uid: String) {
-        let dbRef = FIRDatabase.database().reference()
+    static func createPost(_ post: Post) {
+        guard let currentUser = User.current else { return }
         
+        let dbRef = FIRDatabase.database().reference()
         let newPostRef = dbRef.child("posts").childByAutoId()
         let newPostKey = newPostRef.key
         
-        var postDict = post.toDict()
-        postDict["likes_count"] = 0
-        
-        let updatedUserData: [String : Any] = ["posts/\(uid)/\(newPostKey)" : postDict]
-        dbRef.updateChildValues(updatedUserData)
-        
-        dbRef.updateChildValues(updatedUserData) { (error, ref) in
+        UserService.allFollowers(forUID: currentUser.uid) { (followerKeys) in
+            // TODO: removed created_at because don't think you can sort chronologically server-cide...
+            // double-check and add back if you can
+            // "created_at" : post.creationDate.timeIntervalSince1970
             
-            // update user's post count
+            let timelinePostDict: [String : Any] = ["poster_uid" : currentUser.uid]
+            var updatedData: [String: Any] = ["timeline/\(currentUser.uid)/\(newPostKey)" : timelinePostDict]
             
-            let postsCountRef = dbRef.child("users").child(uid).child("posts_count")
-            postsCountRef.runTransactionBlock({ (postsCountData) -> FIRTransactionResult in
-                let postsCount = postsCountData.value as? Int ?? 0
-                postsCountData.value = postsCount + 1
+            for userKey in followerKeys {
+                updatedData["timeline/\(userKey)/\(newPostKey)"] = timelinePostDict
+            }
+            
+            var postDict = post.toDict()
+            postDict["likes_count"] = 0
+            
+            let userDict = currentUser.toDict()
+            postDict["poster"] = userDict
+            
+            updatedData["posts/\(currentUser.uid)/\(newPostKey)"] = postDict
+            
+            // write dictionary to firebase
+            dbRef.updateChildValues(updatedData) { (error, ref) in
                 
-                return FIRTransactionResult.success(withValue: postsCountData)
-            })
+                // update user's post count
+                let postsCountRef = dbRef.child("users").child(currentUser.uid).child("posts_count")
+                postsCountRef.runTransactionBlock({ (postsCountData) -> FIRTransactionResult in
+                    let postsCount = postsCountData.value as? Int ?? 0
+                    postsCountData.value = postsCount + 1
+                    
+                    return FIRTransactionResult.success(withValue: postsCountData)
+                })
+            }
         }
+    }
+    
+    static func showPostForKey(_ postKey: String, posterUID: String, completion: @escaping (Post?) -> Void) {
+        let dbRef = FIRDatabase.database().reference()
+        
+        _ = dbRef.child("posts").child(posterUID).child(postKey).observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let post = Post(snapshot: snapshot),
+                let postKey = post.key else {
+                    return completion(nil)
+            }
+            
+            // TODO: better way to do this
+            let currentUID = User.current!.uid
+            
+            isPost(forKey: postKey, likedByUserforUID: currentUID, completion: { (isLiked) in
+                post.isLiked = isLiked
+                
+                completion(post)
+            })
+            
+        })
     }
     
     static func allPosts(forUID uid: String, completion: @escaping ([Post]) -> Void) {
@@ -84,16 +121,19 @@ class PostService {
         })
     }
     
-    static func likePost(_ post: Post, forUID uid: String, completion: @escaping (Error?, Bool, Int?) -> Void) {
+    static func likePost(_ post: Post, completion: @escaping (Error?, Bool, Int?) -> Void) {
         // TODO: Anyway to clean this up and move this outside of the service?
-        guard let postKey = post.key else {
-            assertionFailure("Error: post doesn't have a key.")
-            return completion(nil, post.isLiked, nil)
+        
+        guard let postKey = post.key,
+            let poster = post.poster,
+            let currentUID = User.current?.uid else {
+                assertionFailure("Error: post has insufficient data.")
+                return completion(nil, post.isLiked, nil)
         }
         
         let dbRef = FIRDatabase.database().reference()
         
-        let newLikesRef = dbRef.child("postLikes").child(postKey).child(uid)
+        let newLikesRef = dbRef.child("postLikes").child(postKey).child(currentUID)
         
         // TODO: change this to be explicit, no logic should be in service classes, move logic to controller
         let likeValue: Bool? = post.isLiked ? nil : true
@@ -105,9 +145,7 @@ class PostService {
 
             // update likes count
             
-            // TODO: change uid to post user uid... using current user uid temporarily
-            
-            let likesCountRef = dbRef.child("posts").child(uid).child(postKey).child("likes_count")
+            let likesCountRef = dbRef.child("posts").child(poster.uid).child(postKey).child("likes_count")
             likesCountRef.runTransactionBlock({ (likesData) -> FIRTransactionResult in
                 let likesCount = likesData.value as? Int ?? 0
                 likesData.value = post.isLiked ? likesCount - 1 : likesCount + 1

@@ -29,9 +29,9 @@ class User: NSObject {
     
     let uid: String
     let username: String
-    let followersCount: Int
-    let followingCount: Int
-    let postsCount: Int
+    var followersCount: Int?
+    var followingCount: Int?
+    var postsCount: Int?
     
     
     // TODO: verify putting this here is a good decision
@@ -60,9 +60,6 @@ class User: NSObject {
     init(uid: String, username: String) {
         self.uid = uid
         self.username = username
-        self.followersCount = 0
-        self.followingCount = 0
-        self.postsCount = 0
         
         super.init()
     }
@@ -74,9 +71,10 @@ class User: NSObject {
         
         self.uid = uid
         self.username = username
-        self.followersCount = 0
-        self.followingCount = 0
-        self.postsCount = 0
+    }
+    
+    func toDict() -> [String : Any] {
+        return ["uid" : uid, "username" : username]
     }
 }
 
@@ -85,6 +83,6 @@ extension User: NSCoding {
         aCoder.encode(uid, forKey: Constants.UserDefaults.uid)
         aCoder.encode(username, forKey: Constants.UserDefaults.username)
         
-        // TODO: encode other info
+        // TODO: encode other info?
     }
 }
