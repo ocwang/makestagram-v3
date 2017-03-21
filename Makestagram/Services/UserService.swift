@@ -90,7 +90,7 @@ class UserService {
     
     static func myTimeline(completion: @escaping ([Post]) -> Void) {
         let ref = MGDBRef.ref(for: .timeline(uid: User.current.uid))
-        
+        ref.queryOrdered(byChild: "created_at")
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]
                 else { return completion([]) }

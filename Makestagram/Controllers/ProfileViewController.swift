@@ -70,6 +70,7 @@ class ProfileViewController: UIViewController {
         tableView.registerNib(for: PostHeaderCell.self)
         tableView.registerNib(for: PostImageCell.self)
         tableView.registerNib(for: PostActionCell.self)
+        tableView.registerNib(for: PostTextCell.self)
         
         // remove separators for empty cells
         tableView.tableFooterView = UIView()
@@ -121,11 +122,14 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? 1 : 3
+        guard section > 0 else { return 1 }
+        
+        let post = posts[section - 1]
+        return post.likesCount > 0 ? 4 : 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard indexPath.section != 0 else {
+        guard indexPath.section > 0 else {
             let cell: ProfileHeaderCell = tableView.dequeueReusableCell()
             
             cell.postsCountLabel.text = String(user?.postsCount ?? 0)
@@ -142,6 +146,7 @@ extension ProfileViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()
+            cell.delegate = self
             cell.usernameLabel.text = user?.username
             
             return cell
@@ -160,8 +165,15 @@ extension ProfileViewController: UITableViewDataSource {
             cell.likeButton.isSelected = post.isLiked
             
             return cell
+        
+        case 3:
+            let cell: PostTextCell = tableView.dequeueReusableCell()
+            cell.postTextLabel.text = "\(post.likesCount) likes"
             
-        default: fatalError()
+            return cell
+            
+        default:
+            fatalError()
         }
     }
 }
@@ -173,17 +185,43 @@ extension ProfileViewController: UITableViewDelegate {
             else { return 115 }
 
         switch indexPath.row {
-        case 0: return PostHeaderCell.height
+        case 0:
+            return PostHeaderCell.height
             
         case 1:
             let post = posts[indexPath.section - 1]
             return post.imageHeight
             
-        case 2: return PostActionCell.height
+        case 2:
+            return PostActionCell.height
+            
+        case 3:
+            return PostTextCell.height
             
         default:
             fatalError("Error: unexpected indexPath for \(#line):\(#function)")
         }
+    }
+}
+
+extension ProfileViewController: PostHeaderCellDelegate {
+    func didTapOptionsButton(_ optionsButton: UIButton, on cell: PostHeaderCell) {
+        guard let indexPath = tableView.indexPath(for: cell)
+              else { return }
+        
+        _ = posts[indexPath.section - 1]
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
+            print("delete post")
+        }
+        alertController.addAction(deleteAction)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -193,7 +231,6 @@ extension ProfileViewController: PostActionCellDelegate {
             else { return }
         
         likeButton.isUserInteractionEnabled = false
-        
         let post = posts[indexPath.section - 1]
         
         LikeService.likeOrUnlikePost(post) { [unowned self] (error) in
@@ -207,8 +244,15 @@ extension ProfileViewController: PostActionCellDelegate {
             }
             
             DispatchQueue.main.async {
+                if !post.isLiked {
+                    post.likesCount += 1
+                } else {
+                    post.likesCount -= 1
+                }
+                
                 post.isLiked = !post.isLiked
-                self.tableView.reloadRows(at: [indexPath], with: .none)
+                // TODO: consider changing this to insert/delete cell for likes?
+                self.tableView.reloadData()
             }
         }
     }

@@ -13,9 +13,7 @@ import Kingfisher
 
 class HomeViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
-    
-    var ref: FIRDatabaseReference!
+    // MARK: - Properties
     
     var posts = [Post]()
     
@@ -26,28 +24,41 @@ class HomeViewController: UIViewController {
         return dateFormatter
     }()
     
+    // MARK: - Subviews
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    // MARK: - VC Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ref = FIRDatabase.database().reference()
+        
+        setupTableView()
+        
+        
+        let ref = FIRDatabase.database().reference()
         
         // TODO: temp way of doing this.. auto refresh shouldn't be handled this
         ref.child("timeline").child(User.current.uid).observe(.value, with: { (snapshot) in
             self.reloadData()
         })
-        
+    }
+    
+    // MARK: - Initial Setup
+    
+    func setupTableView() {
         tableView.registerNib(for: PostHeaderCell.self)
         tableView.registerNib(for: PostImageCell.self)
         tableView.registerNib(for: PostActionCell.self)
+        tableView.registerNib(for: PostTextCell.self)
+        
         // remove separators for empty cells
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
     }
     
     func reloadData() {
-        
-
-        
         UserService.myTimeline { [unowned self] (posts) in
             self.posts = posts
             self.tableView.reloadData()
@@ -61,7 +72,9 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        let post = posts[section]
+        
+        return post.likesCount > 0 ? 4 : 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -72,9 +85,8 @@ extension HomeViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()
-            if let poster = post.poster {
-                cell.usernameLabel.text = poster.username
-            }
+            cell.delegate = self
+            cell.usernameLabel.text = post.poster?.username ?? "username"
             
             return cell
             
@@ -93,7 +105,14 @@ extension HomeViewController: UITableViewDataSource {
             
             return cell
             
-        default: fatalError()
+        case 3:
+            let cell: PostTextCell = tableView.dequeueReusableCell()
+            cell.postTextLabel.text = "\(post.likesCount) likes"
+            
+            return cell
+            
+        default:
+            fatalError()
         }
     }
 }
@@ -102,16 +121,66 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         switch indexPath.row {
-        case 0: return PostHeaderCell.height
+        case 0:
+            return PostHeaderCell.height
             
         case 1:
             let post = posts[indexPath.section]
             return post.imageHeight
             
-        case 2: return PostActionCell.height
+        case 2:
+            return PostActionCell.height
             
-        default: fatalError()
+        case 3:
+            return PostTextCell.height
+            
+        default:
+            fatalError()
         }
+    }
+}
+
+extension HomeViewController: PostHeaderCellDelegate {
+    func didTapUserHitBoxButton(_ userHitBoxButton: UIButton, on cell: PostHeaderCell) {
+        // TODO: abstract this out
+        guard let indexPath = tableView.indexPath(for: cell)
+            else { return }
+        
+        let post = posts[indexPath.section]
+        
+        guard let poster = post.poster
+            else { return }
+        
+        let storyboard = UIStoryboard(type: .profile)
+        let profileViewController: ProfileViewController = storyboard.instantiateViewController()
+        profileViewController.user = poster
+        
+        navigationController?.pushViewController(profileViewController, animated: true)
+    }
+    
+    func didTapOptionsButton(_ optionsButton: UIButton, on cell: PostHeaderCell) {
+        guard let indexPath = tableView.indexPath(for: cell),
+              let poster = posts[indexPath.section].poster
+              else { return }
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        var alertAction: UIAlertAction
+        if poster.uid == User.current.uid {
+            alertAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
+                print("delete post")
+            }
+        } else {
+            alertAction = UIAlertAction(title: "Report as Inappropriate", style: .default) { _ in
+                print("report post")
+            }
+        }
+        alertController.addAction(alertAction)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -135,8 +204,15 @@ extension HomeViewController: PostActionCellDelegate {
             }
             
             DispatchQueue.main.async {
+                if !post.isLiked {
+                    post.likesCount += 1
+                } else {
+                    post.likesCount -= 1
+                }
+                
                 post.isLiked = !post.isLiked
-                self.tableView.reloadRows(at: [indexPath], with: .none)
+                // TODO: consider changing this to insert/delete cell for likes?
+                self.tableView.reloadData()
             }
         }
     }

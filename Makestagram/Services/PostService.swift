@@ -21,10 +21,13 @@ class PostService {
         
         FollowService.allFollowersForUser(currentUser) { (followerKeys) in
             // TODO: removed created_at because don't think you can sort chronologically server-cide...
+            // TODO apparently you can sort this way
             // double-check and add back if you can
-            // "created_at" : post.creationDate.timeIntervalSince1970
+            //
             
-            let timelinePostDict: [String : Any] = ["poster_uid" : currentUser.uid]
+            let timelinePostDict: [String : Any] = ["poster_uid" : currentUser.uid,
+                                                    "created_at" : post.creationDate.timeIntervalSince1970]
+            
             var updatedData: [String: Any] = ["timeline/\(currentUser.uid)/\(newPostKey)" : timelinePostDict]
             
             for userKey in followerKeys {
@@ -32,7 +35,6 @@ class PostService {
             }
             
             var postDict = post.toDict()
-            postDict["likes_count"] = 0
             
             let userDict = currentUser.toDict()
             postDict["poster"] = userDict

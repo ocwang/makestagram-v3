@@ -19,7 +19,8 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_photo_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="Dbp-we-5WT">
-                        <rect key="frame" x="10" y="10.5" width="32" height="32"/>
+                        <rect key="frame" x="10" y="11" width="32" height="32"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstAttribute="width" constant="32" id="009-zH-SKP"/>
                             <constraint firstAttribute="height" constant="32" id="DsW-LM-CfJ"/>
@@ -33,26 +34,41 @@
                         </constraints>
                         <state key="normal" image="ic_options_black"/>
                         <connections>
-                            <action selector="optionsButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="QlO-9R-Gv7"/>
+                            <action selector="optionsButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="DyL-7W-fKs"/>
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="humansofny" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ay8-Vg-weA">
-                        <rect key="frame" x="50" y="18" width="80" height="17"/>
+                        <rect key="frame" x="50" y="0.0" width="79.5" height="53.5"/>
+                        <gestureRecognizers/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QYa-KN-GjH">
+                        <rect key="frame" x="0.0" y="0.0" width="137.5" height="54"/>
+                        <connections>
+                            <action selector="userHitBoxButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="9Q1-8v-Jyn"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Dbp-we-5WT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="2K7-7k-Gbf"/>
                     <constraint firstAttribute="trailing" secondItem="vrs-6y-fg0" secondAttribute="trailing" id="3ci-yd-ruQ"/>
                     <constraint firstItem="ay8-Vg-weA" firstAttribute="leading" secondItem="Dbp-we-5WT" secondAttribute="trailing" constant="8" id="Bbb-36-0k0"/>
+                    <constraint firstAttribute="bottom" secondItem="QYa-KN-GjH" secondAttribute="bottom" id="DAG-zG-beh"/>
                     <constraint firstItem="vrs-6y-fg0" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="I6s-hs-tyT"/>
                     <constraint firstItem="Dbp-we-5WT" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="LS7-8z-mza"/>
-                    <constraint firstItem="ay8-Vg-weA" firstAttribute="centerY" secondItem="Dbp-we-5WT" secondAttribute="centerY" id="czR-mb-8x3"/>
+                    <constraint firstItem="ay8-Vg-weA" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Lqg-QG-Ksg"/>
+                    <constraint firstItem="vrs-6y-fg0" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ay8-Vg-weA" secondAttribute="trailing" constant="15" id="Msx-IS-1tx"/>
+                    <constraint firstItem="QYa-KN-GjH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="bEX-JQ-qLF"/>
+                    <constraint firstItem="QYa-KN-GjH" firstAttribute="trailing" secondItem="ay8-Vg-weA" secondAttribute="trailing" constant="8" id="gL1-CP-i1f"/>
+                    <constraint firstItem="QYa-KN-GjH" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="pWs-iq-jLC"/>
+                    <constraint firstAttribute="bottom" secondItem="ay8-Vg-weA" secondAttribute="bottom" id="y9H-mU-VK6"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="optionsButton" destination="vrs-6y-fg0" id="7sS-dC-FYh"/>
+                <outlet property="userHitBoxButton" destination="QYa-KN-GjH" id="sfX-yt-jeW"/>
                 <outlet property="userImageView" destination="Dbp-we-5WT" id="ErE-y3-5ny"/>
                 <outlet property="usernameLabel" destination="ay8-Vg-weA" id="64c-te-ifL"/>
             </connections>

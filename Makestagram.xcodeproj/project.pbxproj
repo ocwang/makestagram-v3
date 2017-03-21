@@ -13,6 +13,8 @@
 		CA2DC5681E8054360064FBC9 /* FIRDatabaseReference+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */; };
 		CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5691E8056070064FBC9 /* LikeService.swift */; };
 		CA365D1B1E7CF139009F56AE /* ProfileHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA365D1A1E7CF139009F56AE /* ProfileHeaderCell.swift */; };
+		CA4BCBC41E80AB3300A474C1 /* PostTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4BCBC21E80AB3300A474C1 /* PostTextCell.swift */; };
+		CA4BCBC51E80AB3300A474C1 /* PostTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CA4BCBC31E80AB3300A474C1 /* PostTextCell.xib */; };
 		CA6068561E74B76B0051F7D9 /* MGPhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */; };
 		CA6068581E7668490051F7D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6068571E7668490051F7D9 /* Post.swift */; };
 		CA635A291E71D66F00E6E94C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA635A281E71D66F00E6E94C /* GoogleService-Info.plist */; };
@@ -58,6 +60,8 @@
 		CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FIRDatabaseReference+Utility.swift"; path = "Extensions/FIRDatabaseReference+Utility.swift"; sourceTree = "<group>"; };
 		CA2DC5691E8056070064FBC9 /* LikeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LikeService.swift; path = Services/LikeService.swift; sourceTree = "<group>"; };
 		CA365D1A1E7CF139009F56AE /* ProfileHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileHeaderCell.swift; path = Views/Cells/ProfileHeaderCell.swift; sourceTree = "<group>"; };
+		CA4BCBC21E80AB3300A474C1 /* PostTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostTextCell.swift; path = Views/Cells/PostTextCell.swift; sourceTree = "<group>"; };
+		CA4BCBC31E80AB3300A474C1 /* PostTextCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PostTextCell.xib; path = Views/Cells/PostTextCell.xib; sourceTree = "<group>"; };
 		CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGPhotoHelper.swift; path = Helpers/MGPhotoHelper.swift; sourceTree = "<group>"; };
 		CA6068571E7668490051F7D9 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Post.swift; path = Models/Post.swift; sourceTree = "<group>"; };
 		CA635A281E71D66F00E6E94C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -127,6 +131,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		CA4BCBC61E80AB3700A474C1 /* PostTextCell */ = {
+			isa = PBXGroup;
+			children = (
+				CA4BCBC21E80AB3300A474C1 /* PostTextCell.swift */,
+				CA4BCBC31E80AB3300A474C1 /* PostTextCell.xib */,
+			);
+			name = PostTextCell;
+			sourceTree = "<group>";
+		};
 		CA635A2A1E71D67600E6E94C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -162,13 +175,9 @@
 				CA7CEB931E708EB800AF43ED /* AppDelegate.swift */,
 				CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */,
 				CAB98BE61E770F3800BE2D92 /* Services */,
-				CAEE2C011E73D3C900F361C9 /* PostHeaderCell */,
-				CAEACD2D1E7381FD00E2AEE4 /* PostImageCell */,
-				CAEE2C061E73D91100F361C9 /* PostActionCell */,
-				CAAEBE451E7B947A00EF6E6C /* FindFriendCell.swift */,
-				CA365D1A1E7CF139009F56AE /* ProfileHeaderCell.swift */,
-				CAEACD271E7381A700E2AEE4 /* Controllers */,
 				CAEACD281E7381AD00E2AEE4 /* Models */,
+				CAEACD271E7381A700E2AEE4 /* Controllers */,
+				CAD9307C1E80C1E50024BFD9 /* Views */,
 				CA84176F1E71F198005A0A60 /* Storyboards */,
 				CA7CEB9A1E708EB800AF43ED /* Assets.xcassets */,
 				CA84177A1E731B8D005A0A60 /* Extensions */,
@@ -213,6 +222,19 @@
 				CA2DC5691E8056070064FBC9 /* LikeService.swift */,
 			);
 			name = Services;
+			sourceTree = "<group>";
+		};
+		CAD9307C1E80C1E50024BFD9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CAEE2C011E73D3C900F361C9 /* PostHeaderCell */,
+				CAEACD2D1E7381FD00E2AEE4 /* PostImageCell */,
+				CAEE2C061E73D91100F361C9 /* PostActionCell */,
+				CA4BCBC61E80AB3700A474C1 /* PostTextCell */,
+				CAAEBE451E7B947A00EF6E6C /* FindFriendCell.swift */,
+				CA365D1A1E7CF139009F56AE /* ProfileHeaderCell.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		CAEACD271E7381A700E2AEE4 /* Controllers */ = {
@@ -336,6 +358,7 @@
 				CAEACD211E7380DA00E2AEE4 /* Main.storyboard in Resources */,
 				CAEACD261E73810000E2AEE4 /* LaunchScreen.storyboard in Resources */,
 				CA635A291E71D66F00E6E94C /* GoogleService-Info.plist in Resources */,
+				CA4BCBC51E80AB3300A474C1 /* PostTextCell.xib in Resources */,
 				CA7CEB9B1E708EB800AF43ED /* Assets.xcassets in Resources */,
 				CAEE2C051E73D90D00F361C9 /* PostActionCell.xib in Resources */,
 			);
@@ -411,6 +434,7 @@
 				CAEE2BFC1E73CE6D00F361C9 /* UITableView+Utility.swift in Sources */,
 				CA2DC5641E7F62C90064FBC9 /* MGDatabaseReference.swift in Sources */,
 				CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */,
+				CA4BCBC41E80AB3300A474C1 /* PostTextCell.swift in Sources */,
 				CAB98BE51E770F3300BE2D92 /* StorageService.swift in Sources */,
 				CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */,
 				CA7CEB941E708EB800AF43ED /* AppDelegate.swift in Sources */,
