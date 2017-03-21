@@ -29,7 +29,7 @@ class UserService {
                 
                 dispatchGroup.enter()
                 
-                FollowService.isUser(user.uid, beingFollowedbyOtherUser: currentUser.uid, completion: { (isFollowed) in
+                FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
                     user.isFollowed = isFollowed
                     users.append(user)
                     
@@ -53,7 +53,7 @@ class UserService {
             guard user.uid != currentUser.uid
                 else { return completion(user) }
             
-            FollowService.isUser(user.uid, beingFollowedbyOtherUser: currentUser.uid, completion: { (isFollowed) in
+            FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
                 user.isFollowed = isFollowed
                 completion(user)
             })
@@ -68,7 +68,7 @@ class UserService {
             
             guard user.uid != currentUser.uid else { return completion(user) }
             
-            FollowService.isUser(user.uid, beingFollowedbyOtherUser: currentUser.uid, completion: { (isFollowed) in
+            FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
                 user.isFollowed = isFollowed
                 completion(user)
             })

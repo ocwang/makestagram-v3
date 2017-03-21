@@ -11,8 +11,8 @@ import FirebaseDatabase
 
 class FollowService {
 
-    static func allFollowers(forUID uid: String, completion: @escaping ([String]) -> Void) {
-        let allFollowersRef = MGDBRef.ref(for: .followers(uid: uid))
+    static func allFollowersForUser(_ user: User, completion: @escaping ([String]) -> Void) {
+        let allFollowersRef = MGDBRef.ref(for: .followers(uid: user.uid))
         
         allFollowersRef.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let followersDict = snapshot.value as? [String : Bool] else {
@@ -24,10 +24,10 @@ class FollowService {
         })
     }
     
-    static func isUser(_ uid: String, beingFollowedbyOtherUser otherUID: String, completion: @escaping (Bool) -> Void) {
-        let ref = MGDBRef.ref(for: .followers(uid: uid))
+    static func isUser(_ user: User, beingFollowedbyOtherUser otherUser: User, completion: @escaping (Bool) -> Void) {
+        let ref = MGDBRef.ref(for: .followers(uid: user.uid))
         
-        ref.queryEqual(toValue: nil, childKey: otherUID).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.queryEqual(toValue: nil, childKey: otherUser.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let _ = snapshot.value as? [String : Bool] else {
                 return completion(false)
             }
@@ -88,9 +88,8 @@ class FollowService {
             dispatchGroup.enter()
             
             if !user.isFollowed {
-                PostService.allPosts(forUID: user.uid, completion: { (posts) in
-                    
-                    var followData = [String : Any?]()
+                PostService.allPostsForUser(user, completion: { (posts) in
+                    var followData = [String : Any]()
                     let postsKeys = posts.flatMap { $0.key }
                     
                     let timelinePostDict: [String : Any] = ["poster_uid" : user.uid]
@@ -101,8 +100,8 @@ class FollowService {
                     })
                 })
             } else {
-                PostService.allPosts(forUID: user.uid, completion: { (posts) in
-                    
+                PostService.allPostsForUser(user, completion: { (posts) in
+                    // Type Any? value for dictionary causes 3 warnings, but code will not work without type as Any?
                     var unfollowData = [String : Any?]()
                     let postsKeys = posts.flatMap { $0.key }
                     postsKeys.forEach {

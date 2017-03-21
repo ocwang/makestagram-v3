@@ -94,7 +94,7 @@ class ProfileViewController: UIViewController {
             }
         }
         
-        PostService.allPosts(forUID: user.uid) { (posts) in
+        PostService.allPostsForUser(user) { (posts) in
             self.posts = posts
             self.tableView.reloadData()
         }

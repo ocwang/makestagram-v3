@@ -10,10 +10,11 @@ import Foundation
 import FirebaseDatabase
 
 class LikeService {
-    static func isPost(forKey postKey: String, likedByUserforUID uid: String, completion: @escaping (Bool) -> Void) {
+    
+    static func isPostForKey(_ postKey: String, likedByUser user: User, completion: @escaping (Bool) -> Void) {
         let ref = MGDBRef.ref(for: .isLiked(postKey: postKey))
         
-        ref.queryEqual(toValue: nil, childKey: uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.queryEqual(toValue: nil, childKey: user.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let _ = snapshot.value as? [String : Bool] else {
                 return completion(false)
             }

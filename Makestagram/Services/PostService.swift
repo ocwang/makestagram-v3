@@ -19,7 +19,7 @@ class PostService {
         let newPostRef = MGDBRef.ref(for: .newPost)
         let newPostKey = newPostRef.key
         
-        FollowService.allFollowers(forUID: currentUser.uid) { (followerKeys) in
+        FollowService.allFollowersForUser(currentUser) { (followerKeys) in
             // TODO: removed created_at because don't think you can sort chronologically server-cide...
             // double-check and add back if you can
             // "created_at" : post.creationDate.timeIntervalSince1970
@@ -58,18 +58,16 @@ class PostService {
                     return completion(nil)
             }
             
-            // TODO: better way to do this
-            LikeService.isPost(forKey: postKey, likedByUserforUID: User.current.uid, completion: { (isLiked) in
+            LikeService.isPostForKey(postKey, likedByUser: User.current, completion: { (isLiked) in
                 post.isLiked = isLiked
                 
                 completion(post)
             })
-            
         })
     }
     
-    static func allPosts(forUID uid: String, completion: @escaping ([Post]) -> Void) {
-        let ref = MGDBRef.ref(for: .posts(uid: uid))
+    static func allPostsForUser(_ user: User, completion: @escaping ([Post]) -> Void) {
+        let ref = MGDBRef.ref(for: .posts(uid: user.uid))
         
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]
@@ -85,7 +83,8 @@ class PostService {
                 
                 dispatchGroup.enter()
                 
-                LikeService.isPost(forKey: postKey, likedByUserforUID: User.current.uid, completion: { (isLiked) in
+                
+                LikeService.isPostForKey(postKey, likedByUser: User.current, completion: { (isLiked) in
                     post.isLiked = isLiked
                     posts.append(post)
                     
@@ -93,10 +92,9 @@ class PostService {
                 })
             }
             
-            dispatchGroup.notify(queue: .main, execute: { 
+            dispatchGroup.notify(queue: .main, execute: {
                 completion(posts)
             })
         })
     }
-    
 }
