@@ -88,9 +88,60 @@ class UserService {
         }
     }
     
+    static func timeline(pageSize: UInt, lastPostKey: String? = nil, completion: @escaping ([Post]) -> Void) {
+        let ref = MGDBRef.ref(for: .timeline(uid: User.current.uid))
+        var query = ref.queryOrderedByKey().queryLimited(toLast: pageSize)
+        if let lastPostKey = lastPostKey {
+            query = query.queryEnding(atValue: lastPostKey)
+        }
+        
+        query.observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]
+                else { return completion([]) }
+            
+            let dispatchGroup = DispatchGroup()
+            
+            var posts = [Post]()
+            for postSnap in snapshot {
+                guard let postDict = postSnap.value as? [String : Any],
+                    let posterUID = postDict["poster_uid"] as? String
+                    else { continue }
+                
+                dispatchGroup.enter()
+                
+                PostService.showPostForKey(postSnap.key, posterUID: posterUID, completion: { (post) in
+                    if let post = post {
+                        posts.append(post)
+                    }
+                    
+                    dispatchGroup.leave()
+                })
+            }
+            
+            dispatchGroup.notify(queue: .main, execute: {
+                // TODO: better way of ordering... wtf can't do this server side w firebase
+                completion(posts.reversed())
+            })
+        })
+    }
+    
+    
+    
+    
+    
     static func myTimeline(completion: @escaping ([Post]) -> Void) {
         let ref = MGDBRef.ref(for: .timeline(uid: User.current.uid))
-        ref.queryOrdered(byChild: "created_at")
+        
+        /// test this out with pagination.. need to figure out pagination in general
+        
+        
+        // this doesn't work with children... need to turn this query into pagination
+        // .queryStarting(atValue: 1490119079.767093, childKey: "created_at")
+        // .queryOrdered(byChild: "created_at")
+        
+        
+        //.queryEnding(atValue: "-Kfm1BiDjc4NJ6TPfCQG")
+        //.queryOrderedByKey().queryLimited(toLast: 3)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]
                 else { return completion([]) }

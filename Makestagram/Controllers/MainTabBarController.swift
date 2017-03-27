@@ -20,12 +20,10 @@ class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if let user = FIRAuth.auth()?.currentUser {
-            let storageRef = FIRStorage.storage().reference()
-            photoHelper = MGPhotoHelper(currentUser: user, storageRef: storageRef)
-            photoHelper?.delegate = self
-        }
+        
+        let storageRef = FIRStorage.storage().reference()
+        photoHelper = MGPhotoHelper(currentUser: User.current, storageRef: storageRef)
+        photoHelper?.delegate = self
 
         delegate = self
         tabBar.unselectedItemTintColor = .black

@@ -32,6 +32,7 @@
 		CAB98BE51E770F3300BE2D92 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB98BE41E770F3300BE2D92 /* StorageService.swift */; };
 		CAB98BE81E774F2800BE2D92 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB98BE71E774F2800BE2D92 /* SettingsViewController.swift */; };
 		CAB98BEA1E77526100BE2D92 /* PostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB98BE91E77526100BE2D92 /* PostService.swift */; };
+		CAC64FA21E831B5300BBC85F /* MGPaginationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC64FA11E831B5300BBC85F /* MGPaginationHelper.swift */; };
 		CAEACD191E7380B600E2AEE4 /* CreateUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEACD151E7380B600E2AEE4 /* CreateUsernameViewController.swift */; };
 		CAEACD1A1E7380B600E2AEE4 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEACD161E7380B600E2AEE4 /* HomeViewController.swift */; };
 		CAEACD1B1E7380B600E2AEE4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEACD171E7380B600E2AEE4 /* LoginViewController.swift */; };
@@ -81,6 +82,7 @@
 		CAB98BE41E770F3300BE2D92 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StorageService.swift; path = Services/StorageService.swift; sourceTree = "<group>"; };
 		CAB98BE71E774F2800BE2D92 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = Controllers/SettingsViewController.swift; sourceTree = "<group>"; };
 		CAB98BE91E77526100BE2D92 /* PostService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostService.swift; path = Services/PostService.swift; sourceTree = "<group>"; };
+		CAC64FA11E831B5300BBC85F /* MGPaginationHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGPaginationHelper.swift; path = Helpers/MGPaginationHelper.swift; sourceTree = "<group>"; };
 		CAEACD151E7380B600E2AEE4 /* CreateUsernameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateUsernameViewController.swift; path = Controllers/CreateUsernameViewController.swift; sourceTree = "<group>"; };
 		CAEACD161E7380B600E2AEE4 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeViewController.swift; path = Controllers/HomeViewController.swift; sourceTree = "<group>"; };
 		CAEACD171E7380B600E2AEE4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Controllers/LoginViewController.swift; sourceTree = "<group>"; };
@@ -173,7 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				CA7CEB931E708EB800AF43ED /* AppDelegate.swift */,
-				CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */,
+				CAFEAD4C1E839B5300D4FE29 /* New Group */,
 				CAB98BE61E770F3800BE2D92 /* Services */,
 				CAEACD281E7381AD00E2AEE4 /* Models */,
 				CAEACD271E7381A700E2AEE4 /* Controllers */,
@@ -200,6 +202,7 @@
 		CA84177A1E731B8D005A0A60 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				CAEACD181E7380B600E2AEE4 /* ProfileViewController.swift */,
 				CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */,
 				CAAEBE471E7B991F00EF6E6C /* UIButton+Utility.swift */,
 				CAEE2BFB1E73CE6D00F361C9 /* UITableView+Utility.swift */,
@@ -245,7 +248,6 @@
 				CAEACD161E7380B600E2AEE4 /* HomeViewController.swift */,
 				CAAEBE411E7A287300EF6E6C /* FindFriendsViewController.swift */,
 				CAEACD171E7380B600E2AEE4 /* LoginViewController.swift */,
-				CAEACD181E7380B600E2AEE4 /* ProfileViewController.swift */,
 				CAB98BE71E774F2800BE2D92 /* SettingsViewController.swift */,
 			);
 			name = Controllers;
@@ -285,6 +287,15 @@
 				CAEE2C031E73D90D00F361C9 /* PostActionCell.xib */,
 			);
 			name = PostActionCell;
+			sourceTree = "<group>";
+		};
+		CAFEAD4C1E839B5300D4FE29 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */,
+				CAC64FA11E831B5300BBC85F /* MGPaginationHelper.swift */,
+			);
+			name = "New Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -436,6 +447,7 @@
 				CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */,
 				CA4BCBC41E80AB3300A474C1 /* PostTextCell.swift in Sources */,
 				CAB98BE51E770F3300BE2D92 /* StorageService.swift in Sources */,
+				CAC64FA21E831B5300BBC85F /* MGPaginationHelper.swift in Sources */,
 				CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */,
 				CA7CEB941E708EB800AF43ED /* AppDelegate.swift in Sources */,
 				CA6068561E74B76B0051F7D9 /* MGPhotoHelper.swift in Sources */,

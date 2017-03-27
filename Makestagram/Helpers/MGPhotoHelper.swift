@@ -14,7 +14,6 @@ import FirebaseDatabase
 protocol MGPhotoHelperDelegate: class {
     func didTapTakePhotoButton(for photoHelper: MGPhotoHelper)
     func didTapUploadFromLibraryButton(for photoHelper: MGPhotoHelper)
-    
 }
 
 class MGPhotoHelper: NSObject {
@@ -27,9 +26,9 @@ class MGPhotoHelper: NSObject {
     
     let storageRef: FIRStorageReference 
     
-    let currentUser: FIRUser
+    let currentUser: User
     
-    init(currentUser: FIRUser, storageRef: FIRStorageReference) {
+    init(currentUser: User, storageRef: FIRStorageReference) {
         self.currentUser = currentUser
         self.storageRef = storageRef
         

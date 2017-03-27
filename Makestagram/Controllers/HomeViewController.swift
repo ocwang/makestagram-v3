@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import FirebaseAuth
 import FirebaseDatabase
 import Kingfisher
 
@@ -16,6 +15,8 @@ class HomeViewController: UIViewController {
     // MARK: - Properties
     
     var posts = [Post]()
+    
+    let paginationHelper = MGPaginationHelper()
     
     let timestampFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -33,15 +34,16 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         setupTableView()
-        
         
         let ref = FIRDatabase.database().reference()
         
         // TODO: temp way of doing this.. auto refresh shouldn't be handled this
         ref.child("timeline").child(User.current.uid).observe(.value, with: { (snapshot) in
-            self.reloadData()
+            self.paginationHelper.reloadData(completion: { (posts) in
+                self.posts = posts
+                self.tableView.reloadData()
+            })
         })
     }
     
@@ -57,13 +59,6 @@ class HomeViewController: UIViewController {
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
     }
-    
-    func reloadData() {
-        UserService.myTimeline { [unowned self] (posts) in
-            self.posts = posts
-            self.tableView.reloadData()
-        }
-    }
 }
 
 extension HomeViewController: UITableViewDataSource {
@@ -73,8 +68,16 @@ extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let post = posts[section]
-        
         return post.likesCount > 0 ? 4 : 3
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.section >= posts.count - 1 {
+            paginationHelper.paginate(completion: { [unowned self] (posts) in
+                self.posts.append(contentsOf: posts)
+                self.tableView.reloadData()
+            })
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
