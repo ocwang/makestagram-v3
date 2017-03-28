@@ -16,9 +16,6 @@ class Post {
     let creationDate: Date
     var poster: User?
     var likesCount: Int
-    
-    // TODO: verify putting this here is a good decision
-    // find a better way?
     var isLiked = false
     
     init?(snapshot: FIRDataSnapshot) {

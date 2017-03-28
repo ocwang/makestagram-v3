@@ -42,10 +42,6 @@ class User: NSObject {
     var followersCount: Int?
     var followingCount: Int?
     var postsCount: Int?
-    
-    
-    // TODO: verify putting this here is a good decision
-    // find a better way?
     var isFollowed = false
     
     // MARK: - Init
@@ -92,7 +88,5 @@ extension User: NSCoding {
     func encode(with aCoder: NSCoder) {
         aCoder.encode(uid, forKey: Constants.UserDefaults.uid)
         aCoder.encode(username, forKey: Constants.UserDefaults.username)
-        
-        // TODO: encode other info?
     }
 }

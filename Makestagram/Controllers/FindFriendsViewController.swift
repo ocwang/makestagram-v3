@@ -66,7 +66,6 @@ extension FindFriendsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         
-        // TODO: abstract this out
         let storyboard = UIStoryboard(type: .profile)
         let selectedUser = users[indexPath.row]
         let profileViewController: ProfileViewController = storyboard.instantiateViewController()
