@@ -15,9 +15,6 @@ class FindFriendsViewController: UIViewController {
     
     var users = [User]()
     
-    var ref: FIRDatabaseReference!
-    
-    
     // MARK: - Subviews
     
     @IBOutlet weak var tableView: UITableView!
@@ -27,9 +24,11 @@ class FindFriendsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ref = FIRDatabase.database().reference()
-        
         tableView.tableFooterView = UIView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         UserService.allUsers(for: User.current) { [unowned self] (users) in
             self.users = users
@@ -37,6 +36,8 @@ class FindFriendsViewController: UIViewController {
         }
     }
 }
+
+// MARK: - UITableViewDataSource
 
 extension FindFriendsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -59,10 +60,11 @@ extension FindFriendsViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
+
 extension FindFriendsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        
         
         // TODO: abstract this out
         let storyboard = UIStoryboard(type: .profile)
@@ -79,9 +81,9 @@ extension FindFriendsViewController: FindFriendCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         
         followButton.isUserInteractionEnabled = false
-        let userToFollow = users[indexPath.row]
+        let user = users[indexPath.row]
         
-        FollowService.followOrUnfollowUser(userToFollow) { (error) in
+        var completion = { (error: Error?) in
             defer {
                 followButton.isUserInteractionEnabled = true
             }
@@ -91,8 +93,14 @@ extension FindFriendsViewController: FindFriendCellDelegate {
                 return
             }
             
-            userToFollow.isFollowed = !userToFollow.isFollowed
+            user.isFollowed = !user.isFollowed
             self.tableView.reloadRows(at: [indexPath], with: .none)
+        }
+        
+        if !user.isFollowed {
+            FollowService.followUser(user, completion: completion)
+        } else {
+            FollowService.unfollowUser(user, completion: completion)
         }
     }
 }

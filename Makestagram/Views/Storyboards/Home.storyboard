@@ -38,7 +38,9 @@
                             <constraint firstAttribute="bottom" secondItem="3g4-lN-d6O" secondAttribute="bottom" id="uHc-oO-vvT"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Makestagram" id="ImG-G3-hgy"/>
+                    <navigationItem key="navigationItem" title="Makestagram" id="ImG-G3-hgy">
+                        <barButtonItem key="backBarButtonItem" title=" " id="OLI-HR-dFS"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="3g4-lN-d6O" id="cZQ-MC-fUy"/>
                     </connections>

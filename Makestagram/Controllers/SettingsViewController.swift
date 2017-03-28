@@ -13,10 +13,15 @@ class SettingsViewController: UIViewController {
     
     var handle: FIRAuthStateDidChangeListenerHandle?
     
+    @IBOutlet weak var logOutButton: UIButton!
+    
     // MARK; - VC Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        logOutButton.layer.cornerRadius = 6
+        logOutButton.backgroundColor = UIColor.mg_blue
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -43,8 +48,8 @@ class SettingsViewController: UIViewController {
     @IBAction func logOutButtonTapped(_ sender: UIButton) {
         do {
             try FIRAuth.auth()?.signOut()
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
+        } catch let error as NSError {
+            print ("Error signing out: %@", error)
         }
     }
 }

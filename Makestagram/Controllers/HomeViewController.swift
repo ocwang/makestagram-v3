@@ -53,7 +53,6 @@ class HomeViewController: UIViewController {
         tableView.registerNib(for: PostHeaderCell.self)
         tableView.registerNib(for: PostImageCell.self)
         tableView.registerNib(for: PostActionCell.self)
-        tableView.registerNib(for: PostTextCell.self)
         
         // remove separators for empty cells
         tableView.tableFooterView = UIView()
@@ -67,8 +66,7 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let post = posts[section]
-        return post.likesCount > 0 ? 4 : 3
+        return 3
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -88,8 +86,8 @@ extension HomeViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()
-            cell.delegate = self
             cell.usernameLabel.text = post.poster?.username ?? "username"
+            cell.delegate = self
             
             return cell
             
@@ -102,15 +100,8 @@ extension HomeViewController: UITableViewDataSource {
             
         case 2:
             let cell: PostActionCell = tableView.dequeueReusableCell()
+            configureCell(cell, with: post)
             cell.delegate = self
-            cell.timeAgoLabel.text = timestampFormatter.string(from: post.creationDate)
-            cell.likeButton.isSelected = post.isLiked
-            
-            return cell
-            
-        case 3:
-            let cell: PostTextCell = tableView.dequeueReusableCell()
-            cell.postTextLabel.text = "\(post.likesCount) likes"
             
             return cell
             
@@ -118,11 +109,16 @@ extension HomeViewController: UITableViewDataSource {
             fatalError()
         }
     }
+    
+    func configureCell(_ cell: PostActionCell, with post: Post) {
+        cell.timeAgoLabel.text = timestampFormatter.string(from: post.creationDate)
+        cell.likeButton.isSelected = post.isLiked
+        cell.likesCountLabel.text = "\(post.likesCount) likes"
+    }
 }
 
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
         switch indexPath.row {
         case 0:
             return PostHeaderCell.height
@@ -133,9 +129,6 @@ extension HomeViewController: UITableViewDelegate {
             
         case 2:
             return PostActionCell.height
-            
-        case 3:
-            return PostTextCell.height
             
         default:
             fatalError()
@@ -189,14 +182,13 @@ extension HomeViewController: PostHeaderCellDelegate {
 
 extension HomeViewController: PostActionCellDelegate {
     func didTapLikeButton(_ likeButton: UIButton, on cell: PostActionCell) {
-        
         guard let indexPath = tableView.indexPath(for: cell)
             else { return }
         
         likeButton.isUserInteractionEnabled = false
         let post = posts[indexPath.section]
         
-        LikeService.likeOrUnlikePost(post) { [unowned self] (error) in
+        var completion = { (error: Error?) in
             defer {
                 likeButton.isUserInteractionEnabled = true
             }
@@ -206,17 +198,21 @@ extension HomeViewController: PostActionCellDelegate {
                 return
             }
             
+            post.likesCount += !post.isLiked ? 1 : -1
+            post.isLiked = !post.isLiked
+            
+            guard let cell = self.tableView.cellForRow(at: indexPath) as? PostActionCell
+                else { return }
+            
             DispatchQueue.main.async {
-                if !post.isLiked {
-                    post.likesCount += 1
-                } else {
-                    post.likesCount -= 1
-                }
-                
-                post.isLiked = !post.isLiked
-                // TODO: consider changing this to insert/delete cell for likes?
-                self.tableView.reloadData()
+                self.configureCell(cell, with: post)
             }
+        }
+        
+        if post.isLiked {
+            LikeService.deleteLike(for: post, completion: completion)
+        } else {
+            LikeService.createLike(for: post, completion: completion)
         }
     }
 }

@@ -11,7 +11,7 @@ import FirebaseDatabase
 
 class LikeService {
     
-    static func isPostForKey(_ postKey: String, likedByUser user: User, completion: @escaping (Bool) -> Void) {
+    static func isPost(forKey postKey: String, likedByUser user: User, completion: @escaping (Bool) -> Void) {
         let ref = MGDBRef.ref(for: .isLiked(postKey: postKey))
         
         ref.queryEqual(toValue: nil, childKey: user.uid).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -23,29 +23,42 @@ class LikeService {
         })
     }
     
-    // TODO: Ask Dion / Eliel how to approach this?
-    
-    static func likeOrUnlikePost(_ post: Post, completion: @escaping (Error?) -> Void) {
-        guard let postKey = post.key,
-              let poster = post.poster else {
-                  assertionFailure("Error: post has insufficient data.")
-                  return completion(nil)
-              }
-        
-        let updatedLikeValue: Bool? = post.isLiked ? nil : true
+    static func createLike(for post: Post, completion: @escaping (Error?) -> Void) {
+        let (postKey, poster) = validatePost(post)
         
         let postLikesRef = MGDBRef.ref(for: .likes(postKey: postKey, currentUID: User.current.uid))
-        postLikesRef.setValue(updatedLikeValue) { (error, ref) in
+        postLikesRef.setValue(true) { (error, ref) in
             if let error = error {
                 return completion(error)
             }
             
             let likesCountRef = MGDBRef.ref(for: .likesCount(posterUID: poster.uid, postKey: postKey))
-            
-            let transactionBlock = post.isLiked ? FIRDatabaseReference.decrementInTransactionBlock : FIRDatabaseReference.incrementInTransactionBlock
-            transactionBlock(likesCountRef)({ (error) in
-                completion(error)
-            })
+            likesCountRef.incrementInTransactionBlock(completion: completion)
         }
+    }
+    
+    static func deleteLike(for post: Post, completion: @escaping (Error?) -> Void) {
+        let (postKey, poster) = validatePost(post)
+        
+        let postLikesRef = MGDBRef.ref(for: .likes(postKey: postKey, currentUID: User.current.uid))
+        postLikesRef.setValue(nil) { (error, ref) in
+            if let error = error {
+                return completion(error)
+            }
+            
+            let likesCountRef = MGDBRef.ref(for: .likesCount(posterUID: poster.uid, postKey: postKey))
+            likesCountRef.decrementInTransactionBlock(completion: completion)
+        }
+    }
+    
+    // MARK: - Private
+    
+    private static func validatePost(_ post: Post) -> (postKey: String, poster: User) {
+        guard let postKey = post.key,
+              let poster = post.poster else {
+                  preconditionFailure("Error: post has insufficient data.")
+              }
+        
+        return (postKey, poster)
     }
 }

@@ -35,12 +35,12 @@ class FindFriendCell: UITableViewCell {
         followButton.clipsToBounds = true
         
         followButton.setTitle("Follow", for: .normal)
-        followButton.setTitleColor(.mg_offBlack, for: .normal)
-        followButton.setBackgroundColor(color: .white, forState: .normal)
+        followButton.setTitleColor(.white, for: .normal)
+        followButton.setBackgroundColor(color: .mg_blue, forState: .normal)
         
         followButton.setTitle("Following", for: .selected)
-        followButton.setTitleColor(.white, for: .selected)
-        followButton.setBackgroundColor(color: .mg_blue, forState: .selected)
+        followButton.setTitleColor(.mg_offBlack, for: .selected)
+        followButton.setBackgroundColor(color: .white, forState: .selected)
         
     }
     

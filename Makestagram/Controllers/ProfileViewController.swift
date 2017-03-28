@@ -14,7 +14,7 @@ class ProfileViewController: UIViewController {
     
     // MARK: - Properties
     
-    var user: User?
+    var user: User!
     
     var posts = [Post]()
     
@@ -44,10 +44,9 @@ class ProfileViewController: UIViewController {
     // MARK: - Initial Setup
     
     func setupNavBar() {
-        navigationItem.title = user?.username ?? ""
+        navigationItem.title = user.username
         
-        guard let uid = user?.uid,
-              uid == User.current.uid,
+        guard user.uid == User.current.uid,
               let vc = navigationController?.childViewControllers.first as? ProfileViewController,
               self == vc
               else { return }
@@ -70,7 +69,6 @@ class ProfileViewController: UIViewController {
         tableView.registerNib(for: PostHeaderCell.self)
         tableView.registerNib(for: PostImageCell.self)
         tableView.registerNib(for: PostActionCell.self)
-        tableView.registerNib(for: PostTextCell.self)
         
         // remove separators for empty cells
         tableView.tableFooterView = UIView()
@@ -79,23 +77,19 @@ class ProfileViewController: UIViewController {
     
     // TODO: reconsider function name?
     func loadData() {
-        guard let user = user
-            else { return }
-        
         UserService.observeUser(user, currentUser: User.current) { (user) in
-            if let user = user {
-                self.user = user
-                
-                DispatchQueue.main.async {
-                    self.navigationItem.title = user.username
-                }
-                
+            guard let user = user else { return }
+            
+            self.user = user
+            
+            DispatchQueue.main.async {
+                self.navigationItem.title = user.username
                 let section = IndexSet(integer: 0)
                 self.tableView.reloadSections(section, with: .none)
             }
         }
         
-        PostService.allPostsForUser(user) { (posts) in
+        PostService.allPosts(for: user) { (posts) in
             self.posts = posts
             self.tableView.reloadData()
         }
@@ -122,20 +116,15 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard section > 0 else { return 1 }
-        
-        let post = posts[section - 1]
-        return post.likesCount > 0 ? 4 : 3
+        return section == 0 ? 1 : 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard indexPath.section > 0 else {
             let cell: ProfileHeaderCell = tableView.dequeueReusableCell()
-            
-            cell.postsCountLabel.text = String(user?.postsCount ?? 0)
-            cell.followersCountLabel.text = String(user?.followersCount ?? 0)
-            cell.followingCountLabel.text = String(user?.followingCount ?? 0)
-            
+            configureProfileHeaderCell(cell)
+            cell.delegate = self
+
             return cell
         }
 
@@ -160,21 +149,36 @@ extension ProfileViewController: UITableViewDataSource {
             
         case 2:
             let cell: PostActionCell = tableView.dequeueReusableCell()
+            configureCell(cell, with: post)
             cell.delegate = self
-            cell.timeAgoLabel.text = timestampFormatter.string(from: post.creationDate)
-            cell.likeButton.isSelected = post.isLiked
-            
-            return cell
-        
-        case 3:
-            let cell: PostTextCell = tableView.dequeueReusableCell()
-            cell.postTextLabel.text = "\(post.likesCount) likes"
             
             return cell
             
         default:
             fatalError()
         }
+    }
+    
+    func configureProfileHeaderCell(_ cell: ProfileHeaderCell) {
+        cell.postsCountLabel.text = String(user.postsCount ?? 0)
+        cell.followersCountLabel.text = String(user.followersCount ?? 0)
+        cell.followingCountLabel.text = String(user.followingCount ?? 0)
+        
+        if user.uid == User.current.uid {
+            cell.setFollowButton(withTitle: "Edit Profile", isBlue: false)
+        } else if user.isFollowed {
+            // user is already being followed
+            cell.setFollowButton(withTitle: "Following", isBlue: false)
+        } else {
+            // user is not being followed
+            cell.setFollowButton(withTitle: "Follow", isBlue: true)
+        }
+    }
+    
+    func configureCell(_ cell: PostActionCell, with post: Post) {
+        cell.timeAgoLabel.text = timestampFormatter.string(from: post.creationDate)
+        cell.likeButton.isSelected = post.isLiked
+        cell.likesCountLabel.text = "\(post.likesCount) likes"
     }
 }
 
@@ -194,9 +198,6 @@ extension ProfileViewController: UITableViewDelegate {
             
         case 2:
             return PostActionCell.height
-            
-        case 3:
-            return PostTextCell.height
             
         default:
             fatalError("Error: unexpected indexPath for \(#line):\(#function)")
@@ -225,6 +226,35 @@ extension ProfileViewController: PostHeaderCellDelegate {
     }
 }
 
+extension ProfileViewController: ProfileHeaderCellDelegate {
+    func didTapFollowButton(_ followButton: UIButton, on cell: ProfileHeaderCell) {
+        guard user.uid != User.current.uid else {
+            // segue to edit profile
+            print("segue to rpofile")
+            return
+        }
+
+        followButton.isUserInteractionEnabled = false
+        
+        var completion = { (error: Error?) in
+            defer {
+                followButton.isUserInteractionEnabled = true
+            }
+            
+            if let error = error {
+                assertionFailure(error.localizedDescription)
+                return
+            }
+        }
+
+        if !user.isFollowed {
+            FollowService.followUser(user, completion: completion)
+        } else {
+            FollowService.unfollowUser(user, completion: completion)
+        }
+    }
+}
+
 extension ProfileViewController: PostActionCellDelegate {
     func didTapLikeButton(_ likeButton: UIButton, on cell: PostActionCell) {
         guard let indexPath = tableView.indexPath(for: cell)
@@ -233,7 +263,7 @@ extension ProfileViewController: PostActionCellDelegate {
         likeButton.isUserInteractionEnabled = false
         let post = posts[indexPath.section - 1]
         
-        LikeService.likeOrUnlikePost(post) { [unowned self] (error) in
+        var completion = { (error: Error?) in
             defer {
                 likeButton.isUserInteractionEnabled = true
             }
@@ -243,17 +273,28 @@ extension ProfileViewController: PostActionCellDelegate {
                 return
             }
             
-            DispatchQueue.main.async {
-                if !post.isLiked {
-                    post.likesCount += 1
-                } else {
-                    post.likesCount -= 1
-                }
-                
-                post.isLiked = !post.isLiked
-                // TODO: consider changing this to insert/delete cell for likes?
-                self.tableView.reloadData()
+            if !post.isLiked {
+                post.likesCount += 1
+            } else {
+                post.likesCount -= 1
             }
+            
+            post.likesCount += !post.isLiked ? 1 : -1
+            
+            post.isLiked = !post.isLiked
+            
+            guard let cell = self.tableView.cellForRow(at: indexPath) as? PostActionCell
+                else { return }
+            
+            DispatchQueue.main.async {
+                self.configureCell(cell, with: post)
+            }
+        }
+        
+        if post.isLiked {
+            LikeService.deleteLike(for: post, completion: completion)
+        } else {
+            LikeService.createLike(for: post, completion: completion)
         }
     }
 }

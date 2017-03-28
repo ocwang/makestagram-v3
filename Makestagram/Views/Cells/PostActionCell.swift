@@ -27,6 +27,7 @@ class PostActionCell: UITableViewCell {
     @IBOutlet weak var timeAgoLabel: UILabel!
     @IBOutlet weak var bottomBorder: UIView!
     @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var likesCountLabel: UILabel!
     
     // MARK: - Cell Lifecycle
     
@@ -38,13 +39,5 @@ class PostActionCell: UITableViewCell {
     
     @IBAction func likeButtonTapped(_ sender: UIButton) {
         delegate?.didTapLikeButton(sender, on: self)
-    }
-    
-    @IBAction func commentButtonTapped(_ sender: UIButton) {
-        print("comment button tapped")
-    }
-    
-    @IBAction func directMessageButtonTapped(_ sender: UIButton) {
-        print("direct message button tapped")
     }
 }

@@ -53,7 +53,7 @@ class PostService {
                     return completion(nil)
             }
             
-            LikeService.isPostForKey(postKey, likedByUser: User.current, completion: { (isLiked) in
+            LikeService.isPost(forKey: postKey, likedByUser: User.current, completion: { (isLiked) in
                 post.isLiked = isLiked
                 
                 completion(post)
@@ -61,7 +61,7 @@ class PostService {
         })
     }
     
-    static func allPostsForUser(_ user: User, completion: @escaping ([Post]) -> Void) {
+    static func allPosts(for user: User, completion: @escaping ([Post]) -> Void) {
         let ref = MGDBRef.ref(for: .posts(uid: user.uid))
         
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -79,7 +79,7 @@ class PostService {
                 dispatchGroup.enter()
                 
                 
-                LikeService.isPostForKey(postKey, likedByUser: User.current, completion: { (isLiked) in
+                LikeService.isPost(forKey: postKey, likedByUser: User.current, completion: { (isLiked) in
                     post.isLiked = isLiked
                     posts.append(post)
                     

@@ -36,24 +36,19 @@ class FollowService {
         })
     }
     
-    // TODO: Ask Dion / Eliel how to approach this?
-    
-    static func followOrUnfollowUser(_ user: User, completion: @escaping (Error?) -> Void) {
+    static func followUser(_ user: User, completion: @escaping (Error?) -> Void) {
         let currentUID = User.current.uid
         
         let ref = MGDBRef.ref(for: .default)
         
-        let updatedFollowValue: Bool? = user.isFollowed ? nil : true
-        
-        let followData: [String : Any?] = ["followers/\(user.uid)/\(currentUID)" : updatedFollowValue,
-                                           "following/\(currentUID)/\(user.uid)" : updatedFollowValue]
+        let followData: [String : Any?] = ["followers/\(user.uid)/\(currentUID)" : true,
+                                           "following/\(currentUID)/\(user.uid)" : true]
         
         ref.updateChildValues(followData) { (error, ref) in
             if let error = error {
                 return completion(error)
             }
             
-            let transactionBlock = user.isFollowed ? FIRDatabaseReference.decrementInTransactionBlock : FIRDatabaseReference.incrementInTransactionBlock
             let dispatchGroup = DispatchGroup()
             
             // update following count
@@ -61,7 +56,7 @@ class FollowService {
             dispatchGroup.enter()
             
             let followingCountRef = MGDBRef.ref(for: .followingCount(uid: currentUID))
-            transactionBlock(followingCountRef)({ (error) in
+            followingCountRef.incrementInTransactionBlock(completion: { (error) in
                 if let error = error {
                     assertionFailure(error.localizedDescription)
                 }
@@ -74,7 +69,7 @@ class FollowService {
             dispatchGroup.enter()
             
             let followersCountRef = MGDBRef.ref(for: .followersCount(uid: user.uid))
-            transactionBlock(followersCountRef)({ (error) in
+            followersCountRef.incrementInTransactionBlock(completion: { (error) in
                 if let error = error {
                     assertionFailure(error.localizedDescription)
                 }
@@ -82,62 +77,83 @@ class FollowService {
                 dispatchGroup.leave()
             })
             
-            // get user and fetch their posts.. and add each one from timeline
-            // fetching when a post is liked for each user!!! crazy... how can we make this better
-            
             dispatchGroup.enter()
             
-            if !user.isFollowed {
-                PostService.allPostsForUser(user, completion: { (posts) in
-                    var followData = [String : Any]()
-                    let postsKeys = posts.flatMap { $0.key }
-                    
-                    let timelinePostDict: [String : Any] = ["poster_uid" : user.uid]
-                    postsKeys.forEach { followData["timeline/\(currentUID)/\($0)"] = timelinePostDict }
-                    
-                    ref.updateChildValues(followData, withCompletionBlock: { (error, ref) in
-                        dispatchGroup.leave()
-                    })
-                })
-            } else {
-                PostService.allPostsForUser(user, completion: { (posts) in
-                    // Type Any? value for dictionary causes 3 warnings, but code will not work without type as Any?
-                    var unfollowData = [String : Any?]()
-                    let postsKeys = posts.flatMap { $0.key }
-                    postsKeys.forEach {
-                        // nil must be cast as Any? otherwise dictionary will not be set
-                        // http://stackoverflow.com/questions/26544573/how-to-add-nil-value-to-swift-dictionary
-                        unfollowData["timeline/\(currentUID)/\($0)"] = nil as Any?
-                    }
-                    
-                    ref.updateChildValues(unfollowData, withCompletionBlock: { (error, ref) in
-                        dispatchGroup.leave()
-                    })
-                })
-            }
-
-            /*  This code is not the same as above... why???
-             
-            PostService.allPosts(forUID: user.uid, completion: { (posts) in
-                var updatedFollowData = [String : Any?]()
+            PostService.allPosts(for: user, completion: { (posts) in
+                var followData = [String : Any]()
                 let postsKeys = posts.flatMap { $0.key }
                 
-                if !user.isFollowed {
-                    let timelinePostDict: [String : Any] = ["poster_uid" : user.uid]
-                    postsKeys.forEach { updatedFollowData["timeline/\(currentUID)/\($0)"] = timelinePostDict }
-                } else {
-                    // nil must be cast as Any? otherwise dictionary will not be set
-                    // http://stackoverflow.com/questions/26544573/how-to-add-nil-value-to-swift-dictionary
-                    
-                    postsKeys.forEach { updatedFollowData["timeline/\(currentUID)/\($0)"] = nil as Any? }
-                }
+                let timelinePostDict: [String : Any] = ["poster_uid" : user.uid]
+                postsKeys.forEach { followData["timeline/\(currentUID)/\($0)"] = timelinePostDict }
                 
                 ref.updateChildValues(followData, withCompletionBlock: { (error, ref) in
                     dispatchGroup.leave()
                 })
             })
- 
-             */
+            
+            dispatchGroup.notify(queue: .main, execute: {
+                completion(nil)
+            })
+        }
+    }
+    
+    static func unfollowUser(_ user: User, completion: @escaping (Error?) -> Void) {
+        let currentUID = User.current.uid
+        
+        let ref = MGDBRef.ref(for: .default)
+        
+        let followData: [String : Any?] = ["followers/\(user.uid)/\(currentUID)" : nil,
+                                           "following/\(currentUID)/\(user.uid)" : nil]
+        
+        ref.updateChildValues(followData) { (error, ref) in
+            if let error = error {
+                return completion(error)
+            }
+            
+            let dispatchGroup = DispatchGroup()
+            
+            // update following count
+            
+            dispatchGroup.enter()
+            
+            let followingCountRef = MGDBRef.ref(for: .followingCount(uid: currentUID))
+            followingCountRef.decrementInTransactionBlock(completion: { (error) in
+                if let error = error {
+                    assertionFailure(error.localizedDescription)
+                }
+                
+                dispatchGroup.leave()
+            })
+            
+            // update followers count
+            
+            dispatchGroup.enter()
+            
+            let followersCountRef = MGDBRef.ref(for: .followersCount(uid: user.uid))
+            followersCountRef.decrementInTransactionBlock(completion: { (error) in
+                if let error = error {
+                    assertionFailure(error.localizedDescription)
+                }
+                
+                dispatchGroup.leave()
+            })
+            
+            dispatchGroup.enter()
+            
+            PostService.allPosts(for: user, completion: { (posts) in
+                // Type Any? value for dictionary causes 3 warnings, but code will not work without type as Any?
+                var unfollowData = [String : Any?]()
+                let postsKeys = posts.flatMap { $0.key }
+                postsKeys.forEach {
+                    // nil must be cast as Any? otherwise dictionary will not be set
+                    // http://stackoverflow.com/questions/26544573/how-to-add-nil-value-to-swift-dictionary
+                    unfollowData["timeline/\(currentUID)/\($0)"] = nil as Any?
+                }
+                
+                ref.updateChildValues(unfollowData, withCompletionBlock: { (error, ref) in
+                    dispatchGroup.leave()
+                })
+            })
             
             dispatchGroup.notify(queue: .main, execute: {
                 completion(nil)
