@@ -21,7 +21,7 @@ class MGPaginationHelper {
     
     // MARK: - Properties
     
-    let pageSize = 2
+    let pageSize = 3
     var state: MGPaginationState = .initial
     var lastPostKey: String?
     

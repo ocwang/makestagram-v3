@@ -88,7 +88,8 @@ class PostService {
             }
             
             dispatchGroup.notify(queue: .main, execute: {
-                completion(posts)
+                // TODO: Make sure there isn't a direct way to query this reversed
+                completion(posts.reversed())
             })
         })
     }

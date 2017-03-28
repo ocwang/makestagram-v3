@@ -27,6 +27,8 @@ class HomeViewController: UIViewController {
     
     // MARK: - Subviews
     
+    var refreshControl = UIRefreshControl()
+    
     @IBOutlet weak var tableView: UITableView!
     
     // MARK: - VC Lifecycle
@@ -36,15 +38,7 @@ class HomeViewController: UIViewController {
         
         setupTableView()
         
-        let ref = FIRDatabase.database().reference()
-        
-        // TODO: temp way of doing this.. auto refresh shouldn't be handled this
-        ref.child("timeline").child(User.current.uid).observe(.value, with: { (snapshot) in
-            self.paginationHelper.reloadData(completion: { (posts) in
-                self.posts = posts
-                self.tableView.reloadData()
-            })
-        })
+        loadData()
     }
     
     // MARK: - Initial Setup
@@ -57,6 +51,23 @@ class HomeViewController: UIViewController {
         // remove separators for empty cells
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
+        
+        refreshControl.addTarget(self, action: #selector(loadData), for: .valueChanged)
+        tableView.addSubview(refreshControl)
+    }
+    
+    // MARK: - 
+    
+    func loadData() {
+        self.paginationHelper.reloadData(completion: { [unowned self] (posts) in
+            self.posts = posts
+            
+            if self.refreshControl.isRefreshing {
+                self.refreshControl.endRefreshing()
+            }
+            
+            self.tableView.reloadData()
+        })
     }
 }
 

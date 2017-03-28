@@ -75,7 +75,6 @@ class ProfileViewController: UIViewController {
         tableView.separatorStyle = .none
     }
     
-    // TODO: reconsider function name?
     func loadData() {
         UserService.observeUser(user, currentUser: User.current) { (user) in
             guard let user = user else { return }
@@ -87,11 +86,13 @@ class ProfileViewController: UIViewController {
                 let section = IndexSet(integer: 0)
                 self.tableView.reloadSections(section, with: .none)
             }
-        }
-        
-        PostService.allPosts(for: user) { (posts) in
-            self.posts = posts
-            self.tableView.reloadData()
+            
+            PostService.allPosts(for: user) { (posts) in
+                self.posts = posts
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
         }
     }
 }
