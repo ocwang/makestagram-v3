@@ -21,9 +21,15 @@ class MGPaginationHelper {
     
     // MARK: - Properties
     
-    let pageSize = 3
+    let pageSize: Int
     var state: MGPaginationState = .initial
     var lastPostKey: String?
+    
+    // MARK: - Init
+    
+    init(pageSize: Int = 3) {
+        self.pageSize = pageSize
+    }
     
     // MARK: -
     

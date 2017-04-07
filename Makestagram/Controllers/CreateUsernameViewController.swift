@@ -8,7 +8,6 @@
 
 import UIKit
 import FirebaseAuth
-import FirebaseDatabase
 
 class CreateUsernameViewController: UIViewController {
     
@@ -26,23 +25,20 @@ class CreateUsernameViewController: UIViewController {
     // MARK: - IBActions
     
     @IBAction func nextButtonTapped(_ sender: UIButton) {
-         // check if user exists, otherwise set username
-        
-        guard let uid = FIRAuth.auth()?.currentUser?.uid,
+        guard let firUser = FIRAuth.auth()?.currentUser,
             let username = usernameTextField.text,
             !username.isEmpty else { return }
         
-        UserService.createUser(username, forUID: uid, completion: { [unowned self] (error) in
-            if let error = error {
-                print(error.localizedDescription)
+        UserService.create(firUser, username: username) { [unowned self] (user) in
+            guard let user = user else {
+                // handle error
                 return
             }
             
-            let user = User(uid: uid, username: username)
             User.setCurrentUser(user, archiveData: true)
             
-            let storyboard = UIStoryboard(type: .main)
-            self.view.window?.setRootViewControllerToInitialViewController(of: storyboard)
-        })
+            let initialViewController = UIStoryboard.initialViewController(for: .main)
+            self.view.window?.setRootViewController(with: initialViewController)
+        }
     }
 }

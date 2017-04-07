@@ -8,12 +8,12 @@
 
 import Foundation
 import FirebaseDatabase
-import FirebaseAuth
+import FirebaseAuth.FIRUser
 
-class UserService {
+struct UserService {
     
     static func allUsers(for currentUser: User, completion: @escaping ([User]) -> Void) {
-        let ref = MGDBRef.ref(for: .users)
+        let ref = FIRDatabaseReference.toLocation(.users)
         
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let allUsers = snapshot.children.allObjects as? [FIRDataSnapshot]
@@ -44,7 +44,7 @@ class UserService {
     }
     
     static func observeUser(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
-        let userRef = MGDBRef.ref(for: .showUser(uid: user.uid))
+        let userRef = FIRDatabaseReference.toLocation(.showUser(uid: user.uid))
         
         userRef.observe(.value, with: { (snapshot) in
             guard let user = User(snapshot: snapshot)
@@ -60,36 +60,55 @@ class UserService {
         })
     }
     
-    static func showUser(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
-        let ref = MGDBRef.ref(for: .showUser(uid: user.uid))
-        
-        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let user = User(snapshot: snapshot) else { return completion(nil) }
+    static func current(_ firUser: FIRUser, completion: @escaping (User?) -> Void) {
+        let ref = FIRDatabaseReference.toLocation(.showUser(uid: firUser.uid))
+        ref.observeSingleEvent(of: .value, with: { snapshot in
+            guard let user = User(snapshot: snapshot) else {
+                return completion(nil)
+            }
             
-            guard user.uid != currentUser.uid else { return completion(user) }
-            
-            FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
-                user.isFollowed = isFollowed
-                completion(user)
-            })
+            completion(user)
         })
     }
     
-    static func createUser(_ username: String, forUID uid: String, completion: ((Error?) -> Void)? = nil) {
-        let ref = MGDBRef.ref(for: .showUser(uid: uid))
-        
+//    static func show(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
+//        let ref = MGDatabaseReference.ref(for: .showUser(uid: user.uid))
+//        
+//        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+//            guard let user = User(snapshot: snapshot) else { return completion(nil) }
+//            
+//            guard user.uid != currentUser.uid else { return completion(user) }
+//            
+//            FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
+//                user.isFollowed = isFollowed
+//                completion(user)
+//            })
+//        })
+//    }
+    
+    static func create(_ firUser: FIRUser, username: String, completion: @escaping (User?) -> Void) {
         let userAttrs: [String : Any] = ["username": username,
                                          "followers_count": 0,
                                          "following_count" : 0,
                                          "posts_count" : 0]
         
+        let ref = FIRDatabaseReference.toLocation(.showUser(uid: firUser.uid))
+        
         ref.setValue(userAttrs) { (error, ref) in
-            completion?(error)
+            if let error = error {
+                assertionFailure(error.localizedDescription)
+                return completion(nil)
+            }
+            
+            ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                let user = User(snapshot: snapshot)
+                completion(user)
+            })
         }
     }
     
     static func timeline(pageSize: UInt, lastPostKey: String? = nil, completion: @escaping ([Post]) -> Void) {
-        let ref = MGDBRef.ref(for: .timeline(uid: User.current.uid))
+        let ref = FIRDatabaseReference.toLocation(.timeline(uid: User.current.uid))
         var query = ref.queryOrderedByKey().queryLimited(toLast: pageSize)
         if let lastPostKey = lastPostKey {
             query = query.queryEnding(atValue: lastPostKey)
@@ -109,7 +128,7 @@ class UserService {
                 
                 dispatchGroup.enter()
                 
-                PostService.showPostForKey(postSnap.key, posterUID: posterUID, completion: { (post) in
+                PostService.showPost(forKey: postSnap.key, posterUID: posterUID, completion: { (post) in
                     if let post = post {
                         posts.append(post)
                     }

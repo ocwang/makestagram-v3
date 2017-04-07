@@ -30,8 +30,8 @@ class SettingsViewController: UIViewController {
         handle = FIRAuth.auth()?.addStateDidChangeListener() { [unowned self] (auth, user) in
             guard user == nil else { return }
             
-            let storyboard = UIStoryboard(type: .login)
-            self.view.window?.setRootViewControllerToInitialViewController(of: storyboard)
+            let initialViewController = UIStoryboard.initialViewController(for: .login)
+            self.view.window?.setRootViewController(with: initialViewController)
         }
     }
     

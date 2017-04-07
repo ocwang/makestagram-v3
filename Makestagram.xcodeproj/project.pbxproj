@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		050034E9BD0C3728D5913A24 /* Pods_Makestagram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */; };
-		CA2DC5641E7F62C90064FBC9 /* MGDatabaseReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5631E7F62C90064FBC9 /* MGDatabaseReference.swift */; };
 		CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5651E8049540064FBC9 /* FollowService.swift */; };
 		CA2DC5681E8054360064FBC9 /* FIRDatabaseReference+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */; };
 		CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5691E8056070064FBC9 /* LikeService.swift */; };
 		CA365D1B1E7CF139009F56AE /* ProfileHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA365D1A1E7CF139009F56AE /* ProfileHeaderCell.swift */; };
+		CA5DEAC71E9804940055D744 /* FIRDatabaseReference+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5DEAC61E9804940055D744 /* FIRDatabaseReference+Location.swift */; };
 		CA6068561E74B76B0051F7D9 /* MGPhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */; };
 		CA6068581E7668490051F7D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6068571E7668490051F7D9 /* Post.swift */; };
 		CA635A291E71D66F00E6E94C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA635A281E71D66F00E6E94C /* GoogleService-Info.plist */; };
@@ -21,7 +21,6 @@
 		CA8417751E720C9A005A0A60 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8417741E720C9A005A0A60 /* Constants.swift */; };
 		CA8417791E723C1C005A0A60 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8417781E723C1C005A0A60 /* User.swift */; };
 		CA84177C1E731BF7005A0A60 /* Storyboard+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */; };
-		CA84177E1E732141005A0A60 /* UIViewController+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84177D1E732141005A0A60 /* UIViewController+Utility.swift */; };
 		CA8417801E732D3A005A0A60 /* UIWindow+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */; };
 		CAAEBE421E7A287300EF6E6C /* FindFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAAEBE411E7A287300EF6E6C /* FindFriendsViewController.swift */; };
 		CAAEBE441E7A68B900EF6E6C /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAAEBE431E7A68B900EF6E6C /* UserService.swift */; };
@@ -54,11 +53,11 @@
 /* Begin PBXFileReference section */
 		4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Makestagram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		663D54F91ED125B01595C135 /* Pods-Makestagram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Makestagram.release.xcconfig"; path = "Pods/Target Support Files/Pods-Makestagram/Pods-Makestagram.release.xcconfig"; sourceTree = "<group>"; };
-		CA2DC5631E7F62C90064FBC9 /* MGDatabaseReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGDatabaseReference.swift; path = Services/MGDatabaseReference.swift; sourceTree = "<group>"; };
 		CA2DC5651E8049540064FBC9 /* FollowService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FollowService.swift; path = Services/FollowService.swift; sourceTree = "<group>"; };
 		CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FIRDatabaseReference+Utility.swift"; path = "Extensions/FIRDatabaseReference+Utility.swift"; sourceTree = "<group>"; };
 		CA2DC5691E8056070064FBC9 /* LikeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LikeService.swift; path = Services/LikeService.swift; sourceTree = "<group>"; };
 		CA365D1A1E7CF139009F56AE /* ProfileHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileHeaderCell.swift; path = Views/Cells/ProfileHeaderCell.swift; sourceTree = "<group>"; };
+		CA5DEAC61E9804940055D744 /* FIRDatabaseReference+Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FIRDatabaseReference+Location.swift"; path = "Extensions/FIRDatabaseReference+Location.swift"; sourceTree = "<group>"; };
 		CA6068551E74B76B0051F7D9 /* MGPhotoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGPhotoHelper.swift; path = Helpers/MGPhotoHelper.swift; sourceTree = "<group>"; };
 		CA6068571E7668490051F7D9 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Post.swift; path = Models/Post.swift; sourceTree = "<group>"; };
 		CA635A281E71D66F00E6E94C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -69,7 +68,6 @@
 		CA8417741E720C9A005A0A60 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = SupportingFiles/Constants.swift; sourceTree = "<group>"; };
 		CA8417781E723C1C005A0A60 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = Models/User.swift; sourceTree = "<group>"; };
 		CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Storyboard+Utility.swift"; path = "Extensions/Storyboard+Utility.swift"; sourceTree = "<group>"; };
-		CA84177D1E732141005A0A60 /* UIViewController+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIViewController+Utility.swift"; path = "Extensions/UIViewController+Utility.swift"; sourceTree = "<group>"; };
 		CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIWindow+Utility.swift"; path = "Extensions/UIWindow+Utility.swift"; sourceTree = "<group>"; };
 		CAAEBE411E7A287300EF6E6C /* FindFriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FindFriendsViewController.swift; path = Controllers/FindFriendsViewController.swift; sourceTree = "<group>"; };
 		CAAEBE431E7A68B900EF6E6C /* UserService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserService.swift; path = Services/UserService.swift; sourceTree = "<group>"; };
@@ -193,7 +191,7 @@
 				CAAEBE471E7B991F00EF6E6C /* UIButton+Utility.swift */,
 				CAEE2BFB1E73CE6D00F361C9 /* UITableView+Utility.swift */,
 				CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */,
-				CA84177D1E732141005A0A60 /* UIViewController+Utility.swift */,
+				CA5DEAC61E9804940055D744 /* FIRDatabaseReference+Location.swift */,
 				CAFB7CB61E7B9D1E00A3D71B /* UIColor+Utility.swift */,
 				CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */,
 			);
@@ -203,7 +201,6 @@
 		CAB98BE61E770F3800BE2D92 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				CA2DC5631E7F62C90064FBC9 /* MGDatabaseReference.swift */,
 				CAB98BE41E770F3300BE2D92 /* StorageService.swift */,
 				CAB98BE91E77526100BE2D92 /* PostService.swift */,
 				CAAEBE431E7A68B900EF6E6C /* UserService.swift */,
@@ -428,14 +425,13 @@
 				CAAEBE461E7B947A00EF6E6C /* FindFriendCell.swift in Sources */,
 				CA84177C1E731BF7005A0A60 /* Storyboard+Utility.swift in Sources */,
 				CAEE2BFC1E73CE6D00F361C9 /* UITableView+Utility.swift in Sources */,
-				CA2DC5641E7F62C90064FBC9 /* MGDatabaseReference.swift in Sources */,
+				CA5DEAC71E9804940055D744 /* FIRDatabaseReference+Location.swift in Sources */,
 				CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */,
 				CAB98BE51E770F3300BE2D92 /* StorageService.swift in Sources */,
 				CAC64FA21E831B5300BBC85F /* MGPaginationHelper.swift in Sources */,
 				CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */,
 				CA7CEB941E708EB800AF43ED /* AppDelegate.swift in Sources */,
 				CA6068561E74B76B0051F7D9 /* MGPhotoHelper.swift in Sources */,
-				CA84177E1E732141005A0A60 /* UIViewController+Utility.swift in Sources */,
 				CAEACD191E7380B600E2AEE4 /* CreateUsernameViewController.swift in Sources */,
 				CA8417801E732D3A005A0A60 /* UIWindow+Utility.swift in Sources */,
 				CAEACD2B1E7381F800E2AEE4 /* PostImageCell.swift in Sources */,

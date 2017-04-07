@@ -12,7 +12,7 @@ import FirebaseDatabase
 class LikeService {
     
     static func isPost(forKey postKey: String, likedByUser user: User, completion: @escaping (Bool) -> Void) {
-        let ref = MGDBRef.ref(for: .isLiked(postKey: postKey))
+        let ref = FIRDatabaseReference.toLocation(.isLiked(postKey: postKey))
         
         ref.queryEqual(toValue: nil, childKey: user.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let _ = snapshot.value as? [String : Bool] else {
@@ -26,13 +26,13 @@ class LikeService {
     static func createLike(for post: Post, completion: @escaping (Error?) -> Void) {
         let (postKey, poster) = validatePost(post)
         
-        let postLikesRef = MGDBRef.ref(for: .likes(postKey: postKey, currentUID: User.current.uid))
+        let postLikesRef = FIRDatabaseReference.toLocation(.likes(postKey: postKey, currentUID: User.current.uid))
         postLikesRef.setValue(true) { (error, ref) in
             if let error = error {
                 return completion(error)
             }
             
-            let likesCountRef = MGDBRef.ref(for: .likesCount(posterUID: poster.uid, postKey: postKey))
+            let likesCountRef = FIRDatabaseReference.toLocation(.likesCount(posterUID: poster.uid, postKey: postKey))
             likesCountRef.incrementInTransactionBlock(completion: completion)
         }
     }
@@ -40,13 +40,13 @@ class LikeService {
     static func deleteLike(for post: Post, completion: @escaping (Error?) -> Void) {
         let (postKey, poster) = validatePost(post)
         
-        let postLikesRef = MGDBRef.ref(for: .likes(postKey: postKey, currentUID: User.current.uid))
+        let postLikesRef = FIRDatabaseReference.toLocation(.likes(postKey: postKey, currentUID: User.current.uid))
         postLikesRef.setValue(nil) { (error, ref) in
             if let error = error {
                 return completion(error)
             }
             
-            let likesCountRef = MGDBRef.ref(for: .likesCount(posterUID: poster.uid, postKey: postKey))
+            let likesCountRef = FIRDatabaseReference.toLocation(.likesCount(posterUID: poster.uid, postKey: postKey))
             likesCountRef.decrementInTransactionBlock(completion: completion)
         }
     }

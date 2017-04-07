@@ -9,12 +9,12 @@
 import UIKit
 
 extension UIWindow {
-    func setRootViewControllerToInitialViewController(of storyboard: UIStoryboard) {
-        guard let initialViewController = storyboard.instantiateInitialViewController() else {
-            fatalError("Error: couldn't instantiate initial view controller for storyboard.")
-        }
-        
-        rootViewController = initialViewController
+    
+    // TODO: don't like this naming because it says nothing about makeKeyAndVisible()
+    // should this be removed altogether
+    
+    func setRootViewController(with viewController: UIViewController) {
+        rootViewController = viewController
         makeKeyAndVisible()
     }
 }

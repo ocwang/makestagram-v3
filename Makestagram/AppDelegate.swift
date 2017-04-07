@@ -32,19 +32,19 @@ extension AppDelegate {
     
     fileprivate func setInitialRootViewController() {
         let defaults = UserDefaults.standard
-        let storyboard: UIStoryboard
+        let initialViewController: UIViewController
         
         guard FIRAuth.auth()?.currentUser != nil,
             let userData = defaults.object(forKey: Constants.UserDefaults.currentUser) as? Data,
             let user = NSKeyedUnarchiver.unarchiveObject(with: userData) as? User else {
-                storyboard = UIStoryboard(type: .login)
-                window?.setRootViewControllerToInitialViewController(of: storyboard)
+                initialViewController = UIStoryboard.initialViewController(for: .login)
+                window?.setRootViewController(with: initialViewController)
                 return
         }
         
         User.setCurrentUser(user, archiveData: false)
         
-        storyboard = UIStoryboard(type: .main)
-        window?.setRootViewControllerToInitialViewController(of: storyboard)
+        initialViewController = UIStoryboard.initialViewController(for: .main)
+        window?.setRootViewController(with: initialViewController)
     }
 }

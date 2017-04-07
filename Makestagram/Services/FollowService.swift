@@ -12,7 +12,7 @@ import FirebaseDatabase
 class FollowService {
 
     static func allFollowersForUser(_ user: User, completion: @escaping ([String]) -> Void) {
-        let allFollowersRef = MGDBRef.ref(for: .followers(uid: user.uid))
+        let allFollowersRef = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
         
         allFollowersRef.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let followersDict = snapshot.value as? [String : Bool] else {
@@ -25,8 +25,8 @@ class FollowService {
     }
     
     static func isUser(_ user: User, beingFollowedbyOtherUser otherUser: User, completion: @escaping (Bool) -> Void) {
-        let ref = MGDBRef.ref(for: .followers(uid: user.uid))
-        
+        let ref = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
+            
         ref.queryEqual(toValue: nil, childKey: otherUser.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let _ = snapshot.value as? [String : Bool] else {
                 return completion(false)
@@ -39,7 +39,7 @@ class FollowService {
     static func followUser(_ user: User, completion: @escaping (Error?) -> Void) {
         let currentUID = User.current.uid
         
-        let ref = MGDBRef.ref(for: .default)
+        let ref = FIRDatabaseReference.toLocation(.root)
         
         let followData: [String : Any?] = ["followers/\(user.uid)/\(currentUID)" : true,
                                            "following/\(currentUID)/\(user.uid)" : true]
@@ -55,7 +55,7 @@ class FollowService {
             
             dispatchGroup.enter()
             
-            let followingCountRef = MGDBRef.ref(for: .followingCount(uid: currentUID))
+            let followingCountRef = FIRDatabaseReference.toLocation(.followingCount(uid: currentUID))
             followingCountRef.incrementInTransactionBlock(completion: { (error) in
                 if let error = error {
                     assertionFailure(error.localizedDescription)
@@ -68,7 +68,7 @@ class FollowService {
             
             dispatchGroup.enter()
             
-            let followersCountRef = MGDBRef.ref(for: .followersCount(uid: user.uid))
+            let followersCountRef = FIRDatabaseReference.toLocation(.followersCount(uid: user.uid))
             followersCountRef.incrementInTransactionBlock(completion: { (error) in
                 if let error = error {
                     assertionFailure(error.localizedDescription)
@@ -100,7 +100,7 @@ class FollowService {
     static func unfollowUser(_ user: User, completion: @escaping (Error?) -> Void) {
         let currentUID = User.current.uid
         
-        let ref = MGDBRef.ref(for: .default)
+        let ref = FIRDatabaseReference.toLocation(.root)
         
         let followData: [String : Any?] = ["followers/\(user.uid)/\(currentUID)" : nil,
                                            "following/\(currentUID)/\(user.uid)" : nil]
@@ -116,7 +116,7 @@ class FollowService {
             
             dispatchGroup.enter()
             
-            let followingCountRef = MGDBRef.ref(for: .followingCount(uid: currentUID))
+            let followingCountRef = FIRDatabaseReference.toLocation(.followingCount(uid: currentUID))
             followingCountRef.decrementInTransactionBlock(completion: { (error) in
                 if let error = error {
                     assertionFailure(error.localizedDescription)
@@ -129,7 +129,7 @@ class FollowService {
             
             dispatchGroup.enter()
             
-            let followersCountRef = MGDBRef.ref(for: .followersCount(uid: user.uid))
+            let followersCountRef = FIRDatabaseReference.toLocation(.followersCount(uid: user.uid))
             followersCountRef.decrementInTransactionBlock(completion: { (error) in
                 if let error = error {
                     assertionFailure(error.localizedDescription)

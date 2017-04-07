@@ -15,8 +15,8 @@ class PostService {
     static func createPost(_ post: Post) {
         let currentUser = User.current
         
-        let dbRef = MGDBRef.ref(for: .default)
-        let newPostRef = MGDBRef.ref(for: .newPost)
+        let dbRef = FIRDatabaseReference.toLocation(.root)
+        let newPostRef = FIRDatabaseReference.toLocation(.newPost)
         let newPostKey = newPostRef.key
         
         FollowService.allFollowersForUser(currentUser) { (followerKeys) in
@@ -38,15 +38,16 @@ class PostService {
             dbRef.updateChildValues(updatedData) { (error, ref) in
                 
                 // update user's post count
-                let postsCountRef = MGDBRef.ref(for: .postCount(uid: currentUser.uid))
+                
+                
+                let postsCountRef = FIRDatabaseReference.toLocation(.postCount(uid: currentUser.uid))
                 postsCountRef.incrementInTransactionBlock(completion: nil)
             }
         }
     }
     
-    static func showPostForKey(_ postKey: String, posterUID: String, completion: @escaping (Post?) -> Void) {
-        let ref = MGDBRef.ref(for: .showPost(uid: posterUID, postKey: postKey))
-        
+    static func showPost(forKey postKey: String, posterUID: String, completion: @escaping (Post?) -> Void) {
+        let ref = FIRDatabaseReference.toLocation(.showPost(uid: posterUID, postKey: postKey))
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let post = Post(snapshot: snapshot),
                 let postKey = post.key else {
@@ -62,7 +63,7 @@ class PostService {
     }
     
     static func allPosts(for user: User, completion: @escaping ([Post]) -> Void) {
-        let ref = MGDBRef.ref(for: .posts(uid: user.uid))
+        let ref = FIRDatabaseReference.toLocation(.posts(uid: user.uid))
         
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]
