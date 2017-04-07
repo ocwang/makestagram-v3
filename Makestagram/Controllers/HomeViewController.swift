@@ -148,23 +148,6 @@ extension HomeViewController: UITableViewDelegate {
 }
 
 extension HomeViewController: PostHeaderCellDelegate {
-    func didTapUserHitBoxButton(_ userHitBoxButton: UIButton, on cell: PostHeaderCell) {
-        // TODO: abstract this out
-        guard let indexPath = tableView.indexPath(for: cell)
-            else { return }
-        
-        let post = posts[indexPath.section]
-        
-        guard let poster = post.poster
-            else { return }
-        
-        let storyboard = UIStoryboard(type: .profile)
-        let profileViewController: ProfileViewController = storyboard.instantiateViewController()
-        profileViewController.user = poster
-        
-        navigationController?.pushViewController(profileViewController, animated: true)
-    }
-    
     func didTapOptionsButton(_ optionsButton: UIButton, on cell: PostHeaderCell) {
         guard let indexPath = tableView.indexPath(for: cell),
               let poster = posts[indexPath.section].poster

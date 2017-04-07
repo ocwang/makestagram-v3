@@ -60,21 +60,6 @@ extension FindFriendsViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - UITableViewDelegate
-
-extension FindFriendsViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-        
-        let storyboard = UIStoryboard(type: .profile)
-        let selectedUser = users[indexPath.row]
-        let profileViewController: ProfileViewController = storyboard.instantiateViewController()
-        profileViewController.user = selectedUser
-        
-        navigationController?.pushViewController(profileViewController, animated: true)
-    }
-}
-
 extension FindFriendsViewController: FindFriendCellDelegate {
     func didTapFollowButton(_ followButton: UIButton, on cell: FindFriendCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }

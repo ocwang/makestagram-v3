@@ -10,11 +10,6 @@ import UIKit
 
 protocol PostHeaderCellDelegate: class {
     func didTapOptionsButton(_ optionsButton: UIButton, on cell: PostHeaderCell)
-    func didTapUserHitBoxButton(_ userHitBoxButton: UIButton, on cell: PostHeaderCell)
-}
-
-extension PostHeaderCellDelegate {
-    func didTapUserHitBoxButton(_ userHitBoxButton: UIButton, on cell: PostHeaderCell) { }
 }
 
 class PostHeaderCell: UITableViewCell {
@@ -29,7 +24,6 @@ class PostHeaderCell: UITableViewCell {
 
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
-    @IBOutlet weak var userHitBoxButton: UIButton!
     @IBOutlet weak var optionsButton: UIButton!
     
     // MARK: - Cell Lifecycle
@@ -48,9 +42,5 @@ class PostHeaderCell: UITableViewCell {
 
     @IBAction func optionsButtonTapped(_ sender: UIButton) {
         delegate?.didTapOptionsButton(sender, on: self)
-    }
-    
-    @IBAction func userHitBoxButtonTapped(_ sender: UIButton) {
-        delegate?.didTapUserHitBoxButton(sender, on: self)
     }
 }

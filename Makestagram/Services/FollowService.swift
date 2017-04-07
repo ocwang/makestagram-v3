@@ -49,36 +49,6 @@ class FollowService {
                 return completion(error)
             }
             
-            let dispatchGroup = DispatchGroup()
-            
-            // update following count
-            
-            dispatchGroup.enter()
-            
-            let followingCountRef = FIRDatabaseReference.toLocation(.followingCount(uid: currentUID))
-            followingCountRef.incrementInTransactionBlock(completion: { (error) in
-                if let error = error {
-                    assertionFailure(error.localizedDescription)
-                }
-                
-                dispatchGroup.leave()
-            })
-            
-            // update followers count
-            
-            dispatchGroup.enter()
-            
-            let followersCountRef = FIRDatabaseReference.toLocation(.followersCount(uid: user.uid))
-            followersCountRef.incrementInTransactionBlock(completion: { (error) in
-                if let error = error {
-                    assertionFailure(error.localizedDescription)
-                }
-                
-                dispatchGroup.leave()
-            })
-            
-            dispatchGroup.enter()
-            
             PostService.allPosts(for: user, completion: { (posts) in
                 var followData = [String : Any]()
                 let postsKeys = posts.flatMap { $0.key }
@@ -87,12 +57,8 @@ class FollowService {
                 postsKeys.forEach { followData["timeline/\(currentUID)/\($0)"] = timelinePostDict }
                 
                 ref.updateChildValues(followData, withCompletionBlock: { (error, ref) in
-                    dispatchGroup.leave()
+                    completion(nil)
                 })
-            })
-            
-            dispatchGroup.notify(queue: .main, execute: {
-                completion(nil)
             })
         }
     }
@@ -110,36 +76,6 @@ class FollowService {
                 return completion(error)
             }
             
-            let dispatchGroup = DispatchGroup()
-            
-            // update following count
-            
-            dispatchGroup.enter()
-            
-            let followingCountRef = FIRDatabaseReference.toLocation(.followingCount(uid: currentUID))
-            followingCountRef.decrementInTransactionBlock(completion: { (error) in
-                if let error = error {
-                    assertionFailure(error.localizedDescription)
-                }
-                
-                dispatchGroup.leave()
-            })
-            
-            // update followers count
-            
-            dispatchGroup.enter()
-            
-            let followersCountRef = FIRDatabaseReference.toLocation(.followersCount(uid: user.uid))
-            followersCountRef.decrementInTransactionBlock(completion: { (error) in
-                if let error = error {
-                    assertionFailure(error.localizedDescription)
-                }
-                
-                dispatchGroup.leave()
-            })
-            
-            dispatchGroup.enter()
-            
             PostService.allPosts(for: user, completion: { (posts) in
                 // Type Any? value for dictionary causes 3 warnings, but code will not work without type as Any?
                 var unfollowData = [String : Any?]()
@@ -151,12 +87,8 @@ class FollowService {
                 }
                 
                 ref.updateChildValues(unfollowData, withCompletionBlock: { (error, ref) in
-                    dispatchGroup.leave()
+                    completion(nil)
                 })
-            })
-            
-            dispatchGroup.notify(queue: .main, execute: {
-                completion(nil)
             })
         }
     }

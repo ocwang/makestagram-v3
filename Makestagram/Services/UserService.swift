@@ -87,10 +87,7 @@ struct UserService {
 //    }
     
     static func create(_ firUser: FIRUser, username: String, completion: @escaping (User?) -> Void) {
-        let userAttrs: [String : Any] = ["username": username,
-                                         "followers_count": 0,
-                                         "following_count" : 0,
-                                         "posts_count" : 0]
+        let userAttrs: [String : Any] = ["username": username]
         
         let ref = FIRDatabaseReference.toLocation(.showUser(uid: firUser.uid))
         

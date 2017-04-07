@@ -16,15 +16,12 @@ extension FIRDatabaseReference {
         case posts(uid: String)
         case showPost(uid: String, postKey: String)
         case newPost
-        case postCount(uid: String)
         
         case users
         case showUser(uid: String)
         case timeline(uid: String)
         
         case followers(uid: String)
-        case followingCount(uid: String)
-        case followersCount(uid: String)
         
         case likes(postKey: String, currentUID: String)
         case isLiked(postKey: String)
@@ -46,9 +43,6 @@ extension FIRDatabaseReference {
             case .newPost:
                 return root.child("posts").childByAutoId()
                 
-            case .postCount(let uid):
-                return root.child("users").child(uid).child("posts_count")
-                
             case .users:
                 return root.child("users")
                 
@@ -60,12 +54,6 @@ extension FIRDatabaseReference {
                 
             case .followers(let uid):
                 return root.child("followers").child(uid)
-                
-            case .followingCount(let uid):
-                return root.child("users").child(uid).child("following_count")
-                
-            case .followersCount(let uid):
-                return root.child("users").child(uid).child("followers_count")
                 
             case let .likes(postKey, currentUID):
                 return root.child("postLikes").child(postKey).child(currentUID)

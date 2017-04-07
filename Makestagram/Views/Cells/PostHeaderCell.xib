@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -44,31 +44,20 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QYa-KN-GjH">
-                        <rect key="frame" x="0.0" y="0.0" width="137.5" height="54"/>
-                        <connections>
-                            <action selector="userHitBoxButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="9Q1-8v-Jyn"/>
-                        </connections>
-                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Dbp-we-5WT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="2K7-7k-Gbf"/>
                     <constraint firstAttribute="trailing" secondItem="vrs-6y-fg0" secondAttribute="trailing" id="3ci-yd-ruQ"/>
                     <constraint firstItem="ay8-Vg-weA" firstAttribute="leading" secondItem="Dbp-we-5WT" secondAttribute="trailing" constant="8" id="Bbb-36-0k0"/>
-                    <constraint firstAttribute="bottom" secondItem="QYa-KN-GjH" secondAttribute="bottom" id="DAG-zG-beh"/>
                     <constraint firstItem="vrs-6y-fg0" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="I6s-hs-tyT"/>
                     <constraint firstItem="Dbp-we-5WT" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="LS7-8z-mza"/>
                     <constraint firstItem="ay8-Vg-weA" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Lqg-QG-Ksg"/>
                     <constraint firstItem="vrs-6y-fg0" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ay8-Vg-weA" secondAttribute="trailing" constant="15" id="Msx-IS-1tx"/>
-                    <constraint firstItem="QYa-KN-GjH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="bEX-JQ-qLF"/>
-                    <constraint firstItem="QYa-KN-GjH" firstAttribute="trailing" secondItem="ay8-Vg-weA" secondAttribute="trailing" constant="8" id="gL1-CP-i1f"/>
-                    <constraint firstItem="QYa-KN-GjH" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="pWs-iq-jLC"/>
                     <constraint firstAttribute="bottom" secondItem="ay8-Vg-weA" secondAttribute="bottom" id="y9H-mU-VK6"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="optionsButton" destination="vrs-6y-fg0" id="7sS-dC-FYh"/>
-                <outlet property="userHitBoxButton" destination="QYa-KN-GjH" id="sfX-yt-jeW"/>
                 <outlet property="userImageView" destination="Dbp-we-5WT" id="ErE-y3-5ny"/>
                 <outlet property="usernameLabel" destination="ay8-Vg-weA" id="64c-te-ifL"/>
             </connections>

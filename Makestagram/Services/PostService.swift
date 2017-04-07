@@ -34,15 +34,8 @@ class PostService {
             
             updatedData["posts/\(currentUser.uid)/\(newPostKey)"] = postDict
             
-            // write dictionary to firebase
-            dbRef.updateChildValues(updatedData) { (error, ref) in
-                
-                // update user's post count
-                
-                
-                let postsCountRef = FIRDatabaseReference.toLocation(.postCount(uid: currentUser.uid))
-                postsCountRef.incrementInTransactionBlock(completion: nil)
-            }
+            // TODO: should we return the post after it's written?
+            dbRef.updateChildValues(updatedData)
         }
     }
     
