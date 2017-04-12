@@ -43,22 +43,22 @@ struct UserService {
         })
     }
     
-    static func observeUser(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
-        let userRef = FIRDatabaseReference.toLocation(.showUser(uid: user.uid))
-        
-        userRef.observe(.value, with: { (snapshot) in
-            guard let user = User(snapshot: snapshot)
-                else { return completion(nil) }
-            
-            guard user.uid != currentUser.uid
-                else { return completion(user) }
-            
-            FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
-                user.isFollowed = isFollowed
-                completion(user)
-            })
-        })
-    }
+//    static func observeUser(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
+//        let userRef = FIRDatabaseReference.toLocation(.showUser(uid: user.uid))
+//        
+//        userRef.observe(.value, with: { (snapshot) in
+//            guard let user = User(snapshot: snapshot)
+//                else { return completion(nil) }
+//            
+//            guard user.uid != currentUser.uid
+//                else { return completion(user) }
+//            
+//            FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
+//                user.isFollowed = isFollowed
+//                completion(user)
+//            })
+//        })
+//    }
     
     static func current(_ firUser: FIRUser, completion: @escaping (User?) -> Void) {
         let ref = FIRDatabaseReference.toLocation(.showUser(uid: firUser.uid))
@@ -125,7 +125,7 @@ struct UserService {
                 
                 dispatchGroup.enter()
                 
-                PostService.showPost(forKey: postSnap.key, posterUID: posterUID, completion: { (post) in
+                PostService.show(forKey: postSnap.key, posterUID: posterUID, completion: { (post) in
                     if let post = post {
                         posts.append(post)
                     }
@@ -137,6 +137,41 @@ struct UserService {
             dispatchGroup.notify(queue: .main, execute: {
                 // TODO: better way of ordering... wtf can't do this server side w firebase
                 completion(posts.reversed())
+            })
+        })
+    }
+    
+    static func posts(for user: User, completion: @escaping ([Post]) -> Void) {
+        let ref = FIRDatabaseReference.toLocation(.posts(uid: user.uid))
+        
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+                return completion([])
+            }
+            
+            let dispatchGroup = DispatchGroup()
+            
+            let posts: [Post] =
+                snapshot
+                    .reversed()
+                    .flatMap {
+                        guard let post = Post(snapshot: $0),
+                            let key = post.key
+                            else { return nil }
+                        
+                        dispatchGroup.enter()
+                        
+                        LikeService.isPost(forKey: key, likedByUser: User.current, completion: { (isLiked) in
+                            post.isLiked = isLiked
+                            
+                            dispatchGroup.leave()
+                        })
+                        
+                        return post
+                    }
+            
+            dispatchGroup.notify(queue: .main, execute: {
+                completion(posts)
             })
         })
     }

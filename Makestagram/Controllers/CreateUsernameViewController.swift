@@ -35,7 +35,7 @@ class CreateUsernameViewController: UIViewController {
                 return
             }
             
-            User.setCurrentUser(user, archiveData: true)
+            User.setCurrent(user, writeToUserDefaults: true)
             
             let initialViewController = UIStoryboard.initialViewController(for: .main)
             self.view.window?.setRootViewController(with: initialViewController)

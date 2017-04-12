@@ -49,7 +49,7 @@ class FollowService {
                 return completion(error)
             }
             
-            PostService.allPosts(for: user, completion: { (posts) in
+            UserService.posts(for: user, completion: { (posts) in
                 var followData = [String : Any]()
                 let postsKeys = posts.flatMap { $0.key }
                 
@@ -76,7 +76,7 @@ class FollowService {
                 return completion(error)
             }
             
-            PostService.allPosts(for: user, completion: { (posts) in
+            UserService.posts(for: user, completion: { (posts) in
                 // Type Any? value for dictionary causes 3 warnings, but code will not work without type as Any?
                 var unfollowData = [String : Any?]()
                 let postsKeys = posts.flatMap { $0.key }

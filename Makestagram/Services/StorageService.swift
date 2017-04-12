@@ -6,18 +6,23 @@
 //  Copyright © 2017 Make School. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import FirebaseStorage
 
-class StorageService {
-    static func uploadImageData(_ imageData: Data, atImageRef ref: FIRStorageReference, completion: @escaping (Bool, String?) -> Void) {
-        _ = ref.put(imageData, metadata: nil, completion: { (metadata, error) in
-            guard error == nil,
-                let metadata = metadata,
-                let downloadURL = metadata.downloadURL()
-                else { return completion(false, nil) }
+struct StorageService {
+    
+    static func uploadImage(_ image: UIImage, at reference: FIRStorageReference, completion: @escaping (URL?) -> Void) {
+        guard let imageData = UIImageJPEGRepresentation(image, 0.1) else {
+            return completion(nil)
+        }
+        
+        reference.put(imageData, metadata: nil, completion: { (metadata, error) in
+            if let error = error {
+                assertionFailure(error.localizedDescription)
+                return completion(nil)
+            }
             
-            completion(true, downloadURL.absoluteString)
+            completion(metadata?.downloadURL())
         })
     }
 }

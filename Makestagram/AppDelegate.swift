@@ -42,7 +42,7 @@ extension AppDelegate {
                 return
         }
         
-        User.setCurrentUser(user, archiveData: false)
+        User.setCurrent(user)
         
         initialViewController = UIStoryboard.initialViewController(for: .main)
         window?.setRootViewController(with: initialViewController)

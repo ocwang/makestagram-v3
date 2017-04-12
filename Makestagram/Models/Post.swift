@@ -14,9 +14,18 @@ class Post {
     let imageURL: String
     let imageHeight: CGFloat
     let creationDate: Date
-    var poster: User?
     var likesCount: Int
     var isLiked = false
+    var poster: User?
+    
+    var dictValue: [String : Any] {
+        let createdAgo = creationDate.timeIntervalSince1970
+        
+        return ["image_url" : imageURL,
+                "image_height" : imageHeight,
+                "created_at" : createdAgo,
+                "likes_count" : likesCount]
+    }
     
     init?(snapshot: FIRDataSnapshot) {
         guard let dict = snapshot.value as? [String : Any],
@@ -45,14 +54,5 @@ class Post {
         self.imageHeight = imageHeight
         self.creationDate = Date()
         self.likesCount = 0
-    }
-    
-    func toDict() -> [String : Any] {
-        let createdAtTimeInterval = creationDate.timeIntervalSince1970
-        
-        return ["image_url" : imageURL,
-                "image_height" : imageHeight,
-                "created_at" : createdAtTimeInterval,
-                "likes_count" : likesCount]
     }
 }

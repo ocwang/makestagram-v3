@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		050034E9BD0C3728D5913A24 /* Pods_Makestagram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */; };
+		CA0561F11E9C39180030B91C /* UIImage+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0561F01E9C39180030B91C /* UIImage+Utility.swift */; };
+		CA0561F31E9C39730030B91C /* FIRStorageReference+Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0561F21E9C39730030B91C /* FIRStorageReference+Post.swift */; };
 		CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5651E8049540064FBC9 /* FollowService.swift */; };
 		CA2DC5681E8054360064FBC9 /* FIRDatabaseReference+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */; };
 		CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5691E8056070064FBC9 /* LikeService.swift */; };
@@ -50,6 +52,8 @@
 /* Begin PBXFileReference section */
 		4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Makestagram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		663D54F91ED125B01595C135 /* Pods-Makestagram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Makestagram.release.xcconfig"; path = "Pods/Target Support Files/Pods-Makestagram/Pods-Makestagram.release.xcconfig"; sourceTree = "<group>"; };
+		CA0561F01E9C39180030B91C /* UIImage+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIImage+Utility.swift"; path = "Extensions/UIImage+Utility.swift"; sourceTree = "<group>"; };
+		CA0561F21E9C39730030B91C /* FIRStorageReference+Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FIRStorageReference+Post.swift"; path = "Extensions/FIRStorageReference+Post.swift"; sourceTree = "<group>"; };
 		CA2DC5651E8049540064FBC9 /* FollowService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FollowService.swift; path = Services/FollowService.swift; sourceTree = "<group>"; };
 		CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FIRDatabaseReference+Utility.swift"; path = "Extensions/FIRDatabaseReference+Utility.swift"; sourceTree = "<group>"; };
 		CA2DC5691E8056070064FBC9 /* LikeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LikeService.swift; path = Services/LikeService.swift; sourceTree = "<group>"; };
@@ -183,8 +187,10 @@
 			children = (
 				CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */,
 				CAAEBE471E7B991F00EF6E6C /* UIButton+Utility.swift */,
+				CA0561F21E9C39730030B91C /* FIRStorageReference+Post.swift */,
 				CAEE2BFB1E73CE6D00F361C9 /* UITableView+Utility.swift */,
 				CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */,
+				CA0561F01E9C39180030B91C /* UIImage+Utility.swift */,
 				CA5DEAC61E9804940055D744 /* FIRDatabaseReference+Location.swift */,
 				CAFB7CB61E7B9D1E00A3D71B /* UIColor+Utility.swift */,
 				CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */,
@@ -413,6 +419,7 @@
 				CAAEBE441E7A68B900EF6E6C /* UserService.swift in Sources */,
 				CAAEBE461E7B947A00EF6E6C /* FindFriendCell.swift in Sources */,
 				CA84177C1E731BF7005A0A60 /* Storyboard+Utility.swift in Sources */,
+				CA0561F11E9C39180030B91C /* UIImage+Utility.swift in Sources */,
 				CAEE2BFC1E73CE6D00F361C9 /* UITableView+Utility.swift in Sources */,
 				CA5DEAC71E9804940055D744 /* FIRDatabaseReference+Location.swift in Sources */,
 				CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */,
@@ -427,6 +434,7 @@
 				CA2DC5681E8054360064FBC9 /* FIRDatabaseReference+Utility.swift in Sources */,
 				CAB98BEA1E77526100BE2D92 /* PostService.swift in Sources */,
 				CAEACD1A1E7380B600E2AEE4 /* HomeViewController.swift in Sources */,
+				CA0561F31E9C39730030B91C /* FIRStorageReference+Post.swift in Sources */,
 				CAEE2BFF1E73D3C400F361C9 /* PostHeaderCell.swift in Sources */,
 				CAEE2C041E73D90D00F361C9 /* PostActionCell.swift in Sources */,
 				CAAEBE421E7A287300EF6E6C /* FindFriendsViewController.swift in Sources */,

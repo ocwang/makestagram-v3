@@ -41,7 +41,6 @@ class FindFriendCell: UITableViewCell {
         followButton.setTitle("Following", for: .selected)
         followButton.setTitleColor(.mg_offBlack, for: .selected)
         followButton.setBackgroundColor(color: .white, forState: .selected)
-        
     }
     
     override func layoutSubviews() {
