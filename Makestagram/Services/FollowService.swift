@@ -41,7 +41,7 @@ class FollowService {
         
         let ref = FIRDatabaseReference.toLocation(.root)
         
-        let followData: [String : Any?] = ["followers/\(user.uid)/\(currentUID)" : true,
+        let followData: [String : Bool] = ["followers/\(user.uid)/\(currentUID)" : true,
                                            "following/\(currentUID)/\(user.uid)" : true]
         
         ref.updateChildValues(followData) { (error, ref) in
@@ -67,9 +67,10 @@ class FollowService {
         let currentUID = User.current.uid
         
         let ref = FIRDatabaseReference.toLocation(.root)
-        
-        let followData: [String : Any?] = ["followers/\(user.uid)/\(currentUID)" : nil,
-                                           "following/\(currentUID)/\(user.uid)" : nil]
+        // Use NSNull() object instead of nil because updateChildValues expects type [Hashable : Any]
+        // http://stackoverflow.com/questions/38462074/using-updatechildvalues-to-delete-from-firebase
+        let followData: [String : Any] = ["followers/\(user.uid)/\(currentUID)" : NSNull(),
+                                           "following/\(currentUID)/\(user.uid)" : NSNull()]
         
         ref.updateChildValues(followData) { (error, ref) in
             if let error = error {
@@ -77,13 +78,11 @@ class FollowService {
             }
             
             UserService.posts(for: user, completion: { (posts) in
-                // Type Any? value for dictionary causes 3 warnings, but code will not work without type as Any?
-                var unfollowData = [String : Any?]()
+                var unfollowData = [String : Any]()
                 let postsKeys = posts.flatMap { $0.key }
                 postsKeys.forEach {
-                    // nil must be cast as Any? otherwise dictionary will not be set
-                    // http://stackoverflow.com/questions/26544573/how-to-add-nil-value-to-swift-dictionary
-                    unfollowData["timeline/\(currentUID)/\($0)"] = nil as Any?
+                    // Use NSNull() object instead of nil because updateChildValues expects type [Hashable : Any]
+                    unfollowData["timeline/\(currentUID)/\($0)"] = NSNull()
                 }
                 
                 ref.updateChildValues(unfollowData, withCompletionBlock: { (error, ref) in

@@ -68,10 +68,6 @@ class User: NSObject {
         self.uid = uid
         self.username = username
     }
-    
-    func toDict() -> [String : Any] {
-        return ["uid" : uid, "username" : username]
-    }
 }
 
 extension User: NSCoding {

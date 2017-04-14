@@ -16,15 +16,18 @@ class Post {
     let creationDate: Date
     var likesCount: Int
     var isLiked = false
-    var poster: User?
+    let poster: User
     
     var dictValue: [String : Any] {
         let createdAgo = creationDate.timeIntervalSince1970
+        let userDict = ["uid" : poster.uid,
+                        "username" : poster.username]
         
         return ["image_url" : imageURL,
                 "image_height" : imageHeight,
                 "created_at" : createdAgo,
-                "likes_count" : likesCount]
+                "likes_count" : likesCount,
+                "poster" : userDict]
     }
     
     init?(snapshot: FIRDataSnapshot) {
@@ -32,7 +35,10 @@ class Post {
               let imageURL = dict["image_url"] as? String,
               let imageHeight = dict["image_height"] as? CGFloat,
               let createdAtTimeInterval = dict["created_at"] as? TimeInterval,
-              let likesCount = dict["likes_count"] as? Int
+              let likesCount = dict["likes_count"] as? Int,
+              let userDict = dict["poster"] as? [String : Any],
+              let uid = userDict["uid"] as? String,
+              let username = userDict["username"] as? String
               else { return nil }
         
         self.key = snapshot.key
@@ -40,19 +46,14 @@ class Post {
         self.imageHeight = imageHeight
         self.creationDate = Date(timeIntervalSince1970: createdAtTimeInterval)
         self.likesCount = likesCount
-        
-        guard let userDict = dict["poster"] as? [String : Any],
-            let uid = userDict["uid"] as? String,
-            let username = userDict["username"] as? String
-            else { return }
-        
-        poster = User(uid: uid, username: username)
+        self.poster = User(uid: uid, username: username)
     }
 
     init(imageURL: String, imageHeight: CGFloat) {
         self.imageURL = imageURL
         self.imageHeight = imageHeight
         self.creationDate = Date()
+        self.poster = User.current
         self.likesCount = 0
     }
 }

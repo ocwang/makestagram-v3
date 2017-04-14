@@ -155,13 +155,12 @@ struct UserService {
                 snapshot
                     .reversed()
                     .flatMap {
-                        guard let post = Post(snapshot: $0),
-                            let key = post.key
+                        guard let post = Post(snapshot: $0)
                             else { return nil }
                         
                         dispatchGroup.enter()
                         
-                        LikeService.isPost(forKey: key, likedByUser: User.current, completion: { (isLiked) in
+                        LikeService.isPost(post, likedByUser: User.current, completion: { (isLiked) in
                             post.isLiked = isLiked
                             
                             dispatchGroup.leave()

@@ -10,22 +10,27 @@ import Foundation
 import FirebaseDatabase
 
 extension FIRDatabaseReference {
-    func incrementInTransactionBlock(completion: ((Error?) -> Void)?) {
-        perform({ $0 + 1 }, inTransactionBlockWithCompletion: completion)
+    func incrementInTransactionBlock(success: @escaping (Bool) -> Void) {
+        perform({ $0 + 1 }, inTransactionBlockWithSuccess: success)
     }
     
-    func decrementInTransactionBlock(completion: ((Error?) -> Void)?) {
-        perform({ $0 - 1 }, inTransactionBlockWithCompletion: completion)
+    func decrementInTransactionBlock(success: @escaping (Bool) -> Void) {
+        perform({ $0 - 1 }, inTransactionBlockWithSuccess: success)
     }
     
-    func perform(_ transform: @escaping (Int) -> Int, inTransactionBlockWithCompletion completion: ((Error?) -> Void)?) {
+    func perform(_ transform: @escaping (Int) -> Int, inTransactionBlockWithSuccess success: @escaping (Bool) -> Void) {
         runTransactionBlock({ (mutableData) -> FIRTransactionResult in
             let currentCount = mutableData.value as? Int ?? 0
             mutableData.value = transform(currentCount)
             
             return FIRTransactionResult.success(withValue: mutableData)
         }, andCompletionBlock: { (error, committed, snapshot) in
-            completion?(error)
+            if let error = error {
+                assertionFailure(error.localizedDescription)
+                success(false)
+            } else {
+                success(true)
+            }
         })
     }
 }

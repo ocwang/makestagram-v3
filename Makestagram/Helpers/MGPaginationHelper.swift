@@ -10,8 +10,6 @@ import Foundation
 
 class MGPaginationHelper {
     
-    // TODO: consider making delegate instead of closure to pass data base
-    
     enum MGPaginationState {
         case initial
         case ready

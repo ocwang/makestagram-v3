@@ -43,11 +43,7 @@ struct PostService {
                 updatedData["timeline/\(userKey)/\(newPostKey)"] = timelinePostDict
             }
             
-            var postDict = newPost.dictValue
-            
-            let userDict = currentUser.toDict()
-            postDict["poster"] = userDict
-            
+            let postDict = newPost.dictValue
             updatedData["posts/\(currentUser.uid)/\(newPostKey)"] = postDict
             
             dbRef.updateChildValues(updatedData)
@@ -57,12 +53,11 @@ struct PostService {
     static func show(forKey postKey: String, posterUID: String, completion: @escaping (Post?) -> Void) {
         let ref = FIRDatabaseReference.toLocation(.showPost(uid: posterUID, postKey: postKey))
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let post = Post(snapshot: snapshot),
-                let postKey = post.key else {
-                    return completion(nil)
+            guard let post = Post(snapshot: snapshot) else {
+                return completion(nil)
             }
             
-            LikeService.isPost(forKey: postKey, likedByUser: User.current, completion: { (isLiked) in
+            LikeService.isPost(post, likedByUser: User.current, completion: { (isLiked) in
                 post.isLiked = isLiked
                 
                 completion(post)

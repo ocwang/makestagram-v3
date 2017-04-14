@@ -97,7 +97,7 @@ extension HomeViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()
-            cell.usernameLabel.text = post.poster?.username ?? "username"
+            cell.usernameLabel.text = post.poster.username
             cell.delegate = self
             
             return cell
@@ -149,10 +149,10 @@ extension HomeViewController: UITableViewDelegate {
 
 extension HomeViewController: PostHeaderCellDelegate {
     func didTapOptionsButton(_ optionsButton: UIButton, on cell: PostHeaderCell) {
-        guard let indexPath = tableView.indexPath(for: cell),
-              let poster = posts[indexPath.section].poster
+        guard let indexPath = tableView.indexPath(for: cell)
               else { return }
         
+        let poster = posts[indexPath.section].poster
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         var alertAction: UIAlertAction
@@ -182,15 +182,12 @@ extension HomeViewController: PostActionCellDelegate {
         likeButton.isUserInteractionEnabled = false
         let post = posts[indexPath.section]
         
-        var completion = { (error: Error?) in
+        LikeService.setIsLiked(!post.isLiked, for: post) { (success) in
             defer {
                 likeButton.isUserInteractionEnabled = true
             }
             
-            if let error = error {
-                assertionFailure(error.localizedDescription)
-                return
-            }
+            guard success else { return }
             
             post.likesCount += !post.isLiked ? 1 : -1
             post.isLiked = !post.isLiked
@@ -203,10 +200,5 @@ extension HomeViewController: PostActionCellDelegate {
             }
         }
         
-        if post.isLiked {
-            LikeService.deleteLike(for: post, completion: completion)
-        } else {
-            LikeService.createLike(for: post, completion: completion)
-        }
     }
 }
