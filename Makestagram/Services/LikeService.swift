@@ -11,14 +11,14 @@ import FirebaseDatabase
 
 class LikeService {
     
-    static func isPost(_ post: Post, likedByUser user: User, completion: @escaping (Bool) -> Void) {
+    static func isPostLiked(_ post: Post, byCurrentUserWithCompletion completion: @escaping (Bool) -> Void) {
         guard let postKey = post.key else {
             assertionFailure("Error: post must have key.")
             return completion(false)
         }
         
         let ref = FIRDatabaseReference.toLocation(.isLiked(postKey: postKey))
-        ref.queryEqual(toValue: nil, childKey: user.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.queryEqual(toValue: nil, childKey: User.current.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             if let _ = snapshot.value as? [String : Bool] {
                 completion(true)
             } else {
@@ -36,7 +36,8 @@ class LikeService {
     }
     
     private static func create(for post: Post, success: @escaping (Bool) -> Void) {
-        let (postKey, poster) = validatePost(post)
+        guard let postKey = post.key
+            else { return }
         
         let postLikesRef = FIRDatabaseReference.toLocation(.likes(postKey: postKey, currentUID: User.current.uid))
         postLikesRef.setValue(true) { (error, ref) in
@@ -45,13 +46,14 @@ class LikeService {
                 return success(false)
             }
             
-            let likesCountRef = FIRDatabaseReference.toLocation(.likesCount(posterUID: poster.uid, postKey: postKey))
+            let likesCountRef = FIRDatabaseReference.toLocation(.likesCount(posterUID: post.poster.uid, postKey: postKey))
             likesCountRef.incrementInTransactionBlock(success: success)
         }
     }
     
     private static func delete(for post: Post, success: @escaping (Bool) -> Void) {
-        let (postKey, poster) = validatePost(post)
+        guard let postKey = post.key
+            else { return }
         
         let postLikesRef = FIRDatabaseReference.toLocation(.likes(postKey: postKey, currentUID: User.current.uid))
         postLikesRef.setValue(nil) { (error, ref) in
@@ -60,18 +62,8 @@ class LikeService {
                 return success(false)
             }
             
-            let likesCountRef = FIRDatabaseReference.toLocation(.likesCount(posterUID: poster.uid, postKey: postKey))
+            let likesCountRef = FIRDatabaseReference.toLocation(.likesCount(posterUID: post.poster.uid, postKey: postKey))
             likesCountRef.decrementInTransactionBlock(success: success)
         }
-    }
-    
-    // MARK: - Private
-    
-    private static func validatePost(_ post: Post) -> (postKey: String, poster: User) {
-        guard let postKey = post.key else {
-                  preconditionFailure("Error: post has insufficient data.")
-              }
-        
-        return (postKey, post.poster)
     }
 }

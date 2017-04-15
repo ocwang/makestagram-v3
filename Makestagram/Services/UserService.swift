@@ -12,29 +12,27 @@ import FirebaseAuth.FIRUser
 
 struct UserService {
     
-    static func allUsers(for currentUser: User, completion: @escaping ([User]) -> Void) {
+    static func usersExcludingCurrentUser(completion: @escaping ([User]) -> Void) {
+        let currentUser = User.current
         let ref = FIRDatabaseReference.toLocation(.users)
         
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let allUsers = snapshot.children.allObjects as? [FIRDataSnapshot]
+            guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]
                 else { return completion([]) }
             
-            var users = [User]()
-            let dispatchGroup = DispatchGroup()
+            let users =
+                snapshot
+                    .flatMap(User.init)
+                    .filter { $0.uid != currentUser.uid }
             
-            for user in allUsers {
-                guard let user = User(snapshot: user),
-                      user.uid != currentUser.uid
-                      else { continue }
-                
+            let dispatchGroup = DispatchGroup()
+            users.forEach { (user) in
                 dispatchGroup.enter()
                 
-                FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
+                FollowService.isUserFollowed(user) { (isFollowed) in
                     user.isFollowed = isFollowed
-                    users.append(user)
-                    
                     dispatchGroup.leave()
-                })
+                }
             }
             
             dispatchGroup.notify(queue: .main, execute: {
@@ -42,23 +40,6 @@ struct UserService {
             })
         })
     }
-    
-//    static func observeUser(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
-//        let userRef = FIRDatabaseReference.toLocation(.showUser(uid: user.uid))
-//        
-//        userRef.observe(.value, with: { (snapshot) in
-//            guard let user = User(snapshot: snapshot)
-//                else { return completion(nil) }
-//            
-//            guard user.uid != currentUser.uid
-//                else { return completion(user) }
-//            
-//            FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
-//                user.isFollowed = isFollowed
-//                completion(user)
-//            })
-//        })
-//    }
     
     static func current(_ firUser: FIRUser, completion: @escaping (User?) -> Void) {
         let ref = FIRDatabaseReference.toLocation(.showUser(uid: firUser.uid))
@@ -70,21 +51,6 @@ struct UserService {
             completion(user)
         })
     }
-    
-//    static func show(_ user: User, currentUser: User, completion: @escaping (User?) -> Void) {
-//        let ref = MGDatabaseReference.ref(for: .showUser(uid: user.uid))
-//        
-//        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-//            guard let user = User(snapshot: snapshot) else { return completion(nil) }
-//            
-//            guard user.uid != currentUser.uid else { return completion(user) }
-//            
-//            FollowService.isUser(user, beingFollowedbyOtherUser: currentUser, completion: { (isFollowed) in
-//                user.isFollowed = isFollowed
-//                completion(user)
-//            })
-//        })
-//    }
     
     static func create(_ firUser: FIRUser, username: String, completion: @escaping (User?) -> Void) {
         let userAttrs: [String : Any] = ["username": username]
@@ -127,6 +93,7 @@ struct UserService {
                 
                 PostService.show(forKey: postSnap.key, posterUID: posterUID, completion: { (post) in
                     if let post = post {
+                        // this won't guarentee order :(
                         posts.append(post)
                     }
                     
@@ -160,18 +127,30 @@ struct UserService {
                         
                         dispatchGroup.enter()
                         
-                        LikeService.isPost(post, likedByUser: User.current, completion: { (isLiked) in
+                        LikeService.isPostLiked(post) { (isLiked) in
                             post.isLiked = isLiked
-                            
                             dispatchGroup.leave()
-                        })
-                        
+                        }
+
                         return post
                     }
             
             dispatchGroup.notify(queue: .main, execute: {
                 completion(posts)
             })
+        })
+    }
+    
+    static func followers(for user: User, completion: @escaping ([String]) -> Void) {
+        let followersRef = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
+        
+        followersRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let followersDict = snapshot.value as? [String : Bool] else {
+                return completion([])
+            }
+            
+            let followersKeys = Array(followersDict.keys)
+            completion(followersKeys)
         })
     }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 import FirebaseDatabase
-import FirebaseStorage
+import FirebaseStorage.FIRStorageReference
 import FirebaseAuth
 
 struct PostService {
@@ -35,16 +35,15 @@ struct PostService {
         let newPostRef = FIRDatabaseReference.toLocation(.newPost)
         let newPostKey = newPostRef.key
         
-        FollowService.allFollowersForUser(currentUser) { (followerKeys) in
-            let timelinePostDict: [String : Any] = ["poster_uid" : currentUser.uid]
-            var updatedData: [String: Any] = ["timeline/\(currentUser.uid)/\(newPostKey)" : timelinePostDict]
+        UserService.followers(for: currentUser) { (followerKeys) in
+            let timelinePostDict = ["poster_uid" : currentUser.uid]
+            
+            var updatedData = ["posts/\(currentUser.uid)/\(newPostKey)" : newPost.dictValue,
+                               "timeline/\(currentUser.uid)/\(newPostKey)" : timelinePostDict]
             
             for userKey in followerKeys {
                 updatedData["timeline/\(userKey)/\(newPostKey)"] = timelinePostDict
             }
-            
-            let postDict = newPost.dictValue
-            updatedData["posts/\(currentUser.uid)/\(newPostKey)"] = postDict
             
             dbRef.updateChildValues(updatedData)
         }
@@ -57,11 +56,10 @@ struct PostService {
                 return completion(nil)
             }
             
-            LikeService.isPost(post, likedByUser: User.current, completion: { (isLiked) in
+            LikeService.isPostLiked(post) { (isLiked) in
                 post.isLiked = isLiked
-                
                 completion(post)
-            })
+            }
         })
     }
 }

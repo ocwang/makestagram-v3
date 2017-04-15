@@ -9,75 +9,74 @@
 import Foundation
 import FirebaseDatabase
 
-class FollowService {
+struct FollowService {
 
-    static func allFollowersForUser(_ user: User, completion: @escaping ([String]) -> Void) {
-        let allFollowersRef = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
-        
-        allFollowersRef.observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let followersDict = snapshot.value as? [String : Bool] else {
-                return completion([])
-            }
-            
-            let followersKeys = Array(followersDict.keys)
-            completion(followersKeys)
-        })
-    }
-    
-    static func isUser(_ user: User, beingFollowedbyOtherUser otherUser: User, completion: @escaping (Bool) -> Void) {
-        let ref = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
-            
-        ref.queryEqual(toValue: nil, childKey: otherUser.uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let _ = snapshot.value as? [String : Bool] else {
-                return completion(false)
-            }
-            
-            completion(true)
-        })
-    }
-    
-    static func followUser(_ user: User, completion: @escaping (Error?) -> Void) {
+    static func isUserFollowed(_ user: User, byCurrentUserWithCompletion completion: @escaping (Bool) -> Void) {
         let currentUID = User.current.uid
+        let ref = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
+        
+        ref.queryEqual(toValue: nil, childKey: currentUID).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let _ = snapshot.value as? [String : Bool] {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        })
+    }
+    
+    static func setIsFollowing(_ isFollowing: Bool, fromCurrentUserTo followee: User, success: @escaping (Bool) -> Void) {
+        if isFollowing {
+            followUser(followee, forCurrentUserWithSuccess: success)
+        } else {
+            unfollowUser(followee, forCurrentUserWithSuccess: success)
+        }
+    }
+    
+    private static func followUser(_ user: User, forCurrentUserWithSuccess success: @escaping (Bool) -> Void) {
+        let currentUID = User.current.uid
+        let followData = ["followers/\(user.uid)/\(currentUID)" : true,
+                          "following/\(currentUID)/\(user.uid)" : true]
         
         let ref = FIRDatabaseReference.toLocation(.root)
-        
-        let followData: [String : Bool] = ["followers/\(user.uid)/\(currentUID)" : true,
-                                           "following/\(currentUID)/\(user.uid)" : true]
-        
         ref.updateChildValues(followData) { (error, ref) in
             if let error = error {
-                return completion(error)
+                assertionFailure(error.localizedDescription)
+                return success(false)
             }
             
             UserService.posts(for: user, completion: { (posts) in
-                var followData = [String : Any]()
-                let postsKeys = posts.flatMap { $0.key }
+                let postKeys = posts.flatMap { $0.key }
                 
-                let timelinePostDict: [String : Any] = ["poster_uid" : user.uid]
-                postsKeys.forEach { followData["timeline/\(currentUID)/\($0)"] = timelinePostDict }
+                var followData = [String : Any]()
+                let timelinePostDict: [String : String] = ["poster_uid" : user.uid]
+                postKeys.forEach { followData["timeline/\(currentUID)/\($0)"] = timelinePostDict }
                 
                 ref.updateChildValues(followData, withCompletionBlock: { (error, ref) in
-                    completion(nil)
+                    if let error = error {
+                        assertionFailure(error.localizedDescription)
+                    }
+                    
+                    success(error == nil)
                 })
             })
         }
     }
     
-    static func unfollowUser(_ user: User, completion: @escaping (Error?) -> Void) {
+    private static func unfollowUser(_ user: User, forCurrentUserWithSuccess success: @escaping (Bool) -> Void) {
         let currentUID = User.current.uid
-        
-        let ref = FIRDatabaseReference.toLocation(.root)
         // Use NSNull() object instead of nil because updateChildValues expects type [Hashable : Any]
         // http://stackoverflow.com/questions/38462074/using-updatechildvalues-to-delete-from-firebase
-        let followData: [String : Any] = ["followers/\(user.uid)/\(currentUID)" : NSNull(),
-                                           "following/\(currentUID)/\(user.uid)" : NSNull()]
+        let followData = ["followers/\(user.uid)/\(currentUID)" : NSNull(),
+                          "following/\(currentUID)/\(user.uid)" : NSNull()]
         
+        let ref = FIRDatabaseReference.toLocation(.root)
         ref.updateChildValues(followData) { (error, ref) in
             if let error = error {
-                return completion(error)
+                assertionFailure(error.localizedDescription)
+                return success(false)
             }
             
-            UserService.posts(for: user, completion: { (posts) in
+            UserService.posts(for: user) { (posts) in
                 var unfollowData = [String : Any]()
                 let postsKeys = posts.flatMap { $0.key }
                 postsKeys.forEach {
@@ -86,9 +85,13 @@ class FollowService {
                 }
                 
                 ref.updateChildValues(unfollowData, withCompletionBlock: { (error, ref) in
-                    completion(nil)
+                    if let error = error {
+                        assertionFailure(error.localizedDescription)
+                    }
+                    
+                    success(error == nil)
                 })
-            })
+            }
         }
     }
 }

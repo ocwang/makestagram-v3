@@ -30,7 +30,7 @@ class FindFriendsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        UserService.allUsers(for: User.current) { [unowned self] (users) in
+        UserService.usersExcludingCurrentUser { [unowned self] (users) in
             self.users = users
             self.tableView.reloadData()
         }
@@ -65,26 +65,18 @@ extension FindFriendsViewController: FindFriendCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         
         followButton.isUserInteractionEnabled = false
-        let user = users[indexPath.row]
+        let followee = users[indexPath.row]
         
-        var completion = { (error: Error?) in
+        
+        FollowService.setIsFollowing(!followee.isFollowed, fromCurrentUserTo: followee) { (success) in
             defer {
                 followButton.isUserInteractionEnabled = true
             }
             
-            if let error = error {
-                assertionFailure(error.localizedDescription)
-                return
-            }
+            guard success else { return }
             
-            user.isFollowed = !user.isFollowed
+            followee.isFollowed = !followee.isFollowed
             self.tableView.reloadRows(at: [indexPath], with: .none)
-        }
-        
-        if !user.isFollowed {
-            FollowService.followUser(user, completion: completion)
-        } else {
-            FollowService.unfollowUser(user, completion: completion)
         }
     }
 }
