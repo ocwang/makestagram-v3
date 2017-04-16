@@ -39,7 +39,10 @@ class MGPaginationHelper {
             
         case .ready:
             state = .loading
-            // TODO: Make this generic / passed in
+            
+            // MAKE API CALL
+            
+//            // TODO: Make this generic / passed in
             UserService.timeline(pageSize: UInt(pageSize), lastPostKey: lastPostKey) { [unowned self] (posts) in
                 defer {
                     if let lastPostKey = posts.last?.key {

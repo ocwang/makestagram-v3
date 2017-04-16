@@ -202,10 +202,10 @@
 			isa = PBXGroup;
 			children = (
 				CAB98BE41E770F3300BE2D92 /* StorageService.swift */,
-				CAB98BE91E77526100BE2D92 /* PostService.swift */,
 				CAAEBE431E7A68B900EF6E6C /* UserService.swift */,
-				CA2DC5651E8049540064FBC9 /* FollowService.swift */,
+				CAB98BE91E77526100BE2D92 /* PostService.swift */,
 				CA2DC5691E8056070064FBC9 /* LikeService.swift */,
+				CA2DC5651E8049540064FBC9 /* FollowService.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";

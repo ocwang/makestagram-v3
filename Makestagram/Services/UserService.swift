@@ -53,10 +53,9 @@ struct UserService {
     }
     
     static func create(_ firUser: FIRUser, username: String, completion: @escaping (User?) -> Void) {
-        let userAttrs: [String : Any] = ["username": username]
+        let userAttrs = ["username": username]
         
         let ref = FIRDatabaseReference.toLocation(.showUser(uid: firUser.uid))
-        
         ref.setValue(userAttrs) { (error, ref) in
             if let error = error {
                 assertionFailure(error.localizedDescription)
@@ -102,7 +101,6 @@ struct UserService {
             }
             
             dispatchGroup.notify(queue: .main, execute: {
-                // TODO: better way of ordering... wtf can't do this server side w firebase
                 completion(posts.reversed())
             })
         })
@@ -110,7 +108,6 @@ struct UserService {
     
     static func posts(for user: User, completion: @escaping ([Post]) -> Void) {
         let ref = FIRDatabaseReference.toLocation(.posts(uid: user.uid))
-        
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot] else {
                 return completion([])
@@ -143,7 +140,6 @@ struct UserService {
     
     static func followers(for user: User, completion: @escaping ([String]) -> Void) {
         let followersRef = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
-        
         followersRef.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let followersDict = snapshot.value as? [String : Bool] else {
                 return completion([])

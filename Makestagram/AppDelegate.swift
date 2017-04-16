@@ -34,17 +34,17 @@ extension AppDelegate {
         let defaults = UserDefaults.standard
         let initialViewController: UIViewController
         
-        guard FIRAuth.auth()?.currentUser != nil,
+        if FIRAuth.auth()?.currentUser != nil,
             let userData = defaults.object(forKey: Constants.UserDefaults.currentUser) as? Data,
-            let user = NSKeyedUnarchiver.unarchiveObject(with: userData) as? User else {
-                initialViewController = UIStoryboard.initialViewController(for: .login)
-                window?.setRootViewController(with: initialViewController)
-                return
+            let user = NSKeyedUnarchiver.unarchiveObject(with: userData) as? User {
+            
+            User.setCurrent(user)
+            
+            initialViewController = UIStoryboard.initialViewController(for: .main)
+        } else {
+            initialViewController = UIStoryboard.initialViewController(for: .login)
         }
         
-        User.setCurrent(user)
-        
-        initialViewController = UIStoryboard.initialViewController(for: .main)
-        window?.setRootViewController(with: initialViewController)
+        window?.makeKeyAndVisible(for: initialViewController)
     }
 }

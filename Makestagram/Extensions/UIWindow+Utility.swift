@@ -9,11 +9,7 @@
 import UIKit
 
 extension UIWindow {
-    
-    // TODO: don't like this naming because it says nothing about makeKeyAndVisible()
-    // should this be removed altogether
-    
-    func setRootViewController(with viewController: UIViewController) {
+    func makeKeyAndVisible(for viewController: UIViewController) {
         rootViewController = viewController
         makeKeyAndVisible()
     }

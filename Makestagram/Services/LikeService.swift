@@ -39,8 +39,8 @@ class LikeService {
         guard let postKey = post.key
             else { return }
         
-        let postLikesRef = FIRDatabaseReference.toLocation(.likes(postKey: postKey, currentUID: User.current.uid))
-        postLikesRef.setValue(true) { (error, ref) in
+        let likesRef = FIRDatabaseReference.toLocation(.likes(postKey: postKey, currentUID: User.current.uid))
+        likesRef.setValue(true) { (error, ref) in
             if let error = error {
                 assertionFailure(error.localizedDescription)
                 return success(false)

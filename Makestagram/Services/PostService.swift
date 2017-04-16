@@ -9,7 +9,6 @@
 import UIKit
 import FirebaseDatabase
 import FirebaseStorage.FIRStorageReference
-import FirebaseAuth
 
 struct PostService {
     
@@ -35,14 +34,14 @@ struct PostService {
         let newPostRef = FIRDatabaseReference.toLocation(.newPost)
         let newPostKey = newPostRef.key
         
-        UserService.followers(for: currentUser) { (followerKeys) in
+        UserService.followers(for: currentUser) { (followerUIDs) in
             let timelinePostDict = ["poster_uid" : currentUser.uid]
             
             var updatedData = ["posts/\(currentUser.uid)/\(newPostKey)" : newPost.dictValue,
                                "timeline/\(currentUser.uid)/\(newPostKey)" : timelinePostDict]
             
-            for userKey in followerKeys {
-                updatedData["timeline/\(userKey)/\(newPostKey)"] = timelinePostDict
+            for uid in followerUIDs {
+                updatedData["timeline/\(uid)/\(newPostKey)"] = timelinePostDict
             }
             
             dbRef.updateChildValues(updatedData)

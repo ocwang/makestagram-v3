@@ -10,12 +10,16 @@ import UIKit
 import FirebaseDatabase.FIRDataSnapshot
 
 class Post {
+    
+    // MARK: - Properties
+    
     var key: String?
     let imageURL: String
     let imageHeight: CGFloat
     let creationDate: Date
     var likesCount: Int
     var isLiked = false
+    
     let poster: User
     
     var dictValue: [String : Any] {
@@ -29,6 +33,8 @@ class Post {
                 "likes_count" : likesCount,
                 "poster" : userDict]
     }
+    
+    // MARK: - Init
     
     init?(snapshot: FIRDataSnapshot) {
         guard let dict = snapshot.value as? [String : Any],
