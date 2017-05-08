@@ -27,7 +27,7 @@ class HomeViewController: UIViewController {
     
     // MARK: - Subviews
     
-    var refreshControl = UIRefreshControl()
+    let refreshControl = UIRefreshControl()
     
     @IBOutlet weak var tableView: UITableView!
     

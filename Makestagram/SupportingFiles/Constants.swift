@@ -10,14 +10,16 @@ import Foundation
 
 struct Constants {
     struct Segue {
-        static let createUsername = "createUsername"
-        static let findFriends = "findFriends"
-        static let settings = "settings"
+        static let createUsername = "toCreateUsername"
     }
     
     struct UserDefaults {
         static let currentUser = "currentUser"
         static let uid = "uid"
         static let username = "username"
+    }
+    
+    struct TabBarItem {
+        static let centerTag = 1
     }
 }

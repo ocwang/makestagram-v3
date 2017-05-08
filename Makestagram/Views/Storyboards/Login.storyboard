@@ -28,8 +28,8 @@
                                         <rect key="frame" x="69.5" y="80.5" width="236" height="104.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Makestagram" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Op-g1-zTs">
-                                                <rect key="frame" x="14.5" y="0.0" width="207" height="43.5"/>
-                                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="36"/>
+                                                <rect key="frame" x="10" y="0.0" width="216" height="43.5"/>
+                                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Bold" family="Apple SD Gothic Neo" pointSize="36"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -88,7 +88,7 @@ Privacy Policy</string>
                     <navigationItem key="navigationItem" id="lE0-AQ-HMo"/>
                     <connections>
                         <outlet property="loginButton" destination="JyD-yf-U4d" id="fcQ-a7-Fe5"/>
-                        <segue destination="bg4-m1-V9b" kind="show" identifier="createUsername" id="8mF-cf-YHH"/>
+                        <segue destination="bg4-m1-V9b" kind="show" identifier="toCreateUsername" id="8mF-cf-YHH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="utq-Kz-p09" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -67,7 +67,6 @@ extension FindFriendsViewController: FindFriendCellDelegate {
         followButton.isUserInteractionEnabled = false
         let followee = users[indexPath.row]
         
-        
         FollowService.setIsFollowing(!followee.isFollowed, fromCurrentUserTo: followee) { (success) in
             defer {
                 followButton.isUserInteractionEnabled = true

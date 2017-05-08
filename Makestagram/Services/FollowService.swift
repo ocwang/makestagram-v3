@@ -48,7 +48,7 @@ struct FollowService {
                 let postKeys = posts.flatMap { $0.key }
                 
                 var followData = [String : Any]()
-                let timelinePostDict: [String : String] = ["poster_uid" : user.uid]
+                let timelinePostDict = ["poster_uid" : user.uid]
                 postKeys.forEach { followData["timeline/\(currentUID)/\($0)"] = timelinePostDict }
                 
                 ref.updateChildValues(followData, withCompletionBlock: { (error, ref) in

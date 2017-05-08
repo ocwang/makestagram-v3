@@ -22,7 +22,6 @@ class PostHeaderCell: UITableViewCell {
     
     // MARK: - Subviews
 
-    @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var optionsButton: UIButton!
     
@@ -30,12 +29,6 @@ class PostHeaderCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-     
-        userImageView.layer.cornerRadius = userImageView.bounds.width / 2
     }
     
     // MARK: - IBActions

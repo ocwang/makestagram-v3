@@ -30,7 +30,7 @@ class User: NSObject {
             let data = NSKeyedArchiver.archivedData(withRootObject: user)
             UserDefaults.standard.set(data, forKey: Constants.UserDefaults.currentUser)
         }
-
+        
         _current = user
     }
     
@@ -67,6 +67,8 @@ class User: NSObject {
         
         self.uid = uid
         self.username = username
+        
+        super.init()
     }
 }
 

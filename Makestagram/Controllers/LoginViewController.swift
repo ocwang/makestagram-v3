@@ -32,19 +32,20 @@ class LoginViewController: UIViewController {
     // MARK: - IBActions
     
     @IBAction func loginButtonTapped(_ sender: UIButton) {
-        if let authUI = FUIAuth.defaultAuthUI() {
-            authUI.delegate = self
-            
-            let authViewController = authUI.authViewController()
-            present(authViewController, animated: true)
-        }
+        guard let authUI = FUIAuth.defaultAuthUI()
+            else { return }
+        
+        authUI.delegate = self
+        
+        let authViewController = authUI.authViewController()
+        present(authViewController, animated: true)
     }
 }
 
 extension LoginViewController: FUIAuthDelegate {
     func authUI(_ authUI: FUIAuth, didSignInWith user: FIRUser?, error: Error?) {
         if let error = error {
-            print("Error signing in: \(error.localizedDescription)")
+            assertionFailure("Error signing in: \(error.localizedDescription)")
         }
         
         guard let user = user else { return }
