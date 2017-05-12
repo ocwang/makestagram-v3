@@ -16,7 +16,7 @@ class HomeViewController: UIViewController {
     
     var posts = [Post]()
     
-    let paginationHelper = MGPaginationHelper()
+    let paginationHelper = MGPaginationHelper<Post>(makeAPIRequest: UserService.timeline)
     
     let timestampFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()

@@ -8,7 +8,11 @@
 
 import Foundation
 
-class MGPaginationHelper {
+protocol MGKeyed {
+    var key: String? { get set }
+}
+
+class MGPaginationHelper<T: MGKeyed> {
     
     enum MGPaginationState {
         case initial
@@ -19,46 +23,42 @@ class MGPaginationHelper {
     
     // MARK: - Properties
     
-    let pageSize: Int
+    let pageSize: UInt
+    let serviceMethod: (UInt, String?, @escaping (([T]) -> Void)) -> Void
     var state: MGPaginationState = .initial
-    var lastPostKey: String?
+    var lastObjectKey: String?
     
-    // MARK: - Init
-    
-    init(pageSize: Int = 3) {
+    init(pageSize: UInt = 3, makeAPIRequest: @escaping (UInt, String?, @escaping (([T]) -> Void)) -> Void) {
         self.pageSize = pageSize
+        self.serviceMethod = makeAPIRequest
     }
     
     // MARK: -
     
-    func paginate(completion: @escaping ([Post]) -> Void) {
+    func paginate(completion: @escaping ([T]) -> Void) {
         switch state {
         case .initial:
-            lastPostKey = nil
+            lastObjectKey = nil
             fallthrough
             
         case .ready:
             state = .loading
             
-            // MAKE API CALL
-            
-//            // TODO: Make this generic / passed in
-            UserService.timeline(pageSize: UInt(pageSize), lastPostKey: lastPostKey) { [unowned self] (posts) in
+            serviceMethod(pageSize, lastObjectKey) { [unowned self] (objects: [T]) in
                 defer {
-                    if let lastPostKey = posts.last?.key {
-                        self.lastPostKey = lastPostKey
+                    if let lastObjectKey = objects.last?.key {
+                        self.lastObjectKey = lastObjectKey
                     }
                     
-                    self.state = posts.count < self.pageSize ? .end : .ready
+                    self.state = objects.count < Int(self.pageSize) ? .end : .ready
                 }
                 
-                guard let _ = self.lastPostKey else {
-                    return completion(posts)
+                guard let _ = self.lastObjectKey else {
+                    return completion(objects)
                 }
                 
-                var newPosts = Array(posts)
-                newPosts.remove(at: 0)
-                completion(newPosts)
+                let newObjects = Array(objects.dropFirst())
+                completion(newObjects)
             }
             
         case .loading, .end:
@@ -66,7 +66,7 @@ class MGPaginationHelper {
         }
     }
     
-    func reloadData(completion: @escaping ([Post]) -> Void) {
+    func reloadData(completion: @escaping ([T]) -> Void) {
         state = .initial
         
         paginate(completion: completion)
