@@ -51,6 +51,7 @@ class LoginViewController: UIViewController {
 extension LoginViewController: FUIAuthDelegate {
     func authUI(_ authUI: FUIAuth, didSignInWith user: FIRUser?, error: Error?) {
         if let error = error {
+            // REVIEW: this gets called on cancelling AuthViewController
             assertionFailure("Error signing in: \(error.localizedDescription)")
         }
         

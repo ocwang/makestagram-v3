@@ -16,7 +16,7 @@ class HomeViewController: UIViewController {
     
     var posts = [Post]()
     
-    let paginationHelper = MGPaginationHelper<Post>(makeAPIRequest: UserService.timeline)
+    let paginationHelper = MGPaginationHelper<Post>(serviceMethod: UserService.timeline)
     
     let timestampFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -92,8 +92,6 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let post = posts[indexPath.section]
         
-        // TODO: consider cleaning this up
-        // TODO: try moving this to an enum so it can be reused for home and profile
         switch indexPath.row {
         case 0:
             let cell: PostHeaderCell = tableView.dequeueReusableCell()

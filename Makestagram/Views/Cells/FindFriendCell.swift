@@ -20,7 +20,6 @@ class FindFriendCell: UITableViewCell {
     
     // MARK: - Subviews
     
-    @IBOutlet weak var userPhotoImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var followButton: UIButton!
     
@@ -43,12 +42,6 @@ class FindFriendCell: UITableViewCell {
         followButton.setBackgroundColor(color: .white, forState: .selected)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        userPhotoImageView.layer.cornerRadius = userPhotoImageView.bounds.width / 2
-    }
-
     // MARK: - IBActions
     
     @IBAction func followButtonTapped(_ sender: UIButton) {

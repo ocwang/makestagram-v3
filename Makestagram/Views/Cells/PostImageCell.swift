@@ -16,5 +16,9 @@ class PostImageCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        postImageView.image = nil
+    }
 }

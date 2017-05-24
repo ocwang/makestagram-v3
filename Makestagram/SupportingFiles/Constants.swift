@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 struct Constants {
     struct Segue {
@@ -21,5 +22,10 @@ struct Constants {
     
     struct TabBarItem {
         static let centerTag = 1
+    }
+    
+    struct Profile {
+        static let numberOfColumns = 3
+        static let itemSpacing: CGFloat = 1.5
     }
 }

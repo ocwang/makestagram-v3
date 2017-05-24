@@ -28,9 +28,11 @@ class MGPaginationHelper<T: MGKeyed> {
     var state: MGPaginationState = .initial
     var lastObjectKey: String?
     
-    init(pageSize: UInt = 3, makeAPIRequest: @escaping (UInt, String?, @escaping (([T]) -> Void)) -> Void) {
+    // MARK: - Init
+    
+    init(pageSize: UInt = 3, serviceMethod: @escaping (UInt, String?, @escaping (([T]) -> Void)) -> Void) {
         self.pageSize = pageSize
-        self.serviceMethod = makeAPIRequest
+        self.serviceMethod = serviceMethod
     }
     
     // MARK: -
@@ -43,7 +45,6 @@ class MGPaginationHelper<T: MGKeyed> {
             
         case .ready:
             state = .loading
-            
             serviceMethod(pageSize, lastObjectKey) { [unowned self] (objects: [T]) in
                 defer {
                     if let lastObjectKey = objects.last?.key {

@@ -44,6 +44,31 @@ struct FollowService {
                 return success(false)
             }
             
+            // dispatch group for count
+            
+            let dispatchGroup = DispatchGroup()
+            
+            dispatchGroup.enter()
+            let followingCountRef = FIRDatabaseReference.toLocation(.followingCount(uid: currentUID))
+            followingCountRef.incrementInTransactionBlock { success in
+                if !success {
+                    assertionFailure("Unable to update following count.")
+                }
+                
+                dispatchGroup.leave()
+            }
+            
+            dispatchGroup.enter()
+            let followersCountRef = FIRDatabaseReference.toLocation(.followersCount(uid: user.uid))
+            followersCountRef.incrementInTransactionBlock { success in
+                if !success {
+                    assertionFailure("Unable to update followers count.")
+                }
+                
+                dispatchGroup.leave()
+            }
+
+            dispatchGroup.enter()
             UserService.posts(for: user, completion: { (posts) in
                 let postKeys = posts.flatMap { $0.key }
                 
@@ -56,9 +81,13 @@ struct FollowService {
                         assertionFailure(error.localizedDescription)
                     }
                     
-                    success(error == nil)
+                    dispatchGroup.leave()
                 })
             })
+            
+            dispatchGroup.notify(queue: .main) {
+                success(true)
+            }
         }
     }
     
@@ -76,6 +105,29 @@ struct FollowService {
                 return success(false)
             }
             
+            let dispatchGroup = DispatchGroup()
+            
+            dispatchGroup.enter()
+            let followingCountRef = FIRDatabaseReference.toLocation(.followingCount(uid: currentUID))
+            followingCountRef.decrementInTransactionBlock { success in
+                if !success {
+                    assertionFailure("Unable to update following count.")
+                }
+                
+                dispatchGroup.leave()
+            }
+            
+            dispatchGroup.enter()
+            let followersCountRef = FIRDatabaseReference.toLocation(.followersCount(uid: user.uid))
+            followersCountRef.decrementInTransactionBlock { success in
+                if !success {
+                    assertionFailure("Unable to update followers count.")
+                }
+                
+                dispatchGroup.leave()
+            }
+            
+            dispatchGroup.enter()
             UserService.posts(for: user) { (posts) in
                 var unfollowData = [String : Any]()
                 let postsKeys = posts.flatMap { $0.key }
@@ -89,8 +141,12 @@ struct FollowService {
                         assertionFailure(error.localizedDescription)
                     }
                     
-                    success(error == nil)
+                    dispatchGroup.leave()
                 })
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                success(true)
             }
         }
     }

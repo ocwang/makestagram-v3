@@ -44,7 +44,14 @@ struct PostService {
                 updatedData["timeline/\(uid)/\(newPostKey)"] = timelinePostDict
             }
             
-            dbRef.updateChildValues(updatedData)
+            dbRef.updateChildValues(updatedData, withCompletionBlock: { (error, ref) in
+                let postsCountRef = FIRDatabaseReference.toLocation(.postCount(uid: currentUser.uid))
+                postsCountRef.incrementInTransactionBlock { success in
+                    if !success {
+                        assertionFailure("Unable to update post count.")
+                    }
+                }
+            })
         }
     }
     
