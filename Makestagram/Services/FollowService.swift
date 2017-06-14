@@ -13,7 +13,7 @@ struct FollowService {
 
     static func isUserFollowed(_ user: User, byCurrentUserWithCompletion completion: @escaping (Bool) -> Void) {
         let currentUID = User.current.uid
-        let ref = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
+        let ref = FIRDatabaseReference.toLocation(.followerUIDs(uid: user.uid))
         
         ref.queryEqual(toValue: nil, childKey: currentUID).observeSingleEvent(of: .value, with: { (snapshot) in
             if let _ = snapshot.value as? [String : Bool] {
@@ -59,8 +59,8 @@ struct FollowService {
             }
             
             dispatchGroup.enter()
-            let followersCountRef = FIRDatabaseReference.toLocation(.followersCount(uid: user.uid))
-            followersCountRef.incrementInTransactionBlock { success in
+            let followerCountRef = FIRDatabaseReference.toLocation(.followerCount(uid: user.uid))
+            followerCountRef.incrementInTransactionBlock { success in
                 if !success {
                     assertionFailure("Unable to update followers count.")
                 }
@@ -85,9 +85,7 @@ struct FollowService {
                 })
             })
             
-            dispatchGroup.notify(queue: .main) {
-                success(true)
-            }
+            
         }
     }
     
@@ -118,8 +116,8 @@ struct FollowService {
             }
             
             dispatchGroup.enter()
-            let followersCountRef = FIRDatabaseReference.toLocation(.followersCount(uid: user.uid))
-            followersCountRef.decrementInTransactionBlock { success in
+            let followerCountRef = FIRDatabaseReference.toLocation(.followerCount(uid: user.uid))
+            followerCountRef.decrementInTransactionBlock { success in
                 if !success {
                     assertionFailure("Unable to update followers count.")
                 }

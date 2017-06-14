@@ -31,10 +31,10 @@ struct PostService {
         let newPost = Post(imageURL: urlString, imageHeight: aspectHeight)
         
         let dbRef = FIRDatabaseReference.toLocation(.root)
-        let newPostRef = FIRDatabaseReference.toLocation(.newPost)
+        let newPostRef = FIRDatabaseReference.toLocation(.newPost(currentUID: currentUser.uid))
         let newPostKey = newPostRef.key
         
-        UserService.followers(for: currentUser) { (followerUIDs) in
+        UserService.followerUIDs(for: currentUser) { (followerUIDs) in
             let timelinePostDict = ["poster_uid" : currentUser.uid]
             
             var updatedData = ["posts/\(currentUser.uid)/\(newPostKey)" : newPost.dictValue,

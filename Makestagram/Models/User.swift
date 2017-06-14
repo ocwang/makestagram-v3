@@ -40,7 +40,7 @@ class User: NSObject {
     let username: String
     var followerCount: Int?
     var followingCount: Int?
-    var postsCount: Int?
+    var postCount: Int?
     var isFollowed = false
     
     // MARK: - Init
@@ -48,16 +48,16 @@ class User: NSObject {
     init?(snapshot: FIRDataSnapshot) {
         guard let dict = snapshot.value as? [String : Any],
             let username = dict["username"] as? String,
-            let followersCount = dict["follower_count"] as? Int,
+            let followerCount = dict["follower_count"] as? Int,
             let followingCount = dict["following_count"] as? Int,
-            let postsCount = dict["posts_count"] as? Int
+            let postCount = dict["post_count"] as? Int
             else { return nil }
         
         self.uid = snapshot.key
         self.username = username
-        self.followerCount = followersCount
+        self.followerCount = followerCount
         self.followingCount = followingCount
-        self.postsCount = postsCount
+        self.postCount = postCount
         
         super.init()
     }

@@ -56,7 +56,13 @@ struct UserService {
     }
     
     static func current(_ firUser: FIRUser, completion: @escaping (User?) -> Void) {
-        let ref = FIRDatabaseReference.toLocation(.showUser(uid: firUser.uid))
+        let currentUID = firUser.uid
+        get(forUID: currentUID, withCompletion: completion)
+    }
+    
+    
+    static func get(forUID uid: String, withCompletion completion: @escaping (User?) -> Void) {
+        let ref = FIRDatabaseReference.toLocation(.showUser(uid: uid))
         ref.observeSingleEvent(of: .value, with: { snapshot in
             guard let user = User(snapshot: snapshot) else {
                 return completion(nil)
@@ -70,7 +76,7 @@ struct UserService {
         let userAttrs: [String : Any] = ["username": username,
                                          "follower_count": 0,
                                          "following_count" : 0,
-                                         "posts_count" : 0]
+                                         "post_count" : 0]
         
         let ref = FIRDatabaseReference.toLocation(.showUser(uid: firUser.uid))
         ref.setValue(userAttrs) { (error, ref) in
@@ -155,8 +161,8 @@ struct UserService {
         })
     }
     
-    static func followers(for user: User, completion: @escaping ([String]) -> Void) {
-        let followersRef = FIRDatabaseReference.toLocation(.followers(uid: user.uid))
+    static func followerUIDs(for user: User, completion: @escaping ([String]) -> Void) {
+        let followersRef = FIRDatabaseReference.toLocation(.followerUIDs(uid: user.uid))
         followersRef.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let followersDict = snapshot.value as? [String : Bool] else {
                 return completion([])
@@ -164,6 +170,43 @@ struct UserService {
             
             let followersKeys = Array(followersDict.keys)
             completion(followersKeys)
+        })
+    }
+    
+    static func followers(for user: User, withCompletion completion: @escaping ([User]) -> Void) {
+        followerUIDs(for: user) { (followerUIDs) in
+            let dispatchGroup = DispatchGroup()
+            
+            var followers = [User]()
+            
+            for uid in followerUIDs {
+                dispatchGroup.enter()
+                
+                get(forUID: uid) { follower in
+                    guard let follower = follower else { return }
+                    
+                    followers.append(follower)
+                    dispatchGroup.leave()
+                }
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                completion(followers)
+            }
+        }
+    }
+    
+    static func chatsForCurrentUserWithCompletion(_ completion: @escaping () -> Void) {
+        let chatsRef = FIRDatabaseReference.toLocation(.chats)
+        
+        chatsRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+                return completion()
+            }
+            
+            let chats = snapshots.flatMap(Chat.init)
+            
+            return completion()
         })
     }
 }

@@ -20,4 +20,6 @@ target 'Makestagram' do
   pod 'GoogleSignIn'
   
   pod 'Kingfisher', '~> 3.5'
+  
+  pod 'JSQMessagesViewController'
 end

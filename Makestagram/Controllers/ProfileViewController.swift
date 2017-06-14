@@ -86,7 +86,7 @@ extension ProfileViewController: UICollectionViewDataSource {
         let headerView: ProfileHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, for: indexPath)
         headerView.delegate = self
         
-        let postCount = user.postsCount ?? 0
+        let postCount = user.postCount ?? 0
         headerView.postCountLabel.text = "\(postCount)"
         
         let followerCount = user.followerCount ?? 0
