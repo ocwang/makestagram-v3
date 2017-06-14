@@ -34,13 +34,13 @@ class ChatViewController: JSQMessagesViewController {
         
         // setup recieving messages
         
-        
-        
-        
     }
     
     override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
         let message = Message(content: text)
+        
+        
+        // multi location update instead of control flow
         
         if let chat = chat, let chatKey = chat.key {
             ChatService.sendMessage(message, forChatKey: chatKey)
