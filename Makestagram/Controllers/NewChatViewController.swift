@@ -13,7 +13,8 @@ class NewChatViewController: UIViewController {
     // MARK: - Properties
     
     var followers = [User]()
-    var selectedUsers = Set<User>()
+    var selectedUser: User?
+    var existingChat: Chat?
     
     // MARK: - Subviews
     
@@ -28,25 +29,41 @@ class NewChatViewController: UIViewController {
         rhsNavBarButton.isEnabled = false
         setupTableView()
         
-        UserService.followers(for: User.current) { [unowned self] (followers) in
-            self.followers = followers
-            self.tableView.reloadData()
+        UserService.followers(for: User.current) { [weak self] (followers) in
+            self?.followers = followers
+            self?.tableView.reloadData()
         }
     }
     
     func setupTableView() {
         // remove separators for empty cells
         tableView.tableFooterView = UIView()
-        tableView.separatorStyle = .none
+    }
+    
+    // MARK: - IBActions
+    
+    @IBAction func nextButtonTapped(_ sender: UIBarButtonItem) {
+        guard let selectedUser = selectedUser else { return }
+        
+        sender.isEnabled = false
+        ChatService.checkForExistingChat(with: selectedUser) { (chat) in
+            sender.isEnabled = true
+            self.existingChat = chat
+            
+            self.performSegue(withIdentifier: "toChat", sender: self)
+        }
     }
 }
+
+// MARK: - Navigation
 
 extension NewChatViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
-        if let destination = segue.destination as? ChatViewController {
-            destination.members = Array(selectedUsers)
+        if segue.identifier == "toChat", let destination = segue.destination as? ChatViewController, let selectedUser = selectedUser {
+            let members = [selectedUser, User.current]
+            destination.chat = existingChat ?? Chat(members: members)
         }
     }
 }
@@ -59,13 +76,21 @@ extension NewChatViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let follower = followers[indexPath.row]
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath)
-        cell.textLabel?.text = follower.username
-        cell.accessoryType = selectedUsers.contains(follower) ? .checkmark : .none
+        let cell: NewChatUserCell = tableView.dequeueReusableCell()
+        configureCell(cell, at: indexPath)
         
         return cell
+    }
+    
+    func configureCell(_ cell: NewChatUserCell, at indexPath: IndexPath) {
+        let follower = followers[indexPath.row]
+        cell.textLabel?.text = follower.username
+        
+        if let selectedUser = selectedUser, selectedUser.uid == follower.uid {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
     }
 }
 
@@ -73,21 +98,17 @@ extension NewChatViewController: UITableViewDataSource {
 
 extension NewChatViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
         guard let cell = tableView.cellForRow(at: indexPath) else { return }
         
-        defer {
-            rhsNavBarButton.isEnabled = selectedUsers.count > 0 ? true : false
-        }
+        selectedUser = followers[indexPath.row]
+        cell.accessoryType = .checkmark
         
-        let follower = followers[indexPath.row]
-        if selectedUsers.contains(follower) {
-            selectedUsers.remove(follower)
-            cell.accessoryType = .none
-        } else {
-            selectedUsers.insert(follower)
-            cell.accessoryType = .checkmark
-        }
+        rhsNavBarButton.isEnabled = selectedUser != nil ? true : false
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        
+        cell.accessoryType = .none
     }
 }

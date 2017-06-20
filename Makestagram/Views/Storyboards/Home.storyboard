@@ -30,7 +30,7 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="3g4-lN-d6O" firstAttribute="top" secondItem="8qh-v2-jt5" secondAttribute="top" id="7fI-Cj-m6z"/>
                             <constraint firstAttribute="trailing" secondItem="3g4-lN-d6O" secondAttribute="trailing" id="Sdg-K4-COp"/>
@@ -42,7 +42,7 @@
                         <barButtonItem key="backBarButtonItem" title=" " id="OLI-HR-dFS"/>
                         <barButtonItem key="rightBarButtonItem" image="nav_messages_black" id="hfu-Qb-v7Z">
                             <connections>
-                                <segue destination="JEo-5T-ayW" kind="presentation" id="aoX-wa-j0F"/>
+                                <segue destination="JEo-5T-ayW" kind="show" id="aoX-wa-j0F"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -76,10 +76,12 @@
             </objects>
             <point key="canvasLocation" x="721" y="-568"/>
         </scene>
-        <!--Chat-->
+        <!--ChatListViewController-->
         <scene sceneID="BFF-Wc-8fJ">
             <objects>
-                <viewControllerPlaceholder storyboardName="Chat" id="JEo-5T-ayW" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Chat" referencedIdentifier="ChatListViewController" id="JEo-5T-ayW" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="aBP-CW-8cY"/>
+                </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fVe-2K-dY2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2562" y="-569"/>

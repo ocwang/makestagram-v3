@@ -13,110 +13,115 @@ import JSQMessagesViewController
 
 class ChatViewController: JSQMessagesViewController {
     
+    // MARK: - Properties
+    
+    var chat: Chat!
     var messages = [Message]()
     
-    var chat: Chat?
+    var messagesHandle: FIRDatabaseHandle = 0
+    var messagesRef: FIRDatabaseReference?
     
-    var members: [User]!
+    lazy var outgoingBubbleImageView: JSQMessagesBubbleImage = {
+        guard let bubbleImageFactory = JSQMessagesBubbleImageFactory() else {
+            fatalError("Error creating bubble image factory.")
+        }
+        
+        let color = UIColor.jsq_messageBubbleBlue()
+        return bubbleImageFactory.outgoingMessagesBubbleImage(with: color)
+
+    }()
     
-    lazy var outgoingBubbleImageView: JSQMessagesBubbleImage = self.setupOutgoingBubble()
-    lazy var incomingBubbleImageView: JSQMessagesBubbleImage = self.setupIncomingBubble()
+    lazy var incomingBubbleImageView: JSQMessagesBubbleImage = {
+        guard let bubbleImageFactory = JSQMessagesBubbleImageFactory() else {
+            fatalError("Error creating bubble image factory.")
+        }
+        
+        let color = UIColor.jsq_messageBubbleLightGray()
+        return bubbleImageFactory.incomingMessagesBubbleImage(with: color)
+    }()
+    
+    // MARK: - VC Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupJSQMessagesViewController()
+        tryObservingMessages()
+        
+    }
+    
+    deinit {
+        messagesRef?.removeObserver(withHandle: messagesHandle)
+    }
+    
+    // MARK: - IBActions
+    
+    // TODO: rethink unwind / swipe back from different view controllers
+    @IBAction func unwindToChatList(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "unwindToChatList", sender: self)
+    }
+}
+
+// MARK: - Setup
+
+extension ChatViewController {
+    func setupJSQMessagesViewController() {
         senderId = User.current.uid
         senderDisplayName = User.current.username
+        title = chat.title
+        
+        // remove attachment button
+        inputToolbar.contentView.leftBarButtonItem = nil
         
         // remove avatars
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSize.zero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSize.zero
-        
-        // setup recieving messages
-        
     }
     
+    // TODO: change to childAdded
+    func tryObservingMessages() {
+        guard let chatKey = chat?.key else { return }
+        
+        messagesHandle = ChatService.observeMessages(forChatKey: chatKey, completion: { [weak self] (ref, message) in
+            self?.messagesRef = ref
+            
+            if let message = message {
+                self?.messages.append(message)
+                self?.finishReceivingMessage()
+            }
+        })
+    }
+}
+
+// MARK: - Send Message
+
+extension ChatViewController {
     override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
         let message = Message(content: text)
-        
-        
-        // multi location update instead of control flow
-        
-        if let chat = chat, let chatKey = chat.key {
-            ChatService.sendMessage(message, forChatKey: chatKey)
-        } else {
-            ChatService.createFromMessage(message, withMembers: members, completion: { (chat) in
-                guard let chat = chat else { return }
-                
-                self.chat = chat
-                
-                if let aChat = self.chat, let chatKey = aChat.key {
-                    let ref = FIRDatabase.database().reference().child("messages").child(chatKey)
-                    
-                    ref.observe(.value, with: { (snapshot) in
-                        guard let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] else {
-                            return
-                        }
-                        
-                        self.messages = snapshots.flatMap(Message.init)
-                        self.finishReceivingMessage()
-                    })
-                }
-            })
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        // check if chat exists, if new create chat
-        
-        
-//        let itemRef = "asdf" // message.childByAutoId
-//        
-//        let messageItem = ["senderId" : senderId!,
-//                           "senderName" : senderDisplayName,
-//                           "text" : text]
-        
-        // socket should take care of response
+        sendMessage(message)
+        finishSendingMessage()
         
         JSQSystemSoundPlayer.jsq_playMessageSentAlert()
-        
-        finishSendingMessage()
+    }
+    
+    func sendMessage(_ message: Message) {
+        if chat?.key == nil {
+            ChatService.create(from: message, with: chat, completion: { [weak self] chat in
+                guard let chat = chat else { return }
+                
+                self?.chat = chat
+                
+                self?.tryObservingMessages()
+            })
+        } else {
+            ChatService.sendMessage(message, for: chat)
+        }
     }
 }
 
 // MARK: - JSQMessagesCollectionViewDataSource
 
 extension ChatViewController {
-    override func collectionView(_ collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAt indexPath: IndexPath!) -> CGFloat {
-        return 15
-    }
-    
-    override func collectionView(_ collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAt indexPath: IndexPath!) -> CGFloat {
-        return 15
-    }
-    
-    override func collectionView(_ collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAt indexPath: IndexPath!) -> NSAttributedString! {
-        let attributes = [NSFontAttributeName : UIFont.systemFont(ofSize: 13), NSForegroundColorAttributeName : UIColor.black]
-        let attrStr = NSAttributedString(string: "msg bubble top label", attributes: attributes)
-        return attrStr
-    }
-    
-    override func collectionView(_ collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAt indexPath: IndexPath!) -> NSAttributedString! {
-        let attributes = [NSFontAttributeName : UIFont.systemFont(ofSize: 13), NSForegroundColorAttributeName : UIColor.black]
-        let attrStr = NSAttributedString(string: "cell top label", attributes: attributes)
-        return attrStr
-    }
-    
-    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageDataForItemAt indexPath: IndexPath!) -> JSQMessageData! {
-        return messages[indexPath.item].jsqMessageValue
-    }
-    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
@@ -125,37 +130,26 @@ extension ChatViewController {
         return nil
     }
     
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageDataForItemAt indexPath: IndexPath!) -> JSQMessageData! {
+        return messages[indexPath.item].jsqMessageValue
+    }
+    
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
-        let message = messages[indexPath.item] // 1
-        if message.sender.uid == senderId { // 2
+        let message = messages[indexPath.item]
+        let sender = message.sender
+        
+        if sender.uid == senderId {
             return outgoingBubbleImageView
-        } else { // 3
+        } else {
             return incomingBubbleImageView
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = super.collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
         let message = messages[indexPath.item]
-        
-        if message.sender.uid == senderId {
-            cell.textView?.textColor = UIColor.white
-        } else {
-            cell.textView?.textColor = UIColor.black
-        }
+        let cell = super.collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
+        cell.textView?.textColor = (message.sender.uid == senderId) ? .white : .black
         
         return cell
-    }
-}
-
-extension ChatViewController {
-    fileprivate func setupOutgoingBubble() -> JSQMessagesBubbleImage {
-        let bubbleImageFactory = JSQMessagesBubbleImageFactory()
-        return bubbleImageFactory!.outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
-    }
-    
-    fileprivate func setupIncomingBubble() -> JSQMessagesBubbleImage {
-        let bubbleImageFactory = JSQMessagesBubbleImageFactory()
-        return bubbleImageFactory!.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
     }
 }

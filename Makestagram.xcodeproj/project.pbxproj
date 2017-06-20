@@ -10,6 +10,7 @@
 		050034E9BD0C3728D5913A24 /* Pods_Makestagram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C717369BD19F00A54765C17 /* Pods_Makestagram.framework */; };
 		CA0561F11E9C39180030B91C /* UIImage+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0561F01E9C39180030B91C /* UIImage+Utility.swift */; };
 		CA0561F31E9C39730030B91C /* FIRStorageReference+Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0561F21E9C39730030B91C /* FIRStorageReference+Post.swift */; };
+		CA062EEC1EF6501E00410228 /* NewChatUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA062EEB1EF6501E00410228 /* NewChatUserCell.swift */; };
 		CA2DC5661E8049540064FBC9 /* FollowService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5651E8049540064FBC9 /* FollowService.swift */; };
 		CA2DC5681E8054360064FBC9 /* FIRDatabaseReference+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */; };
 		CA2DC56A1E8056070064FBC9 /* LikeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2DC5691E8056070064FBC9 /* LikeService.swift */; };
@@ -26,6 +27,7 @@
 		CA8417791E723C1C005A0A60 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8417781E723C1C005A0A60 /* User.swift */; };
 		CA84177C1E731BF7005A0A60 /* Storyboard+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */; };
 		CA8417801E732D3A005A0A60 /* UIWindow+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */; };
+		CA9F1BBD1EF7C7A7005FAA0D /* ChatListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9F1BBC1EF7C7A7005FAA0D /* ChatListCell.swift */; };
 		CAAEBE421E7A287300EF6E6C /* FindFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAAEBE411E7A287300EF6E6C /* FindFriendsViewController.swift */; };
 		CAAEBE441E7A68B900EF6E6C /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAAEBE431E7A68B900EF6E6C /* UserService.swift */; };
 		CAAEBE461E7B947A00EF6E6C /* FindFriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAAEBE451E7B947A00EF6E6C /* FindFriendCell.swift */; };
@@ -66,6 +68,7 @@
 		663D54F91ED125B01595C135 /* Pods-Makestagram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Makestagram.release.xcconfig"; path = "Pods/Target Support Files/Pods-Makestagram/Pods-Makestagram.release.xcconfig"; sourceTree = "<group>"; };
 		CA0561F01E9C39180030B91C /* UIImage+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIImage+Utility.swift"; path = "Extensions/UIImage+Utility.swift"; sourceTree = "<group>"; };
 		CA0561F21E9C39730030B91C /* FIRStorageReference+Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FIRStorageReference+Post.swift"; path = "Extensions/FIRStorageReference+Post.swift"; sourceTree = "<group>"; };
+		CA062EEB1EF6501E00410228 /* NewChatUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewChatUserCell.swift; path = Views/Cells/NewChatUserCell.swift; sourceTree = "<group>"; };
 		CA2DC5651E8049540064FBC9 /* FollowService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FollowService.swift; path = Services/FollowService.swift; sourceTree = "<group>"; };
 		CA2DC5671E8054360064FBC9 /* FIRDatabaseReference+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FIRDatabaseReference+Utility.swift"; path = "Extensions/FIRDatabaseReference+Utility.swift"; sourceTree = "<group>"; };
 		CA2DC5691E8056070064FBC9 /* LikeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LikeService.swift; path = Services/LikeService.swift; sourceTree = "<group>"; };
@@ -84,6 +87,7 @@
 		CA8417781E723C1C005A0A60 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = Models/User.swift; sourceTree = "<group>"; };
 		CA84177B1E731BF7005A0A60 /* Storyboard+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Storyboard+Utility.swift"; path = "Extensions/Storyboard+Utility.swift"; sourceTree = "<group>"; };
 		CA84177F1E732D3A005A0A60 /* UIWindow+Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIWindow+Utility.swift"; path = "Extensions/UIWindow+Utility.swift"; sourceTree = "<group>"; };
+		CA9F1BBC1EF7C7A7005FAA0D /* ChatListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatListCell.swift; path = Views/Cells/ChatListCell.swift; sourceTree = "<group>"; };
 		CAAEBE411E7A287300EF6E6C /* FindFriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FindFriendsViewController.swift; path = Controllers/FindFriendsViewController.swift; sourceTree = "<group>"; };
 		CAAEBE431E7A68B900EF6E6C /* UserService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserService.swift; path = Services/UserService.swift; sourceTree = "<group>"; };
 		CAAEBE451E7B947A00EF6E6C /* FindFriendCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FindFriendCell.swift; path = Views/Cells/FindFriendCell.swift; sourceTree = "<group>"; };
@@ -255,6 +259,8 @@
 				CAAEBE451E7B947A00EF6E6C /* FindFriendCell.swift */,
 				CACB670C1EC9010400D2C840 /* ProfileHeaderView.swift */,
 				CACB67131EC90AAD00D2C840 /* PostThumbImageCell.swift */,
+				CA062EEB1EF6501E00410228 /* NewChatUserCell.swift */,
+				CA9F1BBC1EF7C7A7005FAA0D /* ChatListCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -457,6 +463,7 @@
 				CAEACD1B1E7380B600E2AEE4 /* LoginViewController.swift in Sources */,
 				CACB67121EC905B900D2C840 /* UICollectionView+Utility.swift in Sources */,
 				CACB67141EC90AAD00D2C840 /* PostThumbImageCell.swift in Sources */,
+				CA9F1BBD1EF7C7A7005FAA0D /* ChatListCell.swift in Sources */,
 				CAFB7CB71E7B9D1E00A3D71B /* UIColor+Utility.swift in Sources */,
 				CAC661A31EE741C20064F4FE /* ChatListViewController.swift in Sources */,
 				CA8417751E720C9A005A0A60 /* Constants.swift in Sources */,
@@ -485,6 +492,7 @@
 				CAEACD191E7380B600E2AEE4 /* CreateUsernameViewController.swift in Sources */,
 				CA8417801E732D3A005A0A60 /* UIWindow+Utility.swift in Sources */,
 				CAEACD2B1E7381F800E2AEE4 /* PostImageCell.swift in Sources */,
+				CA062EEC1EF6501E00410228 /* NewChatUserCell.swift in Sources */,
 				CA2DC5681E8054360064FBC9 /* FIRDatabaseReference+Utility.swift in Sources */,
 				CAB98BEA1E77526100BE2D92 /* PostService.swift in Sources */,
 				CAEACD1A1E7380B600E2AEE4 /* HomeViewController.swift in Sources */,

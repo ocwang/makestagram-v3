@@ -183,9 +183,10 @@ struct UserService {
                 dispatchGroup.enter()
                 
                 get(forUID: uid) { follower in
-                    guard let follower = follower else { return }
+                    if let follower = follower {
+                        followers.append(follower)
+                    }
                     
-                    followers.append(follower)
                     dispatchGroup.leave()
                 }
             }
@@ -196,19 +197,16 @@ struct UserService {
         }
     }
     
-    static func chatsForCurrentUserWithCompletion(_ completion: @escaping () -> Void) {
-        let chatsRef = FIRDatabaseReference.toLocation(.chats)
+    static func observeChats(for user: User = User.current, withCompletion completion: @escaping (FIRDatabaseReference, [Chat]) -> Void) -> FIRDatabaseHandle {
+        let ref = FIRDatabase.database().reference().child("chats").child(user.uid)
         
-        chatsRef.observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] else {
-                return completion()
+        return ref.observe(.value, with: { (snapshot) in
+            guard let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+                return completion(ref, [])
             }
             
-            let chats = snapshots.flatMap(Chat.init)
-            
-            return completion()
+            let chats = snapshot.flatMap(Chat.init)
+            completion(ref, chats)
         })
     }
 }
-
-

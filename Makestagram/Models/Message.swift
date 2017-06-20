@@ -19,14 +19,13 @@ class Message {
     let content: String
     let timestamp: Date
     
-    var jsqMessageValue: JSQMessage {
-        return JSQMessage(senderId: sender.uid,
-                          senderDisplayName: sender.username,
-                          date: timestamp,
-                          text: content)
-    }
-    
-    
+    lazy var jsqMessageValue: JSQMessage = {
+        return JSQMessage(senderId: self.sender.uid,
+                          senderDisplayName: self.sender.username,
+                          date: self.timestamp,
+                          text: self.content)
+    }()
+
     var dictValue: [String : Any] {
         let userDict = ["username" : sender.username,
                         "uid" : sender.uid]
